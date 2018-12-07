@@ -31,4 +31,10 @@
         <item name="android:typeface">sans</item>
     </style>
 
+    <style name="TextCaptionLight" parent="ViewOrderInfoThemeLight">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>

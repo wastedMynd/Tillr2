@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
+import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.adapter.ItemListAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
 import com.wast3dmynd.tillr.database.ItemDatabase;
@@ -52,6 +53,8 @@ public class ItemsFragment extends Fragment implements ItemListAdapter.ItemListA
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.title_item_list);
 
         items_last_update_date = view.findViewById(R.id.dashboard_date);
         items_count = view.findViewById(R.id.dashboard_time);

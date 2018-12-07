@@ -43,7 +43,7 @@ public class ItemListViewHolder extends RecyclerView.ViewHolder {
         itemCountDecrement = view.findViewById(R.id.imgBtnItemDecrementor);
         itemCountIncrementer = view.findViewById(R.id.imgBtnItemIncrement);
         itemName = view.findViewById(R.id.itemName);
-        itemUnits = view.findViewById(R.id.itemUnitsRemaining);
+        itemUnits = view.findViewById(R.id.itemUnits);
         itemCostPerUnit = view.findViewById(R.id.itemCostPerUnit);
         itemPriceTotal = view.findViewById(R.id.itemPriceTotal);
         itemUnitRemaining = view.findViewById(R.id.itemUnitsRemaining);

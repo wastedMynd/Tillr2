@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     android:id="@+id/itemCardContainer"
-    tools:context=".boundary.ItemsActivity">
+    tools:context=".boundary.fragments.ItemsFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,8 +28,8 @@
 
         <ImageView
             android:id="@+id/imgBtnItemDecrementor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -41,8 +41,8 @@
 
         <ImageView
             android:id="@+id/imgBtnItemIncrement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
@@ -59,106 +59,103 @@
 
         <TextView
             android:id="@+id/itemName"
+            style="@style/ViewOrderTitleThemeLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:textColor="@android:color/black"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/imgBtnItemDecrementor"
             app:layout_constraintStart_toEndOf="@+id/imgBtnItemDecrementor"
             app:layout_constraintTop_toTopOf="@+id/imgBtnItemDecrementor"
+            app:layout_constraintVertical_bias="0.0"
             tools:text="Heineken" />
 
         <TextView
             android:id="@+id/itemCostPerUnit"
+            style="@style/TextCaptionLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:textColor="#00f"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintEnd_toEndOf="@+id/itemName"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/itemName"
-            app:layout_constraintTop_toBottomOf="@+id/itemName"
+            app:layout_constraintStart_toStartOf="@+id/imgBtnItemDecrementor"
+            app:layout_constraintTop_toBottomOf="@+id/imgBtnItemDecrementor"
             tools:text="R15.00/unit" />
 
         <TextView
-            android:id="@+id/itemUnitsRemaining"
+            android:id="@+id/itemUnits"
+            style="@style/ViewOrderInfoThemeLight"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:textColor="@android:color/black"
             android:textSize="13sp"
             android:textStyle="bold"
             android:typeface="monospace"
-            app:layout_constraintBottom_toTopOf="@+id/itemPriceTotal"
-            app:layout_constraintEnd_toEndOf="@+id/imgBtnItemIncrement"
+            app:layout_constraintBaseline_toBaselineOf="@+id/itemCostPerUnit"
+            app:layout_constraintEnd_toEndOf="@+id/itemUnitsRemaining"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/imgBtnItemIncrement"
-            app:layout_constraintTop_toBottomOf="@+id/imgBtnItemIncrement"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/itemPriceTotal"
             tools:text="Added 2 Units" />
 
         <TextView
             android:id="@+id/itemPriceTotal"
+            style="@style/TextCaptionLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="TextView"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:textColor="#f00"
-            android:textStyle="bold"
-            android:typeface="monospace"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imgBtnItemIncrement"
+            app:layout_constraintBaseline_toBaselineOf="@+id/itemName"
+            app:layout_constraintEnd_toEndOf="@+id/itemUnitsRemaining"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/itemUnitsRemaining"
+            app:layout_constraintStart_toEndOf="@+id/itemName"
             tools:text="R 30.00" />
 
         <TextView
             android:id="@+id/itemUnitsRemaining"
+            style="@style/TextCaptionLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textStyle="bold"
-            android:typeface="monospace"
-            app:layout_constraintStart_toStartOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintTop_toBottomOf="@+id/imgBtnItemDecrementor"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/itemTimeStamp"
+            app:layout_constraintEnd_toStartOf="@+id/imgBtnItemIncrement"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/itemTimeStamp"
             tools:text="Stock: 8 units" />
 
         <TextView
             android:id="@+id/itemTimeStamp"
+            style="@style/TextCaptionLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:textAllCaps="false"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:typeface="monospace"
-            app:fontFamily="sans-serif"
-            app:layout_constraintBottom_toTopOf="@+id/imvOpt"
-            app:layout_constraintEnd_toEndOf="@+id/itemUnitsRemaining"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/imgBtnItemIncrement"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintTop_toBottomOf="@+id/itemUnitsRemaining"
-            tools:text="13 Nov" />
+            app:layout_constraintStart_toStartOf="@+id/itemName"
+            app:layout_constraintTop_toBottomOf="@+id/itemName"
+            tools:text="07 December 2018" />
 
         <ImageView
             android:id="@+id/imvOpt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="40dp"
+            android:layout_height="19dp"
+            android:layout_marginBottom="16dp"
+            android:rotation="90"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintTop_toBottomOf="@+id/itemUnitsRemaining"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintEnd_toEndOf="@+id/imgBtnItemIncrement"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/itemUnits"
+            app:layout_constraintTop_toTopOf="@+id/itemUnits"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/baseline_more_vert_black_18dp" />
 
     </android.support.constraint.ConstraintLayout>

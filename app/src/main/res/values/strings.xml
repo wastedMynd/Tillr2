@@ -87,7 +87,7 @@
     <string name="title_activity_order_placement_container">OrderPlacementActivityContainer</string>
     <string name="search_item_title">Search</string>
     <string name="order_option_menu">Order option menu</string>
-    <string name="title_activity_view_all_orders">View All Order</string>
+    <string name="title_activity_view_all_orders">View All Orders</string>
 
     <string name="label_date">Date</string>
     <string name="label_time">Time</string>

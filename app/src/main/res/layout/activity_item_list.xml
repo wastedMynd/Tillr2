@@ -4,7 +4,7 @@
     android:id="@+id/viewItems"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".boundary.ItemsActivity">
+    tools:context=".boundary.fragments.ItemsFragment">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -61,22 +61,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="70dp" />
+                    app:layout_constraintGuide_begin="16dp" />
 
                 <TextView
                     android:id="@+id/textView13"
                     style="@style/ViewOrderTitleThemeLight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:text="@string/label_items"
                     app:layout_constraintBaseline_toBaselineOf="@+id/dashboard_date"
                     app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/dashboard_date" />
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/guideline7" />
 
                 <TextView
                     android:id="@+id/dashboard_time"
@@ -143,22 +141,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_begin="75dp" />
+                    app:layout_constraintGuide_begin="60dp" />
 
                 <TextView
                     android:id="@+id/textView15"
                     style="@style/ViewOrderTitleThemeLight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:text="@string/label_asserts"
                     app:layout_constraintBaseline_toBaselineOf="@+id/items_units"
                     app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/items_units" />
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/guideline7" />
 
                 <TextView
                     android:id="@+id/items_asserts"
@@ -176,14 +172,16 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/guideline4"
                     tools:text="R 1 000,00" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="212dp" />
+
             </android.support.constraint.ConstraintLayout>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                app:title="@string/title_item_list" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ViewOrderTitleThemeLight" parent="ViewOrderInfoThemeLight">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:fontFamily">sans-serif-smallcaps</item>
+    </style>
+
+    <style name="ViewOrderInfoThemeLight" parent="AppTheme">
+        <item name="android:textSize">15sp</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+</resources>

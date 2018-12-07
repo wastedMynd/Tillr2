@@ -1,0 +1,116 @@
+<resources>
+    <string name="app_name">Tillr</string>
+
+    <!--employee activities-->
+    <string name="title_place_order">Place An Order</string>
+
+    <!--employer activities-->
+    <string name="title_add_item">Create A New Item</string>
+    <string name="title_item_list">View Items</string>
+    <string name="title_item_editor">Edit An Item</string>
+
+
+    <!--Staff Text-->
+
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+
+    <!--pref_general.xml-->
+
+    <!--Barcode Scanner-->
+    <string name="pref_title_scanner_flashlight">Enable Flashlight</string>
+    <string name="pref_description_scanner_flashlight">When enabled, it assists in scanning a barcode; gives the camera visibility for scanning a barcode</string>
+    <string name="pref_title_auto_focus">Enable Auto Focus</string>
+    <string name="pref_description_scanner_auto_focus">When enabled, it assists in capturing details from a barcode</string>
+
+    <!--end pref_general.xml-->
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_group_employee">Work</string>
+    <string name="title_group_employer">Admin</string>
+
+    <!--View Orders-->
+    <string name="view_orders_item_date">Date:</string>
+    <string name="view_orders_item_order_number">Order #:</string>
+    <string name="view_orders_item_time">Time:</string>
+    <string name="view_orders_item_total">Total:</string>
+    <string name="view_orders_item_units">Items:</string>
+    <string name="action_view_orders_opt_view_order">View</string>
+    <string name="action_view_orders_opt_delete_order">Delete</string>
+    <string name="action_view_orders_opt_share_order">Share</string>
+    <string name="action_item_list_opt_save">update</string>
+    <string name="action_item_list_opt_edit">edit</string>
+    <string name="action_item_list_opt_delete">delete</string>
+    <string name="title_order_list">View Orders</string>
+    <string name="title_activity_view_order">View Order</string>
+    <string name="title_activity_place_order">Place An Order</string>
+    <string name="title_activity_order_placement_container">OrderPlacementActivityContainer</string>
+    <string name="search_item_title">Search</string>
+    <string name="order_option_menu">Order option menu</string>
+    <string name="title_activity_view_all_orders">View All Order</string>
+
+    <string name="label_date">Date</string>
+    <string name="label_time">Time</string>
+    <string name="label_items">Items</string>
+    <string name="label_total">Total</string>
+    <string name="label_order">Order#</string>
+    <string name="action_order_summary_processing">Processing...</string>
+    <string name="action_order_summary_interrupted">Couldn\'t summarize orders!</string>
+    <string name="action_order_summary_error">Oops something want wrong!</string>
+    <string name="action_order_summary_done">Done!</string>
+    <string name="label_units">Units</string>
+    <string name="label_asserts">Asserts</string>
+    <string name="label_paid">Paid</string>
+    <string name="label_credit">Credit</string>
+    <string name="label_damage">Damage</string>
+    <string name="label_orders">Orders</string>
+    <string name="label_stock">Stock</string>
+    <string name="label_sold">Sold</string>
+    <string name="prompt_place_another_order">Place another order?</string>
+    <string name="action_dashboard_summary_processing">Processing...</string>
+    <string name="action_dashboard_summary_interrupted">Oops something want wrong!</string>
+    <string name="action_dashboard_summary_error">Error dash board data corrupted!</string>
+    <string name="action_dashboard_summary_done">Done.</string>
+    <string name="title_fragment_dashboard">Dash Board</string>
+
+</resources>

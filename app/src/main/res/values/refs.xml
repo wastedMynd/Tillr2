@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="ic_place_order_black_18dp">@drawable/ic_add_shopping_cart_black_18dp</drawable>
+    <drawable name="ic_payment_black_24dp">@drawable/ic_attach_money_black_24dp</drawable>
+    <drawable name="ic_save_black_24dp">@drawable/ic_favorite_black_24dp</drawable>
+    <drawable name="ic_item_add">@drawable/twotone_add_circle_black_48</drawable>
+    <drawable name="ic_item_remove">@drawable/twotone_remove_circle_black_48</drawable>
+
+    <drawable name="ic_dashboard">@drawable/twotone_assignment_black_24</drawable>
+    <drawable name="ic_create_item">@drawable/ic_mode_edit_black_18dp</drawable>
+    <drawable name="ic_item_list">@drawable/ic_class_black_24dp</drawable>
+    <drawable name="ic_order_list">@drawable/ic_scanner</drawable>
+    <drawable name="ic_order_placement">@drawable/ic_place_order_black_18dp</drawable>
+</resources>

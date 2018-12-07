@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:icon="@drawable/ic_scanner"
+        android:title="Barcode Scanner">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="scanner_flash_light"
+            android:summary="@string/pref_description_scanner_flashlight"
+            android:title="@string/pref_title_scanner_flashlight" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="scanner_auto_focus"
+            android:summary="@string/pref_description_scanner_auto_focus"
+            android:title="@string/pref_title_auto_focus" />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

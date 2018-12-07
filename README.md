@@ -16,3 +16,7 @@ It's intended to be quick and easy to use; this is achieved by incorparating And
 |![Prompt For Another](https://github.com/wastedMynd/Tillr2/blob/master/wiki%20asserts/Screenshot(PlaceAnOrder%23Another).png)
 |![Dashboard Updated](https://github.com/wastedMynd/Tillr2/blob/master/wiki%20asserts/Screenshot%20(Dashboard%23Updated).png)
 |![View Orders](https://github.com/wastedMynd/Tillr2/blob/master/wiki%20asserts/Screenshot(ViewAllOrders).png)
+
+There maybe some state leaks, causing the app to crash; this is caused by(query databases on the main thread).
+Potential siting for these leaks are the dashboard(noted when this fragment changes before dashboard task(s) complete),
+and when viewing orders(Something happens): Views depending on background queried data;get accessed out of context(when the fragment is no longer in Scope there). 

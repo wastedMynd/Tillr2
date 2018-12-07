@@ -256,7 +256,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/layout_menu_item"
+        tools:listitem="@layout/place_order_item"
         tools:orientation="horizontal"
         tools:scrollbars="horizontal"
         android:paddingTop="16dp"

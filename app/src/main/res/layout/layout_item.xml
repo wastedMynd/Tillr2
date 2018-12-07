@@ -27,7 +27,7 @@
 
 
         <ImageView
-            android:id="@+id/imgBtnItemDecrementor"
+            android:id="@+id/imgBtnItemDecrement"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="16dp"
@@ -59,16 +59,14 @@
 
         <TextView
             android:id="@+id/itemName"
-            style="@style/ViewOrderTitleThemeLight"
+            style="@style/ItemNameLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintStart_toEndOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintTop_toTopOf="@+id/imgBtnItemDecrementor"
+            app:layout_constraintBottom_toBottomOf="@+id/imgBtnItemDecrement"
+            app:layout_constraintStart_toEndOf="@+id/imgBtnItemDecrement"
+            app:layout_constraintTop_toTopOf="@+id/imgBtnItemDecrement"
             app:layout_constraintVertical_bias="0.0"
             tools:text="Heineken" />
 
@@ -79,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textColor="#00f"
-            app:layout_constraintStart_toStartOf="@+id/imgBtnItemDecrementor"
-            app:layout_constraintTop_toBottomOf="@+id/imgBtnItemDecrementor"
+            app:layout_constraintStart_toStartOf="@+id/imgBtnItemDecrement"
+            app:layout_constraintTop_toBottomOf="@+id/imgBtnItemDecrement"
             tools:text="R15.00/unit" />
 
         <TextView

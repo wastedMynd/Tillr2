@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -40,7 +39,7 @@ public class ItemListViewHolder extends RecyclerView.ViewHolder {
         super(view);
         context = view.getContext();
         this.mListener = listener;
-        itemCountDecrement = view.findViewById(R.id.imgBtnItemDecrementor);
+        itemCountDecrement = view.findViewById(R.id.imgBtnItemDecrement);
         itemCountIncrementer = view.findViewById(R.id.imgBtnItemIncrement);
         itemName = view.findViewById(R.id.itemName);
         itemUnits = view.findViewById(R.id.itemUnits);
@@ -114,7 +113,7 @@ public class ItemListViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.imgBtnItemDecrementor:
+                    case R.id.imgBtnItemDecrement:
                         //region itemCountDecrementedOnClick
                         //affected attr unit(Test)
                         int units = item.getItemUnits() - 1;

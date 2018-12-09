@@ -270,6 +270,7 @@
         app:fabSize="mini"
         app:layout_anchor="@+id/appbar"
         app:layout_anchorGravity="right|bottom"
+        android:tint="@android:color/white"
         app:srcCompat="@drawable/ic_payment_black_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

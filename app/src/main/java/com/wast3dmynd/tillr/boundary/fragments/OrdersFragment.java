@@ -184,7 +184,6 @@ public class OrdersFragment extends Fragment {
 
     private static class ProcessOrderSummaryRequest extends AsyncTask<Order, Void, Order.TimelineData> {
 
-        private ArrayList<Order.Timeline> timeLines;
         private Context context;
 
 
@@ -195,6 +194,7 @@ public class OrdersFragment extends Fragment {
         @Override
         protected Order.TimelineData doInBackground(Order... orders) {
 
+            ArrayList<Order.Timeline> timeLines;
             timeLines = Order.OrderTimelineHelper.get(context);
 
             ArrayList<Item> items = new ArrayList<>();

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tillr</string>
+    <string name="app_name">Til Point</string>
 
     <!--employee activities-->
     <string name="title_place_order">Place An Order</string>

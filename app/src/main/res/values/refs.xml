@@ -11,4 +11,5 @@
     <drawable name="ic_item_list">@drawable/ic_class_black_24dp</drawable>
     <drawable name="ic_order_list">@drawable/ic_scanner</drawable>
     <drawable name="ic_order_placement">@drawable/ic_place_order_black_18dp</drawable>
+    <drawable name="ic_drawer">@drawable/twotone_menu_black_24</drawable>
 </resources>

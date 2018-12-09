@@ -78,7 +78,7 @@ public class OrderMenuItemViewHolder extends RecyclerView.ViewHolder {
 
     public void bindPlacedOrderItem(final Item item) {
 
-        //validate if layout_menu_item must be enabled
+        //validate if place_order_item must be enabled
         boolean enabled = item.getItemUnitRemaining() > 0;
         itemAdder.setEnabled(enabled);
         cdItem.setEnabled(enabled);

@@ -1,6 +1,5 @@
 package com.wast3dmynd.tillr.boundary.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import com.wast3dmynd.tillr.entity.Order;
 import com.wast3dmynd.tillr.utils.DayFormats;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 public class OrderSummaryTimelineViewAdapter extends RecyclerView.Adapter<OrderSummaryTimelineViewHolder>
         implements OrderSummaryTimelineListener {
@@ -35,6 +33,7 @@ public class OrderSummaryTimelineViewAdapter extends RecyclerView.Adapter<OrderS
 
         //init listener
         this.listener = listener;
+
     }
 
     //RecyclerView.Adapter methods
@@ -58,17 +57,17 @@ public class OrderSummaryTimelineViewAdapter extends RecyclerView.Adapter<OrderS
         //bind order to OrderSummaryTimelineViewHolder
         final Order order = orders.get(position);
         holder.onBind(order);
-        if (orders.get(position).isLastOrder() && position == 0) {
+        if (order.isLastOrder() && position == 0) {
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    DayFormats ordersDayFormat =DayFormats.getDayFormat(order.getDate());
-                    if(!ordersDayFormat.equals(dayFormat))return;
+                    DayFormats ordersDayFormat = DayFormats.getDayFormat(order.getDate());
+                    if (!ordersDayFormat.equals(dayFormat)) return;
 
                     holder.main_order_summarize.setChecked(summarizeDaysOrder);
                     summarizeDaysOrder = false;
                 }
-            },1500);
+            }, 1000);
         }
     }
 
@@ -97,4 +96,5 @@ public class OrderSummaryTimelineViewAdapter extends RecyclerView.Adapter<OrderS
     //interface construct
     public interface OrderSummaryTimelineViewAdapterListener extends OrderSummaryTimelineListener {
     }
+
 }

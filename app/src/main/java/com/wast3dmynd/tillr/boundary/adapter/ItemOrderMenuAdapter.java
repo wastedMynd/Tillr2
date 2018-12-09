@@ -42,7 +42,7 @@ public class ItemOrderMenuAdapter extends RecyclerView.Adapter<OrderMenuItemView
     @NonNull
     @Override
     public OrderMenuItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = layoutInflater.inflate(R.layout.layout_menu_item, parent, false);
+        View itemView = layoutInflater.inflate(R.layout.place_order_item, parent, false);
         return new OrderMenuItemViewHolder(itemView, orderListener);
     }
 

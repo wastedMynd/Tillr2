@@ -25,9 +25,9 @@ public class Order implements Serializable {
     public static int getNewID(Context context) {
         OrderDatabase database = new OrderDatabase(context);
 
-        ArrayList<Object> orderObjs =database.getItems();
+        ArrayList<Object> orderObjs = database.getItems();
 
-        return ((Order)orderObjs.get(0)).getId() +1;
+        return ((Order) orderObjs.get(0)).getId() + 1;
     }
     //endregion
 
@@ -227,7 +227,7 @@ public class Order implements Serializable {
                         boolean isChildOrder = false;
 
 
-                        int index =0;
+                        int index = 0;
                         for (Timeline timeline : timelines) {
                             Date dateOfLastOrder = new Date(timeline.getLastPlacedOrder().getDate());
                             Date dateOfPotentialChildOrder = new Date(order.getDate());
@@ -254,6 +254,28 @@ public class Order implements Serializable {
             }
 
             return timelines;
+        }
+
+
+        public static ArrayList<Order> getTodaysOrders(Context context) {
+
+            ArrayList<Order> todaysOrders = new ArrayList<>();
+
+            DayFormats todaysFormat = DayFormats.getTodaysFormat();
+
+            ArrayList<Order.Timeline> timeLines;
+            timeLines = Order.OrderTimelineHelper.get(context);
+
+            for (Order.Timeline timeline : timeLines) {
+               DayFormats timelineDayFormat = DayFormats.getDayFormat(timeline.getLastPlacedOrder().getTimeStamp());
+                if(!timelineDayFormat.equals(todaysFormat))continue;
+
+                todaysOrders.add(timeline.getLastPlacedOrder());
+                todaysOrders.addAll(timeline.getChildOrders());
+            }
+
+
+            return todaysOrders;
         }
     }
 

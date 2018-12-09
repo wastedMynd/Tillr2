@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/action_counter"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp"
+    android:gravity="center_vertical"
+    android:textStyle="bold"
+    tools:context=".boundary.MainActivity"
+    tools:text="15"
+    android:foregroundGravity="center"
+    android:textAlignment="center"
+    android:textColor="@android:color/white"
+    android:layout_gravity="bottom|right"
+    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+    app:layout_anchorGravity="center" />

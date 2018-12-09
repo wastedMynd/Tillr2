@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
-
     <item
         android:id="@+id/nav_dashboard"
         android:icon="@drawable/ic_dashboard"
@@ -12,32 +12,36 @@
     <group android:checkableBehavior="single">
         <item android:title="@string/title_group_employer">
             <menu>
-                <item
-                    android:id="@+id/nav_create_item"
-                    android:icon="@drawable/ic_create_item"
-                    android:title="@string/title_add_item" />
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/nav_create_item"
+                        android:icon="@drawable/ic_create_item"
+                        android:title="@string/title_add_item" />
 
-                <item
-                    android:id="@+id/nav_item_list"
-                    android:icon="@drawable/ic_item_list"
-                    android:title="@string/title_item_list" />
+                    <item
+                        android:id="@+id/nav_item_list"
+                        android:icon="@drawable/ic_item_list"
+                        android:title="@string/title_item_list"
+                        app:actionLayout="@layout/menu_counter"/>
 
-                <item
-                    android:id="@+id/nav_order_list"
-                    android:icon="@drawable/ic_order_list"
-                    android:title="@string/title_order_list" />
-
+                    <item
+                        android:id="@+id/nav_order_list"
+                        android:icon="@drawable/ic_order_list"
+                        android:title="@string/title_order_list"
+                        app:actionLayout="@layout/menu_counter"/>
+                </group>
             </menu>
         </item>
     </group>
-    <group android:checkableBehavior="single">
+
     <item android:title="@string/title_group_employee">
         <menu>
-            <item
-                android:id="@+id/nav_order_placement"
-                android:icon="@drawable/ic_order_placement"
-                android:title="@string/title_place_order" />
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_order_placement"
+                    android:icon="@drawable/ic_order_placement"
+                    android:title="@string/title_place_order" />
+            </group>
         </menu>
     </item>
-    </group>
 </menu>

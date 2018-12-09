@@ -1,6 +1,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:icon="@drawable/ic_scanner"
+
+
+    <!--PreferenceCategory
+        android:key="barcodeSettings"
         android:title="Barcode Scanner">
 
         <SwitchPreference
@@ -15,7 +17,21 @@
             android:summary="@string/pref_description_scanner_auto_focus"
             android:title="@string/pref_title_auto_focus" />
 
+    </PreferenceCategory-->
+
+    <PreferenceCategory
+        android:key="about"
+        android:title="About">
+
+        <Preference
+            android:key="version"
+            android:summary="1.07122018"
+            android:title="Build version" />
+
+        <Preference
+            android:key="developer"
+            android:summary="Sizwe-se-Afrika I. Mkhonza"
+            android:title="Developer" />
+
     </PreferenceCategory>
-
-
 </PreferenceScreen>

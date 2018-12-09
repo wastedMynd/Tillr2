@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -40,6 +40,7 @@
 
 
     <style name="TextCaptionLight" parent="ViewOrderInfoThemeLight">
+        <item name="android:textColor">@color/secondaryTextColor</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="android:typeface">sans</item>
         <item name="android:textSize">12sp</item>

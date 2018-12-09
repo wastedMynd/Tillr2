@@ -2,7 +2,10 @@ package com.wast3dmynd.tillr.boundary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -10,13 +13,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.fragments.DashBoardFragment;
@@ -25,12 +31,20 @@ import com.wast3dmynd.tillr.boundary.fragments.ItemsFragment;
 import com.wast3dmynd.tillr.boundary.fragments.OrdersFragment;
 import com.wast3dmynd.tillr.boundary.fragments.PlaceOrderFragment;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
+import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
+import com.wast3dmynd.tillr.entity.Order;
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainActivityListener {
 
     //view(s)
+    NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
     private ConstraintLayout container;
+    private TextView nav_item_list, nav_order_list;
+
 
     //region Activity lifecycle
     @Override
@@ -42,16 +56,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //init drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
         //ini navigation view
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView= findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //init drawer
+        nav_item_list = (TextView) navigationView.getMenu().findItem(R.id.nav_item_list).getActionView();
+        nav_order_list = (TextView) navigationView.getMenu().findItem(R.id.nav_order_list).getActionView();
+        //This method will initialize the count value
+
+        toggle = new ActionBarDrawerToggle(
+                this,
+                drawer,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                displayNavigationData();
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        drawer.addDrawerListener(toggle);
 
         container = findViewById(R.id.container);
 
@@ -60,6 +97,79 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(container.getId(), fragment);
         transaction.commit();
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        toggle.syncState();
+    }
+
+
+    private void displayNavigationData() {
+        nav_order_list.setBackgroundColor(getResources().getColor(android.R.color.white));
+        nav_item_list.setBackgroundColor(getResources().getColor(android.R.color.white));
+        NavigationDrawerTask navigationDrawerTask = new NavigationDrawerTask(this);
+        navigationDrawerTask.execute();
+        try {
+            NavigationDrawerData navigationDrawerData = navigationDrawerTask.get();
+            nav_order_list.setText(String.valueOf(navigationDrawerData.getTodaysOrderCount()));
+            nav_item_list.setText(String.valueOf(navigationDrawerData.getItemListSize()));
+            nav_order_list.setBackgroundResource(R.drawable.menu_counter_text_background);
+            nav_item_list.setBackgroundResource(R.drawable.menu_counter_text_background);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static class NavigationDrawerData {
+        int todaysOrderCount;
+        int itemListSize;
+
+        //region getters and setters
+
+        public int getTodaysOrderCount() {
+            return todaysOrderCount;
+        }
+
+        public void setTodaysOrderCount(int todaysOrderCount) {
+            this.todaysOrderCount = todaysOrderCount;
+        }
+
+        public int getItemListSize() {
+            return itemListSize;
+        }
+
+        public void setItemListSize(int itemListSize) {
+            this.itemListSize = itemListSize;
+        }
+
+
+        //endregion
+    }
+
+    private static class NavigationDrawerTask extends AsyncTask<Void, Void, NavigationDrawerData> {
+        private Context context;
+
+        public NavigationDrawerTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected NavigationDrawerData doInBackground(Void... voids) {
+
+            NavigationDrawerData navigationDrawerData = new NavigationDrawerData();
+
+            navigationDrawerData.setItemListSize(new ItemDatabase(context).getCount());
+
+            navigationDrawerData.setTodaysOrderCount(Order.OrderTimelineHelper.getTodaysOrders(context).size());
+
+            return navigationDrawerData;
+        }
     }
 
     @Override
@@ -134,6 +244,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //change fragment
         onFragmentChanged(fragment);
+
+        //todo when navigation drawer is opened
+        //displayNavigationData();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

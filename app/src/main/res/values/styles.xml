@@ -1,8 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -12,38 +11,46 @@
         <item name="android:divider">@color/dividerColor</item>
     </style>
 
-    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
+    <!--App Bar Style-->
+    <style name="SummaryLabel" >
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:typeface">normal</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-
-    <style name="ViewOrderInfoThemeLight" parent="AppTheme">
-        <item name="android:textSize">15sp</item>
-        <item name="android:typeface">monospace</item>
-    </style>
-
-    <style name="ViewOrderTitleThemeLight" parent="ViewOrderInfoThemeLight">
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
-        <item name="android:typeface">sans</item>
-    </style>
-
-    <style name="ItemNameLight" parent="ViewOrderInfoThemeLight">
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
-        <item name="android:typeface">sans</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@android:color/black</item>
-    </style>
-
-
-    <style name="TextCaptionLight" parent="ViewOrderInfoThemeLight">
-        <item name="android:textColor">@android:color/black</item>
+    <style name="SummaryData" parent="SummaryLabel">
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
-        <item name="android:typeface">sans</item>
-        <item name="android:textSize">12sp</item>
     </style>
 
+    <!--Item Styles-->
+    <style name="ItemTitle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#000</item>
+    </style>
+
+
+    <style name="ItemInfo" parent="ItemTitle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">#757575</item>
+    </style>
+
+    <style name="ItemLabel" parent="ItemTitle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="android:textColor">#757575</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ItemInfoPricePerUnit" parent="ItemInfo">
+        <item name="android:textColor">#00f</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="ItemInfoTotal" parent="ItemInfo">
+        <item name="android:textColor">#f00</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

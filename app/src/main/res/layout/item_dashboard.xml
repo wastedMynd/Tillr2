@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/dashboard_item_title"
-            style="@style/ViewOrderTitleThemeLight"
+            style="@style/ItemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

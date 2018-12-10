@@ -38,15 +38,14 @@ public class ViewOrderFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_view_order,container,false);
+        return inflater.inflate(R.layout.fragment_view_order,container,false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((MainActivity)getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
-        ((MainActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.title_activity_view_order);
 
         //get passed order
         Order order = (Order) getArguments().get(ARG_VIEW_ORDER);
@@ -70,12 +69,14 @@ public class ViewOrderFragment extends Fragment {
         TextView orderTime = view.findViewById(R.id.items_units);
         orderTime.setText(timeStamp);
 
-        //OrderItems
+        //OrderUnits
         ArrayList<Item> items = order.getItems();
+        TextView orderItems = view.findViewById(R.id.order_items);
+        orderItems.setText(String.valueOf(items.size()));
         int units = 0;
         for (Item item : items) units += item.getItemUnits();
-        TextView orderItems = view.findViewById(R.id.order_items);
-        orderItems.setText(String.valueOf(units));
+        TextView orderUnits = view.findViewById(R.id.order_units);
+        orderUnits.setText(String.valueOf(units));
 
         //OrderTotal
         TextView orderTotal = view.findViewById(R.id.order_total);

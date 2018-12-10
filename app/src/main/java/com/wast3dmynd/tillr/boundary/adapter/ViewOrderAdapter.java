@@ -8,9 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wast3dmynd.tillr.R;
-import com.wast3dmynd.tillr.boundary.view_holder.ViewOrderViewHolder;
-import com.wast3dmynd.tillr.boundary.view_holder.ViewOrdersViewHolder;
-import com.wast3dmynd.tillr.database.OrderDatabase;
+import com.wast3dmynd.tillr.boundary.views.ViewOrderViewHolder;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
 
@@ -30,7 +28,7 @@ public class ViewOrderAdapter extends RecyclerView.Adapter<ViewOrderViewHolder> 
     @NonNull
     @Override
     public ViewOrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = layoutInflater.inflate(R.layout.layout_view_order_item, parent, false);
+        View itemView = layoutInflater.inflate(R.layout.item_view_order, parent, false);
         return new ViewOrderViewHolder(this, itemView);
     }
 

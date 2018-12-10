@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/itemStatus"
+            android:layout_width="4dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@android:color/white" />
+
+        <TextView
+            android:id="@+id/itemName"
+            style="@style/ItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@+id/itemStatus"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Heineken" />
+
+        <TextView
+            android:id="@+id/itemCostPerUnit"
+            style="@style/ItemInfoPricePerUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/itemName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/itemName"
+            app:layout_constraintTop_toBottomOf="@+id/itemName"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="R15.00/unit" />
+
+        <TextView
+            android:id="@+id/itemUnitsRemaining"
+            style="@style/ItemInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:textAllCaps="true"
+            app:layout_constraintBaseline_toBaselineOf="@+id/itemName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/itemName"
+            tools:text="2 units" />
+
+        <TextView
+            android:id="@+id/itemTotal"
+            style="@style/ItemInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#f00"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/itemCostPerUnit"
+            app:layout_constraintEnd_toEndOf="@+id/itemUnitsRemaining"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/itemUnitsRemaining"
+            tools:text="R30,00" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>
+

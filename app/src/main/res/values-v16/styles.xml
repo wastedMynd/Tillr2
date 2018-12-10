@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ViewOrderTitleThemeLight" parent="ViewOrderInfoThemeLight">
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
-        <item name="android:typeface">sans</item>
-        <item name="android:fontFamily">sans-serif-smallcaps</item>
+    <style name="SummaryLabel" >
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:typeface">normal</item>
+        <item name="android:fontFamily">serif-monospace</item>
     </style>
 
-    <style name="ViewOrderInfoThemeLight" parent="AppTheme">
-        <item name="android:textSize">15sp</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:fontFamily">sans-serif</item>
+    <style name="ItemLabel" parent="ItemTitle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="android:textColor">#757575</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">normal</item>
+        <item name="android:fontFamily">serif-monospace</item>
     </style>
 </resources>

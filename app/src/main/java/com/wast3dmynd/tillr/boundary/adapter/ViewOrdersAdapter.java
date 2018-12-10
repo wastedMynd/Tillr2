@@ -1,6 +1,5 @@
 package com.wast3dmynd.tillr.boundary.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,101 +7,94 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wast3dmynd.tillr.R;
-import com.wast3dmynd.tillr.boundary.view_holder.ViewOrdersViewHolder;
-import com.wast3dmynd.tillr.database.OrderDatabase;
+import com.wast3dmynd.tillr.boundary.views.ViewOrdersViewHolder;
+import com.wast3dmynd.tillr.boundary.views.ViewOrdersViewHolder.OrderSummaryTimelineListener;
 import com.wast3dmynd.tillr.entity.Order;
+import com.wast3dmynd.tillr.utils.DayFormats;
 
 import java.util.ArrayList;
 
-public class ViewOrdersAdapter extends RecyclerView.Adapter<ViewOrdersViewHolder> implements ViewOrdersViewHolder.ViewOrdersViewHolderPopupMenuListener {
+public class ViewOrdersAdapter extends RecyclerView.Adapter<ViewOrdersViewHolder>
+        implements OrderSummaryTimelineListener {
 
+    //params
     private ArrayList<Order> orders;
-    private LayoutInflater layoutInflater;
-    private ViewOrdersAdapterViewHolderPopupMenuOptListener viewOrdersAdapterViewHolderPopupMenuOptListener;
-    private static final int INVALID_ORDER_RESTORATION_POSITION = -1;
-    private int orderRestorationPosition = INVALID_ORDER_RESTORATION_POSITION;
 
-    public ViewOrdersAdapter(Context context) {
+    private OrderSummaryTimelineViewAdapterListener listener;
 
-        layoutInflater = LayoutInflater.from(context);
+    private DayFormats dayFormat;
+    private boolean summarizeDaysOrder;
 
-        //get all orders from the OrderDatabase
-        ArrayList<Object> ordersObjects = new OrderDatabase(context).getItems();
-        this.orders = new ArrayList<>(ordersObjects.size());
-        for (Object orderObject : ordersObjects) orders.add((Order) orderObject);
+    //constructor
+    public ViewOrdersAdapter(OrderSummaryTimelineViewAdapterListener listener, ArrayList<Order> orders) {
 
-        if (!(context instanceof ViewOrdersAdapterViewHolderPopupMenuOptListener))
-            throw new ClassCastException("Context must implement ViewOrdersAdapterViewHolderPopupMenuOptListener");
-        this.viewOrdersAdapterViewHolderPopupMenuOptListener = (ViewOrdersAdapterViewHolderPopupMenuOptListener) context;
+        //init params
+        this.orders = orders;
+
+        //init listener
+        this.listener = listener;
+
     }
 
+    //RecyclerView.Adapter methods
     @NonNull
     @Override
     public ViewOrdersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = layoutInflater.inflate(R.layout.layout_view_orders_item_display, parent, false);
-        return new ViewOrdersViewHolder(itemView, this);
+
+        //init layout inflater
+        //dependency
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+
+        //setup itemView
+        View itemView = layoutInflater.inflate(R.layout.item_view_orders_header, parent, false);
+
+        //construct ViewOrdersViewHolder
+        return new ViewOrdersViewHolder(itemView, viewType, this);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewOrdersViewHolder holder, int position) {
-        holder.onBind(getOrder(position));
+    public void onBindViewHolder(@NonNull final ViewOrdersViewHolder holder, int position) {
+        //bind order to ViewOrdersViewHolder
+        final Order order = orders.get(position);
+        holder.onBind(order);
+        if (order.isLastOrder() && position == 0) {
+            new android.os.Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    DayFormats ordersDayFormat = DayFormats.getDayFormat(order.getDate());
+                    if (!ordersDayFormat.equals(dayFormat)) return;
+
+                    holder.main_order_summarize.setChecked(summarizeDaysOrder);
+                    summarizeDaysOrder = false;
+                }
+            }, 1000);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return getOrders().size();
+        return orders.size();
     }
 
-    private Order getOrder(int position) {
-        return getOrders().get(position);
-    }
-
-    private ArrayList<Order> getOrders() {
-        return orders;
-    }
-
-    //region ViewOrdersViewHolderPopupMenuListener implements
+    //OrderSummaryTimelineListener implements
     @Override
-    public void onViewOrdersPopupMenuOptView(Order order) {
-        viewOrdersAdapterViewHolderPopupMenuOptListener.onViewOrdersPopupMenuOptActionView(order);
+    public void onShowOrderDetailsOptionSelected(Order order) {
+        listener.onShowOrderDetailsOptionSelected(order);
     }
 
     @Override
-    public void onViewOrdersPopupMenuOptShare(Order order) {
-        viewOrdersAdapterViewHolderPopupMenuOptListener.onViewOrdersPopupMenuOptActionShare(order);
+    public void onOrderSummaryRequest(Order order, boolean isOrderSummaryRequested) {
+        listener.onOrderSummaryRequest(order, isOrderSummaryRequested);
     }
 
-    @Override
-    public void onViewOrdersPopupMenuOptDelete(Order order) {
-        orderRestorationPosition = getOrders().indexOf(order);
-        viewOrdersAdapterViewHolderPopupMenuOptListener.onViewOrdersPopupMenuOptActionDelete(order);
+    public void summarizeDaysOrders(DayFormats dayFormat, boolean summarizeDaysOrder) {
+        this.dayFormat = dayFormat;
+        this.summarizeDaysOrder = summarizeDaysOrder;
+        notifyItemChanged(0);
     }
 
-    /**
-     * To be called on the {@link com.wast3dmynd.tillr.boundary.ViewOrdersActivity}
-     */
-    public void onViewOrdersDelete() {
-        getOrders().remove(orderRestorationPosition);
-        notifyItemRemoved(orderRestorationPosition);
-        orderRestorationPosition = INVALID_ORDER_RESTORATION_POSITION;
+    //interface construct
+    public interface OrderSummaryTimelineViewAdapterListener extends OrderSummaryTimelineListener {
     }
 
-    /**
-     * To be called on the {@link com.wast3dmynd.tillr.boundary.ViewOrdersActivity}
-     */
-    public void onViewOrdersRestored(Order order) {
-        if (orderRestorationPosition == INVALID_ORDER_RESTORATION_POSITION) return;
-        getOrders().add(orderRestorationPosition, order);
-        notifyItemInserted(orderRestorationPosition);
-    }
-    //endregion
-
-
-    public interface ViewOrdersAdapterViewHolderPopupMenuOptListener {
-        void onViewOrdersPopupMenuOptActionView(Order order);
-
-        void onViewOrdersPopupMenuOptActionShare(Order order);
-
-        void onViewOrdersPopupMenuOptActionDelete(Order order);
-    }
 }

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.fragments.DashBoardFragment;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
-import com.wast3dmynd.tillr.boundary.view_holder.DashboardViewHolder;
+import com.wast3dmynd.tillr.boundary.views.DashboardViewHolder;
 
 import java.util.ArrayList;
 

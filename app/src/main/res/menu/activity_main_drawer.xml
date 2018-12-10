@@ -22,13 +22,13 @@
                         android:id="@+id/nav_item_list"
                         android:icon="@drawable/ic_item_list"
                         android:title="@string/title_item_list"
-                        app:actionLayout="@layout/menu_counter"/>
+                        app:actionLayout="@layout/action_view_drawer_counter"/>
 
                     <item
                         android:id="@+id/nav_order_list"
                         android:icon="@drawable/ic_order_list"
                         android:title="@string/title_order_list"
-                        app:actionLayout="@layout/menu_counter"/>
+                        app:actionLayout="@layout/action_view_drawer_counter"/>
                 </group>
             </menu>
         </item>

@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
-import com.wast3dmynd.tillr.boundary.adapter.ItemListAdapter;
+import com.wast3dmynd.tillr.boundary.adapter.ItemAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
@@ -32,9 +32,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class ItemsFragment extends Fragment implements ItemListAdapter.ItemListAdapterListener {
+public class ItemsFragment extends Fragment implements ItemAdapter.ItemListAdapterListener {
 
-    private ItemListAdapter itemListAdapter;
+    private ItemAdapter itemAdapter;
     private TextView items_last_update_date, items_count, items_units, items_asserts;
 
     private MainActivityListener listener;
@@ -47,7 +47,7 @@ public class ItemsFragment extends Fragment implements ItemListAdapter.ItemListA
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_item_list, container, false);
+        return inflater.inflate(R.layout.fragment_view_items, container, false);
     }
 
     @Override
@@ -105,15 +105,15 @@ public class ItemsFragment extends Fragment implements ItemListAdapter.ItemListA
         items_asserts.setText(CurrencyUtility.getCurrencyDisplay(asserts));
         //endregion
 
-        //region link views to activity_place_order
+        //region link views to fragment_place_order
         RecyclerView itemListRecycler = view.findViewById(R.id.rcyclAddItems);
         itemListRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         FloatingActionButton fabInsertItem = view.findViewById(R.id.fabAddItem);
         //endregion
 
         //region placeOrderItemAdapter init
-        itemListAdapter = new ItemListAdapter(getContext(), this);
-        itemListRecycler.setAdapter(itemListAdapter);
+        itemAdapter = new ItemAdapter(getContext(), this);
+        itemListRecycler.setAdapter(itemAdapter);
         //endregion
 
         //region View EventHandler config
@@ -128,7 +128,7 @@ public class ItemsFragment extends Fragment implements ItemListAdapter.ItemListA
         //endregion
     }
 
-    //region implements ItemListAdapter.ItemListAdapterListener
+    //region implements ItemAdapter.ItemListAdapterListener
     @Override
     public void onItemEdit(final Item item) {
         String itemEdit = "Edit " + item.getItemName() + " ?";
@@ -154,7 +154,7 @@ public class ItemsFragment extends Fragment implements ItemListAdapter.ItemListA
                     @Override
                     public void onClick(View v) {
                         boolean removed = new ItemDatabase(v.getContext()).removeItem(item);
-                        if (removed) itemListAdapter.onItemDelete(item);
+                        if (removed) itemAdapter.onItemDelete(item);
                         String message = removed ? "Item is removed" : "Item not removed!";
                         Toast.makeText(v.getContext(), message, Toast.LENGTH_SHORT).show();
                     }

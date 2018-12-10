@@ -30,9 +30,9 @@ import android.widget.Toast;
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.SettingsActivity;
-import com.wast3dmynd.tillr.boundary.adapter.ItemOrderMenuAdapter;
+import com.wast3dmynd.tillr.boundary.adapter.PlaceOrderAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
-import com.wast3dmynd.tillr.boundary.view_holder.OrderMenuItemViewHolder;
+import com.wast3dmynd.tillr.boundary.views.PlaceOrderViewHolder;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.database.OrderDatabase;
 import com.wast3dmynd.tillr.entity.Item;
@@ -43,7 +43,7 @@ import com.wast3dmynd.tillr.utils.DateFormats;
 
 import java.util.ArrayList;
 
-public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHolder.ItemMenuViewHolderListener {
+public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder.ItemMenuViewHolderListener {
     private MainActivityListener listener;
 
     private static String ARG_ORDER = "ARG_ORDER";
@@ -68,7 +68,7 @@ public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHol
         this.order = order;
     }
 
-    private ItemOrderMenuAdapter itemOrderMenuAdapter;
+    private PlaceOrderAdapter placeOrderAdapter;
 
     //get instance of this activity
     public static Fragment newInstance(Context context) {
@@ -149,7 +149,7 @@ public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHol
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_place_order, container, false);
+        return inflater.inflate(R.layout.fragment_place_order, container, false);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHol
         setHasOptionsMenu(true);
 
 
-        //region linking views to activity_place_order
+        //region linking views to fragment_place_order
         txtOrderNumber = view.findViewById(R.id.dashboard_date);
         orderItems = view.findViewById(R.id.orderItems);
         txtOrderDate = view.findViewById(R.id.dashboard_time);
@@ -208,7 +208,7 @@ public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHol
 
                     //layout payment view constructed
                     LayoutInflater inflater = LayoutInflater.from(v.getContext());
-                    View view = inflater.inflate(R.layout.layout_payment, null, false);
+                    View view = inflater.inflate(R.layout.dialog_payment, null, false);
                     builder.setView(view);
 
                     //update views
@@ -348,9 +348,9 @@ public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHol
         //endregion
 
         recyclerView.setLayoutManager(new LinearLayoutManager(thisActivity, LinearLayoutManager.VERTICAL, false));
-        itemOrderMenuAdapter = new ItemOrderMenuAdapter(getContext(), new ItemDatabase(getContext()).getAll(), this);
+        placeOrderAdapter = new PlaceOrderAdapter(getContext(), new ItemDatabase(getContext()).getAll(), this);
 
-        recyclerView.setAdapter(itemOrderMenuAdapter);
+        recyclerView.setAdapter(placeOrderAdapter);
     }
 
 
@@ -367,14 +367,14 @@ public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHol
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //perform the final search
-                itemOrderMenuAdapter.searchForItem(query);
+                placeOrderAdapter.searchForItem(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 //text has changed, apply filtering?
-                itemOrderMenuAdapter.searchForItem(newText);
+                placeOrderAdapter.searchForItem(newText);
                 return true;
             }
         });
@@ -418,7 +418,7 @@ public class PlaceOrderFragment extends Fragment implements OrderMenuItemViewHol
 
         displayOrderSummary();
 
-        itemOrderMenuAdapter.update(orderItem);
+        placeOrderAdapter.update(orderItem);
     }
 
     @Override

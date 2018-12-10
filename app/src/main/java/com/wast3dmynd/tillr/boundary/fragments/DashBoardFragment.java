@@ -1,10 +1,8 @@
 package com.wast3dmynd.tillr.boundary.fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,8 +10,10 @@ import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,13 +36,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class DashBoardFragment extends Fragment {
+    private static final int DASH_BOARD_CONTENT_LOADER_ID = 1;
     private MainActivityListener listener;
 
     //region views
     private TextView dashboard_date, dashboard_time, dashboard_sold, dashboard_stock, dashboard_orders;
+    CoordinatorLayout dashboard_main;
     private ConstraintLayout dashboard_summary;
     //endregion
 
@@ -63,7 +64,7 @@ public class DashBoardFragment extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.title_fragment_dashboard);
 
         //region init views
-        CoordinatorLayout dashboard_main = view.findViewById(R.id.dashboard_main);
+        dashboard_main = view.findViewById(R.id.dashboard_main);
         dashboard_summary = view.findViewById(R.id.dashboard_summary);
         dashboard_date = view.findViewById(R.id.dashboard_date);
         dashboard_time = view.findViewById(R.id.dashboard_time);
@@ -74,68 +75,7 @@ public class DashBoardFragment extends Fragment {
 
         //region process dashboard summary
         dashboard_summary.setVisibility(View.GONE);
-        final Snackbar snackbar = Snackbar.make(dashboard_main, R.string.action_dashboard_summary_processing, Snackbar.LENGTH_INDEFINITE);
-        snackbar.show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                //region append data to views
-                try {
-                    DashboardData dashboard = new ProcessDashboardSummary(getContext()).execute().get();
-                    if (dashboard == null) {
-                        dashboard_summary.setVisibility(View.GONE);
-                        snackbar.setText(R.string.action_dashboard_summary_empty);
-                        snackbar.dismiss();
-                        return;
-                    }
-
-                    dashboard_summary.setVisibility(dashboard == null ? View.GONE : View.VISIBLE);
-                    if (dashboard == null) {
-                        snackbar.setText(R.string.action_dashboard_summary_interrupted);
-                        dashboard_summary.setVisibility(View.GONE);
-                        snackbar.dismiss();
-                        return;
-                    }
-                    snackbar.setText(R.string.action_dashboard_summary_done);
-                    //region append dashboardData
-
-                    //display dashboard date
-                    DateFormats dateFormats = DateFormats.Day_Month_Year;
-                    String dateStamp = DateFormats.getSimpleDateString(dashboard.getDate(), dateFormats);
-                    dashboard_date.setText(dateStamp);
-
-                    //display dashboard time
-                    DateFormats timeFormats = DateFormats.Hours_Minutes;
-                    String timeStamp = DateFormats.getSimpleDateString(dashboard.getTime(), timeFormats);
-                    dashboard_time.setText(timeStamp);
-
-                    //display dashboard sold
-                    dashboard_sold.setText(String.valueOf(dashboard.getSold()));
-
-                    //display dashboard stock
-                    dashboard_stock.setText(String.valueOf(dashboard.getStock()));
-
-                    //display dashboard orders
-                    dashboard_orders.setText(String.valueOf(dashboard.getOrders()));
-
-                    dashboard_summary.setVisibility(View.VISIBLE);
-                    //endregion
-                    snackbar.dismiss();
-                } catch (InterruptedException e) {
-                    snackbar.setText(R.string.action_dashboard_summary_interrupted);
-                    e.printStackTrace();
-                    dashboard_summary.setVisibility(View.GONE);
-                    snackbar.dismiss();
-                } catch (ExecutionException e) {
-                    snackbar.setText(R.string.action_dashboard_summary_error);
-                    e.printStackTrace();
-                    dashboard_summary.setVisibility(View.GONE);
-                    snackbar.dismiss();
-                }
-                //endregion
-            }
-        }, 5000);
+        getActivity().getSupportLoaderManager().initLoader(DASH_BOARD_CONTENT_LOADER_ID,null,dashboardDataLoader);
         //endregion
 
         //region DashboardItems
@@ -263,30 +203,34 @@ public class DashBoardFragment extends Fragment {
         //endregion
     }
 
-    private static class ProcessDashboardSummary extends AsyncTask<Void, Void, DashboardData> {
+    private static class ProcessDashboardDataAsync extends AsyncTaskLoader<DashboardData> {
 
-        private Context context;
-
-        ProcessDashboardSummary(Context context) {
-            this.context = context;
+        public ProcessDashboardDataAsync(@NonNull Context context) {
+            super(context);
         }
 
         @Override
-        protected DashboardData doInBackground(Void... params) {
+        protected void onStartLoading() {
+            super.onStartLoading();
+            forceLoad();
+        }
 
+        @Nullable
+        @Override
+        public DashboardData loadInBackground() {
             DashboardData dashboard = new DashboardData();
 
-            ArrayList<Object> orderObjects = new OrderDatabase(context).getItems();
+            ArrayList<Object> orderObjects = new OrderDatabase(getContext()).getItems();
             if (orderObjects.isEmpty()) return null;
 
             ArrayList<Order> orders = new ArrayList<>(orderObjects.size());
             for (Object object : orderObjects) orders.add((Order) object);
 
-            ArrayList<Object> itemObjects = new ItemDatabase(context).getItems();
+            ArrayList<Object> itemObjects = new ItemDatabase(getContext()).getItems();
             ArrayList<Item> items = new ArrayList<>(itemObjects.size());
             for (Object object : itemObjects) items.add((Item) object);
 
-            ArrayList<Order.Timeline> timeLines = Order.OrderTimelineHelper.get(context);
+            ArrayList<Order.Timeline> timeLines = Order.OrderTimelineHelper.get(getContext());
             //display dashboard summary according to order data
             List<Date> dates = new ArrayList<>(orders.size());
             for (Order order : orders) dates.add(new Date(order.getDate()));
@@ -332,10 +276,49 @@ public class DashBoardFragment extends Fragment {
             dashboard.setOrders(ordersPlaced);
             dashboard.setStock(remainingUnits);
             dashboard.setSold(soldUnits);
-
             return dashboard;
         }
-
-
     }
+
+    private LoaderManager.LoaderCallbacks dashboardDataLoader = new LoaderManager.LoaderCallbacks<DashboardData>() {
+
+        @Nullable
+        @Override
+        public Loader onCreateLoader(int id, @Nullable Bundle args) {
+            if(getContext()==null)return null;
+            return new ProcessDashboardDataAsync(getContext());
+        }
+
+        @Override
+        public void onLoadFinished(@NonNull Loader loader, DashboardData data) {
+            dashboard_summary.setVisibility(View.GONE);
+            DashboardData dashboard = data;
+
+            //display dashboard date
+            DateFormats dateFormats = DateFormats.Day_Month_Year;
+            String dateStamp = DateFormats.getSimpleDateString(dashboard.getDate(), dateFormats);
+            dashboard_date.setText(dateStamp);
+
+            //display dashboard time
+            DateFormats timeFormats = DateFormats.Hours_Minutes;
+            String timeStamp = DateFormats.getSimpleDateString(dashboard.getTime(), timeFormats);
+            dashboard_time.setText(timeStamp);
+
+            //display dashboard sold
+            dashboard_sold.setText(String.valueOf(dashboard.getSold()));
+
+            //display dashboard stock
+            dashboard_stock.setText(String.valueOf(dashboard.getStock()));
+
+            //display dashboard orders
+            dashboard_orders.setText(String.valueOf(dashboard.getOrders()));
+
+            dashboard_summary.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onLoaderReset(@NonNull Loader loader) {
+
+        }
+    };
 }

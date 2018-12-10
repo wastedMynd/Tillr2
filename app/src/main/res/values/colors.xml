@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1e88e5</color>
-    <color name="colorLightPrimary">#43698a</color>
-    <color name="colorPrimaryDark">#174c79</color>
-    <color name="colorAccent">#ff8a80</color>
+    <color name="colorPrimary">#062743</color>
+    <color name="colorLightPrimary">#064b60</color>
+    <color name="colorPrimaryDark">#062743</color>
+    <color name="colorAccent">#f44336</color>
     <color name="windowBackground">#E1E2E1</color>
-    <color name="textColorPrimary">#000</color>
-    <color name="secondaryTextColor">#000</color>
+    <color name="textColorPrimary">#fff</color>
+    <color name="secondaryTextColor">#fff</color>
     <color name="dividerColor">#BDBDBD</color>
 
     <color name="colorAdderAccent">#ffc107</color>
     <color name="colorRemoverAccent">#00e676</color>
-    <color name="colorIconDisabled">#B8B8B8</color>
     <color name="colorIconActive">#000</color>
 </resources>

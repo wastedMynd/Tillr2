@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ItemNameLight" parent="ViewOrderInfoThemeLight">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TextCaptionLight" parent="ViewOrderInfoThemeLight">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+</resources>

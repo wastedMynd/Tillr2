@@ -60,7 +60,7 @@ public class DashBoardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.title_fragment_dashboard);
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.title_fragment_dashboard);
 
         //region init views
         CoordinatorLayout dashboard_main = view.findViewById(R.id.dashboard_main);
@@ -83,6 +83,13 @@ public class DashBoardFragment extends Fragment {
                 //region append data to views
                 try {
                     DashboardData dashboard = new ProcessDashboardSummary(getContext()).execute().get();
+                    if (dashboard == null) {
+                        dashboard_summary.setVisibility(View.GONE);
+                        snackbar.setText(R.string.action_dashboard_summary_empty);
+                        snackbar.dismiss();
+                        return;
+                    }
+
                     dashboard_summary.setVisibility(dashboard == null ? View.GONE : View.VISIBLE);
                     if (dashboard == null) {
                         snackbar.setText(R.string.action_dashboard_summary_interrupted);
@@ -149,9 +156,9 @@ public class DashBoardFragment extends Fragment {
         dashboardItems.add(dashboardItem_viewOrders);
         dashboardItems.add(dashboardItem_placeOrder);
 
-        DashboardAdapter adapter = new DashboardAdapter(dashboardItems,listener);
+        DashboardAdapter adapter = new DashboardAdapter(dashboardItems, listener);
         RecyclerView recyclerView = view.findViewById(R.id.dashboard_item_recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(adapter);
         //endregion
     }
@@ -159,7 +166,8 @@ public class DashBoardFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(!(context instanceof MainActivityListener))throw new ClassCastException("Must implement MainActivityListener");
+        if (!(context instanceof MainActivityListener))
+            throw new ClassCastException("Must implement MainActivityListener");
         listener = (MainActivityListener) context;
     }
 
@@ -269,6 +277,8 @@ public class DashBoardFragment extends Fragment {
             DashboardData dashboard = new DashboardData();
 
             ArrayList<Object> orderObjects = new OrderDatabase(context).getItems();
+            if (orderObjects.isEmpty()) return null;
+
             ArrayList<Order> orders = new ArrayList<>(orderObjects.size());
             for (Object object : orderObjects) orders.add((Order) object);
 
@@ -317,7 +327,7 @@ public class DashBoardFragment extends Fragment {
                 }
             }
 
-            for (Item item : items) remainingUnits+= item.getItemUnitRemaining();
+            for (Item item : items) remainingUnits += item.getItemUnitRemaining();
 
             dashboard.setOrders(ordersPlaced);
             dashboard.setStock(remainingUnits);

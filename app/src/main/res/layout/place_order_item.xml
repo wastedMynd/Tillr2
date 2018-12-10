@@ -64,7 +64,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:textColor="#00f"
             app:layout_constraintBaseline_toBaselineOf="@+id/itemName"
             app:layout_constraintEnd_toStartOf="@+id/imgBtnItemIncrement"
             app:layout_constraintHorizontal_bias="1.0"

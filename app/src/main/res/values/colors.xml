@@ -6,11 +6,11 @@
     <color name="colorAccent">#ff8a80</color>
     <color name="windowBackground">#E1E2E1</color>
     <color name="textColorPrimary">#000</color>
-    <color name="secondaryTextColor">#fff</color>
+    <color name="secondaryTextColor">#000</color>
     <color name="dividerColor">#BDBDBD</color>
 
     <color name="colorAdderAccent">#ffc107</color>
     <color name="colorRemoverAccent">#00e676</color>
     <color name="colorIconDisabled">#B8B8B8</color>
-    <color name="colorIconActive">#616161</color>
+    <color name="colorIconActive">#000</color>
 </resources>

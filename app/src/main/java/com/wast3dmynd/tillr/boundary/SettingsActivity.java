@@ -120,10 +120,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         // Trigger the listener immediately with the preference's
         // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+        try {
+
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+        }catch (ClassCastException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -198,8 +203,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference(PREF_NIGHT_MODE_KEY));
             bindPreferenceSummaryToValue(findPreference(PREF_AUTO_THEME_MODE_KEY));
-            bindPreferenceSummaryToValue(findPreference("scanner_flash_light"));
-            bindPreferenceSummaryToValue(findPreference("scanner_auto_focus"));
+            //bindPreferenceSummaryToValue(findPreference("scanner_flash_light"));
+            //bindPreferenceSummaryToValue(findPreference("scanner_auto_focus"));
         }
 
         @Override

@@ -37,7 +37,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         setDatabaseScheme(databaseScheme);
 
-        onCreate(getReadableDatabase());
+       try
+       {
+           onCreate(getReadableDatabase());
+       }catch (Exception e){
+
+       }
     }
 
     @Override

@@ -27,7 +27,8 @@ public class Order implements Serializable {
 
         ArrayList<Object> orderObjs = database.getItems();
 
-        return ((Order) orderObjs.get(0)).getId() + 1;
+        if(orderObjs.isEmpty())return 1;
+        else return ((Order) orderObjs.get(0)).getId() + 1;
     }
     //endregion
 

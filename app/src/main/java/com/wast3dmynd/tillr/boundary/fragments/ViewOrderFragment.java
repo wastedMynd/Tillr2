@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +59,7 @@ public class ViewOrderFragment extends Fragment {
         //OrderDate
         DateFormats dateFormats = DateFormats.Day_Month_Year;
         String dateStamp = DateFormats.getSimpleDateString(order.getDate(), dateFormats);
-        TextView orderDate = view.findViewById(R.id.dashboard_time);
+        TextView orderDate = view.findViewById(R.id.order_date);
         orderDate.setText(dateStamp);
 
         //OrderTime

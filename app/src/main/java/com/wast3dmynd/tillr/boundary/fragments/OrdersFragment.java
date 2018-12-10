@@ -71,7 +71,7 @@ public class OrdersFragment extends Fragment {
 
         order_summary = view.findViewById(R.id.order_summary);
         timeline_layout = view.findViewById(R.id.orders_activity);
-        timeline_orders_placed = view.findViewById(R.id.dashboard_time);
+        timeline_orders_placed = view.findViewById(R.id.order_date);
         timeline_date = view.findViewById(R.id.dashboard_date);
         timeline_stock = view.findViewById(R.id.items_units);
         timeline_sold = view.findViewById(R.id.timeline_sold);

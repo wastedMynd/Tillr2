@@ -57,7 +57,7 @@ public class ItemsFragment extends Fragment implements ItemAdapter.ItemListAdapt
         ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.title_item_list);
 
         items_last_update_date = view.findViewById(R.id.dashboard_date);
-        items_count = view.findViewById(R.id.dashboard_time);
+        items_count = view.findViewById(R.id.order_date);
         items_units = view.findViewById(R.id.items_units);
         items_asserts = view.findViewById(R.id.items_asserts);
 

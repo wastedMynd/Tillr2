@@ -49,12 +49,13 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
     private static String ARG_ORDER = "ARG_ORDER";
 
     private TextView txtOrderNumber;
-    private TextView orderItems;
+    private TextView txtOrderItems;
     private TextView txtOrderDate;
     private TextView txtOrderTime;
     private TextView txtOrderTotal;
     private TextView txtOrderFunds;
     private TextView txtOrderCredit;
+    private TextView txtOrderUnits;
     private FloatingActionButton fab;
 
     //data
@@ -128,9 +129,10 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
 
         //unit count
         ArrayList<Item> items = getOrder().getItems();
+        txtOrderItems.setText(String.valueOf(items.size()));
         int units = 0;
         for (Item item : items) units += item.getItemUnits();
-        orderItems.setText(String.valueOf(units));
+        txtOrderUnits.setText(String.valueOf(units));
 
         //paid
         displayFunds();
@@ -164,14 +166,15 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
 
 
         //region linking views to fragment_place_order
-        txtOrderNumber = view.findViewById(R.id.dashboard_date);
-        orderItems = view.findViewById(R.id.orderItems);
-        txtOrderDate = view.findViewById(R.id.dashboard_time);
-        txtOrderTime = view.findViewById(R.id.items_units);
+        txtOrderNumber = view.findViewById(R.id.order_number);
+        txtOrderItems = view.findViewById(R.id.order_items);
+        txtOrderUnits = view.findViewById(R.id.order_units);
+        txtOrderDate = view.findViewById(R.id.order_date);
+        txtOrderTime = view.findViewById(R.id.order_time);
 
-        txtOrderTotal = view.findViewById(R.id.orderTotal);
-        txtOrderFunds = view.findViewById(R.id.timeline_damage);
-        txtOrderCredit = view.findViewById(R.id.orderCredit);
+        txtOrderTotal = view.findViewById(R.id.order_total);
+        txtOrderFunds = view.findViewById(R.id.order_paid);
+        txtOrderCredit = view.findViewById(R.id.order_credit);
         RecyclerView recyclerView = view.findViewById(R.id.items);
         fab = view.findViewById(R.id.fab);
 

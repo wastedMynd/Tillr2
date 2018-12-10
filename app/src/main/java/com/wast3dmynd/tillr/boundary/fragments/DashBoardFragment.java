@@ -67,7 +67,7 @@ public class DashBoardFragment extends Fragment {
         dashboard_main = view.findViewById(R.id.dashboard_main);
         dashboard_summary = view.findViewById(R.id.dashboard_summary);
         dashboard_date = view.findViewById(R.id.dashboard_date);
-        dashboard_time = view.findViewById(R.id.dashboard_time);
+        dashboard_time = view.findViewById(R.id.order_date);
         dashboard_sold = view.findViewById(R.id.dashboard_sold);
         dashboard_stock = view.findViewById(R.id.dashboard_stock);
         dashboard_orders = view.findViewById(R.id.dashboard_orders);

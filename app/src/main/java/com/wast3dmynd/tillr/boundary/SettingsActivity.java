@@ -3,6 +3,7 @@ package com.wast3dmynd.tillr.boundary;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -18,6 +19,7 @@ import android.preference.RingtonePreference;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
 
@@ -179,7 +181,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class GeneralPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+        public static final String PREF_NIGHT_MODE_KEY = "night_mode_enabled";
+        public static final String PREF_AUTO_THEME_MODE_KEY = "auto_theme_mode_enabled";
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -191,8 +196,22 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
+            bindPreferenceSummaryToValue(findPreference(PREF_NIGHT_MODE_KEY));
+            bindPreferenceSummaryToValue(findPreference(PREF_AUTO_THEME_MODE_KEY));
             bindPreferenceSummaryToValue(findPreference("scanner_flash_light"));
             bindPreferenceSummaryToValue(findPreference("scanner_auto_focus"));
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         }
 
         @Override
@@ -203,6 +222,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            switch (key) {
+                case PREF_NIGHT_MODE_KEY:
+                    boolean isNightMode = sharedPreferences.getBoolean(PREF_NIGHT_MODE_KEY, false);
+                    StringBuilder msg = new StringBuilder("Theme changed to ");
+                    msg.append(isNightMode ? "night mode" : "day mode");
+                    Toast.makeText(getActivity().getApplicationContext(), msg.toString(), Toast.LENGTH_LONG).show();
+                    break;
+
+                case PREF_AUTO_THEME_MODE_KEY:
+                    boolean isAutoMode = sharedPreferences.getBoolean(PREF_NIGHT_MODE_KEY, false);
+                    isNightMode = sharedPreferences.getBoolean(PREF_NIGHT_MODE_KEY, false);
+                    msg = new StringBuilder("Theme changed to ");
+                    msg.append(isAutoMode ? "auto mode" : isNightMode ? "night mode" : "day mode");
+                    Toast.makeText(getActivity().getApplicationContext(), msg.toString(), Toast.LENGTH_LONG).show();
+                    break;
+            }
         }
     }
     //endregion

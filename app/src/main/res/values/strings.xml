@@ -112,5 +112,9 @@
     <string name="action_dashboard_summary_error">Error dash board data corrupted!</string>
     <string name="action_dashboard_summary_done">Done.</string>
     <string name="title_fragment_dashboard">Dash Board</string>
+    <string name="pref_description_night_mode_enabled">Changes theme to night mode.</string>
+    <string name="pref_title_night_mode_enabled">Night mode</string>
+    <string name="pref_description_auto_theme_mode_enabled">Change theme automatically to either Night or Day mode, base on your time zone.</string>
+    <string name="pref_title_auto_theme_mode_enabled">Auto Mode</string>
 
 </resources>

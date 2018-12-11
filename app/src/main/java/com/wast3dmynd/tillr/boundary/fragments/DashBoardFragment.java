@@ -1,6 +1,7 @@
 package com.wast3dmynd.tillr.boundary.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -21,6 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.adapter.DashboardAdapter;
@@ -40,6 +45,7 @@ import java.util.List;
 public class DashBoardFragment extends Fragment {
     private static final int DASH_BOARD_CONTENT_LOADER_ID = 1;
     private MainActivityListener listener;
+    private GraphView graph;
 
     //region views
     private TextView dashboard_date, dashboard_time, dashboard_sold, dashboard_stock, dashboard_orders;
@@ -75,7 +81,7 @@ public class DashBoardFragment extends Fragment {
 
         //region process dashboard summary
         dashboard_summary.setVisibility(View.GONE);
-        getActivity().getSupportLoaderManager().initLoader(DASH_BOARD_CONTENT_LOADER_ID,null,dashboardDataLoader);
+        getActivity().getSupportLoaderManager().initLoader(DASH_BOARD_CONTENT_LOADER_ID, null, dashboardDataLoader);
         //endregion
 
         //region DashboardItems
@@ -101,6 +107,10 @@ public class DashBoardFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(adapter);
         //endregion
+
+        //stats
+        graph = view.findViewById(R.id.graph);
+        getActivity().getSupportLoaderManager().initLoader(1989, null, inventoryDataLoaderCallbacks);
     }
 
     @Override
@@ -285,7 +295,7 @@ public class DashBoardFragment extends Fragment {
         @Nullable
         @Override
         public Loader onCreateLoader(int id, @Nullable Bundle args) {
-            if(getContext()==null)return null;
+            if (getContext() == null) return null;
             return new ProcessDashboardDataAsync(getContext());
         }
 
@@ -314,6 +324,149 @@ public class DashBoardFragment extends Fragment {
             dashboard_orders.setText(String.valueOf(dashboard.getOrders()));
 
             dashboard_summary.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onLoaderReset(@NonNull Loader loader) {
+
+        }
+    };
+
+
+    private static class ProcessInventoryDataAsync extends AsyncTaskLoader<InventoryHolder> {
+
+        public ProcessInventoryDataAsync(@NonNull Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onStartLoading() {
+            super.onStartLoading();
+            forceLoad();
+        }
+
+        @Nullable
+        @Override
+        public InventoryHolder loadInBackground() {
+            InventoryHolder holder = new InventoryHolder();
+
+            //ArrayList<Object> orderObjs = new OrderDatabase(getContext()).getItems();
+            //ArrayList<Order> orders = new ArrayList<>(orderObjs.size());
+            //for (Object obj : orderObjs) orders.add((Order) obj);
+
+            //ArrayList<Object> itemObjs = new ItemDatabase(getContext()).getItems();
+            //ArrayList<Item> items = new ArrayList<>(itemObjs.size());
+            //for (Object obj : itemObjs) items.add((Item) obj);
+
+            //holder.setDatabaseItemHolder(items);
+            //holder.setDatabaseOrderHolder(orders);
+
+            holder.setTimelineDataHolder(Order.OrderTimelineHelper.get(getContext()));
+            return holder;
+        }
+    }
+
+    private static class InventoryHolder {
+        ArrayList<Item> databaseItemHolder;
+        ArrayList<Order> databaseOrderHolder;
+        ArrayList<Order.Timeline> timelineHolder;
+
+        //region getters and setters
+
+        public ArrayList<Item> getDatabaseItemHolder() {
+            return databaseItemHolder;
+        }
+
+        public void setDatabaseItemHolder(ArrayList<Item> databaseItemHolder) {
+            this.databaseItemHolder = databaseItemHolder;
+        }
+
+        public ArrayList<Order> getDatabaseOrderHolder() {
+            return databaseOrderHolder;
+        }
+
+        public void setDatabaseOrderHolder(ArrayList<Order> databaseOrderHolder) {
+            this.databaseOrderHolder = databaseOrderHolder;
+        }
+
+        public ArrayList<Order.Timeline> getTimelineDataHolder() {
+            return timelineHolder;
+        }
+
+        public void setTimelineDataHolder(ArrayList<Order.Timeline> timelineHolder) {
+            this.timelineHolder = timelineHolder;
+        }
+
+
+        //endregion
+    }
+
+    private LoaderManager.LoaderCallbacks inventoryDataLoaderCallbacks = new LoaderManager.LoaderCallbacks() {
+        @NonNull
+        @Override
+        public Loader onCreateLoader(int id, @Nullable Bundle args) {
+            return new ProcessInventoryDataAsync(getContext());
+        }
+
+        @Override
+        public void onLoadFinished(@NonNull Loader loader, Object data) {
+
+
+            InventoryHolder inventoryHolder = (InventoryHolder) data;
+
+            //region Sales
+            LineGraphSeries<DataPoint> sales = new LineGraphSeries<>();
+
+            final int MAX_DATA_POINTS = inventoryHolder.getTimelineDataHolder().size();
+            int maxY = 0;
+            long end = inventoryHolder.getTimelineDataHolder().get(0).getLastPlacedOrder().getTimeStamp();
+            long start = inventoryHolder.getTimelineDataHolder().get(MAX_DATA_POINTS - 1).getLastPlacedOrder().getTimeStamp();
+
+            //remember timeline contains the last placed order until - the first placed order
+            //so we need to cycle backwards
+            for (int index = MAX_DATA_POINTS - 1; index > -1; index--) {
+                int sold = 0;
+                Order.Timeline timeline = inventoryHolder.getTimelineDataHolder().get(index);
+                for (Item item : timeline.getLastPlacedOrder().getItems())
+                    sold += item.getItemUnits();
+                for (Order order : timeline.getChildOrders())
+                    for (Item item : order.getItems()) sold += item.getItemUnits();
+
+                long date = timeline.getLastPlacedOrder().getDate();
+                maxY = sold > maxY ? sold : maxY;
+                sales.appendData(new DataPoint(new Date(date), sold), false, 10000, true);
+            }
+
+            String startDate = DateFormats.getSimpleDateString(start, DateFormats.Day_Month_Year);
+            String endDate = DateFormats.getSimpleDateString(end, DateFormats.Day_Month_Year);
+
+            //decor
+            sales.setTitle("Sales from " + startDate + "-" + endDate);
+            sales.setColor(Color.GREEN);
+            sales.setDrawDataPoints(true);
+            sales.setDataPointsRadius(6);
+            sales.setThickness(2);
+
+            //append
+            graph.addSeries(sales);
+
+            //set date label formatter
+            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
+            graph.getGridLabelRenderer().setNumHorizontalLabels(2);
+
+            graph.getViewport().setMinY(0);
+            graph.getViewport().setMaxY(maxY);
+            graph.getViewport().setYAxisBoundsManual(true);
+
+            //set manual x bound to have nice steps
+            graph.getViewport().setMinX(start);
+            graph.getViewport().setMaxX(end);
+            graph.getViewport().setXAxisBoundsManual(true);
+
+            //as we use dates as labels,the human rounding to nice readable numbers is not necessary.
+            graph.getGridLabelRenderer().setHumanRounding(true);
+            //endregion
+
         }
 
         @Override

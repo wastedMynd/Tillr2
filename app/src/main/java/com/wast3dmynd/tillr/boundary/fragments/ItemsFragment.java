@@ -1,6 +1,7 @@
 package com.wast3dmynd.tillr.boundary.fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +12,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,8 +26,10 @@ import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.adapter.ItemAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
+import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
+import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
 import com.wast3dmynd.tillr.utils.DateFormats;
 
@@ -39,22 +46,33 @@ public class ItemsFragment extends Fragment implements ItemAdapter.ItemListAdapt
 
     private MainActivityListener listener;
 
+    private ContentViewHolder holder;
+    private CrossFadeUtils crossFadeUtils;
+
     @NonNull
     public static Fragment newItemListIntent() {
         return new ItemsFragment();
     }
 
+    //region fragment life cycle
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_view_items, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_items, container, false);
+        //region Content View Loader
+        holder = new ContentViewHolder(view);
+        crossFadeUtils = new CrossFadeUtils(holder.contentRecycler, holder.contentLoader);
+        holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        //endregion
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.title_item_list);
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.title_item_list);
+        setHasOptionsMenu(true);
 
         items_last_update_date = view.findViewById(R.id.dashboard_date);
         items_count = view.findViewById(R.id.order_date);
@@ -106,7 +124,7 @@ public class ItemsFragment extends Fragment implements ItemAdapter.ItemListAdapt
         //endregion
 
         //region link views to fragment_place_order
-        RecyclerView itemListRecycler = view.findViewById(R.id.rcyclAddItems);
+        RecyclerView itemListRecycler = view.findViewById(R.id.content_recycler);
         itemListRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         FloatingActionButton fabInsertItem = view.findViewById(R.id.fabAddItem);
         //endregion
@@ -114,6 +132,13 @@ public class ItemsFragment extends Fragment implements ItemAdapter.ItemListAdapt
         //region placeOrderItemAdapter init
         itemAdapter = new ItemAdapter(getContext(), this);
         itemListRecycler.setAdapter(itemAdapter);
+
+        if (itemAdapter.getItemCount() == 0)
+            holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+        else {
+            holder.contentLoaderInfo.setText(R.string.content_loader_done);
+            crossFadeUtils.crossfade();
+        }
         //endregion
 
         //region View EventHandler config
@@ -160,6 +185,88 @@ public class ItemsFragment extends Fragment implements ItemAdapter.ItemListAdapt
                     }
                 })
                 .show();
+    }
+    //endregion
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_items, menu);
+
+        MenuItem search_item = menu.findItem(R.id.search_item);
+
+        SearchView searchView = (SearchView) search_item.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //perform the final search
+                new SearchForItemAsyncTask(getContext()).execute(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                new SearchForItemAsyncTask(getContext()).execute(newText);
+                return true;
+            }
+        });
+    }
+
+    private class SearchForItemAsyncTask extends AsyncTask<String, Void, ArrayList<Item>> {
+
+        private Context context;
+
+        public SearchForItemAsyncTask(Context context) {
+            this.context = context;
+            crossFadeUtils.processWork();
+            holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        }
+
+        @Override
+        protected ArrayList<Item> doInBackground(String... strings) {
+
+            //init Search params
+            ArrayList<Item> searchItems = new ArrayList<>();
+            String searchQuery = strings[0].toLowerCase();
+
+
+            //get Items for database
+            ArrayList<Object> itemObjs = new ItemDatabase(context).getItems();
+            ArrayList<Item> items = new ArrayList<>(itemObjs.size());
+            for (Object obj : itemObjs) items.add((Item) obj);
+
+            //No searchQuery provided
+            if (searchQuery.isEmpty()) return items;
+
+            //get all Item matching the searchQuery
+            for (Item item : items)
+                if (item.getItemName().toLowerCase().contains(searchQuery))
+                    searchItems.add(item);
+
+            return searchItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Item> items) {
+            super.onPostExecute(items);
+
+            itemAdapter.setItems(items);
+
+            if (items.isEmpty())
+                holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+            else {
+                holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                crossFadeUtils.crossfade();
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
     //endregion
 

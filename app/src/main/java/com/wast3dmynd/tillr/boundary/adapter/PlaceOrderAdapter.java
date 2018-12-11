@@ -77,22 +77,13 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderViewHolder
         notifyItemChanged(indexOfItem);
     }
 
-    public void searchForItem(String searchItem) {
-
-        orderItems.clear();
-        if (!searchItem.isEmpty()) {
-            for (Item item : searchOrderItemsPlaceholder) {
-                String itemName = item.getItemName().toLowerCase();
-                if (itemName.contains(searchItem.toLowerCase())) {
-                    orderItems.add(item);
-                }
-            }
-
-        } else for (Item item : searchOrderItemsPlaceholder) orderItems.add(item);
-
-
+    public void setItems(ArrayList<Item> items) {
+        orderItems = items;
         notifyDataSetChanged();
     }
 
 
+    public ArrayList<Item> getItems() {
+        return orderItems;
+    }
 }

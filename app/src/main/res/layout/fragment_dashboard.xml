@@ -199,9 +199,17 @@
 
             </android.support.constraint.ConstraintLayout>
 
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
+        <com.jjoe64.graphview.GraphView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/graph"
+            android:layout_gravity="bottom" />
+
     </android.support.design.widget.AppBarLayout>
+
 
     <include layout="@layout/layout_dashboard_container"/>
 

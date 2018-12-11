@@ -102,5 +102,8 @@
     <string name="pref_description_auto_theme_mode_enabled">Change theme automatically to either Night or Day mode, base on your time zone.</string>
     <string name="pref_title_auto_theme_mode_enabled">Auto Mode</string>
     <string name="action_dashboard_summary_empty">Nothing to summarize.</string>
+    <string name="content_loader_processing">Loading...</string>
+    <string name="content_loader_done">Done</string>
+    <string name="content_loader_empty">couldn\'t find content!</string>
 
 </resources>

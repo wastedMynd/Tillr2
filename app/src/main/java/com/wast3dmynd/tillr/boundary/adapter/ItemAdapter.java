@@ -16,7 +16,7 @@ import com.wast3dmynd.tillr.entity.Item;
 import java.util.ArrayList;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> implements ItemViewHolder.ItemListViewHolderListener {
-    private ArrayList<Item> orderItems;
+    private ArrayList<Item> items;
     private LayoutInflater layoutInflater;
     private ItemListAdapterListener itemListAdapterListener;
 
@@ -25,9 +25,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> implements
         this.itemListAdapterListener = itemListAdapterListener;
 
         ItemDatabase database = new ItemDatabase(context);
-        this.orderItems = new ArrayList<>();
+        this.items = new ArrayList<>();
         ArrayList<Object> objects = database.getItems();
-        for (Object item : objects) orderItems.add((Item) item);
+        for (Object item : objects) items.add((Item) item);
     }
 
     @NonNull
@@ -43,12 +43,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> implements
     }
 
     private Item getItem(int position) {
-        return orderItems.get(position);
+        return items.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return orderItems.size();
+        return items.size();
     }
 
     @Override
@@ -63,11 +63,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> implements
     }
 
     /**
-     * To be call only from the {@link ItemsActivity}
+     * To be call only from the {@link com.wast3dmynd.tillr.boundary.fragments.ItemsFragment}
      **/
     public void onItemDelete(Item item) {
-        int position = orderItems.indexOf(item);
-        orderItems.remove(position);
+        int position = items.indexOf(item);
+        items.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -75,5 +75,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> implements
         void onItemEdit(Item item);
 
         void onItemDelete(Item item);
+    }
+
+    public void setItems(ArrayList<Item> items) {
+        this.items = items;
+        notifyDataSetChanged();
     }
 }

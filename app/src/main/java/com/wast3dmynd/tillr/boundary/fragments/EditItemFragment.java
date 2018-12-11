@@ -28,7 +28,6 @@ import com.wast3dmynd.tillr.utils.CurrencyUtility;
 
 public class EditItemFragment extends Fragment {
 
-
     //EditActivity intent dependencies
     private static final String INTENT_ITEM_EDITOR_OPTION = "INTENT_ITEM_EDITOR_OPTION";
     private static final String INTENT_ITEM_EDITOR_ITEM_INSTANCE = "INTENT_ITEM_EDITOR_ITEM_INSTANCE";
@@ -41,9 +40,33 @@ public class EditItemFragment extends Fragment {
         EDIT_ITEM
     }
 
-    //views
+    //region views
     private EditText itemName, itemPricePerUnit, itemCount;
     private FloatingActionButton saveBtn;
+    //endregion
+
+    //region Item Display
+    private void displayItem() {
+
+        displayItemName();
+        displayItemPricePerUnit();
+        displayItemUnits();
+    }
+
+    private void displayItemName() {
+        itemName.setText(item.getItemName());
+    }
+
+    private void displayItemPricePerUnit() {
+        itemPricePerUnit.setText(String.valueOf(item.getItemCostPerUnit()));
+    }
+
+    private void displayItemUnits() {
+        itemCount.setText(String.valueOf(item.getItemUnitRemaining()));
+    }
+//endregion
+
+    //region Item Controller
 
     public static Fragment newItemEditorIntent(ItemEditorOptions itemEditorOptions, Item item) {
 
@@ -57,30 +80,18 @@ public class EditItemFragment extends Fragment {
         return fragment;
     }
 
-    private void displayItemUnits() {
-        itemCount.setText(String.valueOf(item.getItemUnitRemaining()));
-    }
 
     private void getIntentArgs() {
         editorOptions = (ItemEditorOptions) getArguments().get(INTENT_ITEM_EDITOR_OPTION);
         item = (editorOptions == ItemEditorOptions.EDIT_ITEM) ? (Item) getArguments().get(INTENT_ITEM_EDITOR_ITEM_INSTANCE) : new Item();
     }
 
+
     private void clearFields() {
         itemName.setText("");
         itemPricePerUnit.setText("");
         itemCount.setText("");
         itemName.requestFocus();
-    }
-
-    private void displayItem() {
-        String itemNameStr = item.getItemName();
-        itemName.setText(itemNameStr);
-
-        String itemPricePerUnitStr = CurrencyUtility.getCurrencyDisplay(item.getItemCostPerUnit());
-        itemPricePerUnit.setText(itemPricePerUnitStr);
-
-        displayItemUnits();
     }
 
     private void changeToolbarTitle() {
@@ -90,6 +101,111 @@ public class EditItemFragment extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
+
+
+    private TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+            if (event == null) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    performItemSave();
+                    return true;
+                }
+                // Capture soft enters in a singleLine EditText that is the last EditText.
+                else if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    return false;
+                }
+                // Capture soft enters in other singleLine EditTexts
+                else return true;  // Let system handle all other null KeyEvents
+            } else if (actionId == EditorInfo.IME_NULL) {
+                // Capture most soft enters in multi-line EditTexts and all hard enters.
+                // They supply a zero actionId and a valid KeyEvent rather than
+                // a non-zero actionId and a null event like the previous cases.
+                if (event.getAction() == KeyEvent.ACTION_DOWN) ;
+                    // We capture the event when key is first pressed.
+                else return true;   // We consume the event when the key is released.
+            } else return true;
+            // We let the system handle it when the listener
+            // is triggered by something that wasn't an enter.
+
+
+            // Code from this point on will execute whenever the user
+            // presses enter in an attached view, regardless of position,
+            // keyboard, or singleLine status.
+            return true;   // Consume the event
+        }
+    };
+
+    private void performItemSave() {
+        final MainActivity thisActivity = (MainActivity) getActivity();
+        String itemNameStr = itemName.getText().toString();
+        double cost = CurrencyUtility.reformatCurrency(itemPricePerUnit.getText().toString());
+        String itemCountStr = (itemCount.getText().toString().replace("units", "")).replace("unit", "").trim();
+        int count = Integer.parseInt(itemCountStr);
+
+        boolean createItem = (editorOptions == ItemEditorOptions.CREATE_NEW_ITEM);
+        String message;
+        if (itemNameStr.isEmpty() || itemCountStr.length() > 20) {
+
+            message = createItem ? "Item was not created, " : "item was not updated, ";
+            message += itemCountStr.length() > 20 ? "item\'s name exceeds the 20 character limit!" : "due to its name is not assigned.";
+            Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
+            return;
+        } else if (cost <= 0) {
+
+            message = createItem ? "Item was not created, " : "item was not updated,";
+            message += "due to its cost per unit is below standard.";
+            Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
+            return;
+        } else if (count <= 0) {
+
+            message = createItem ? "Item was not created, " : "item was not updated,";
+            message += "due to its unit are below zero or equal to zero.";
+            Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        item.setItemName(itemNameStr);
+        item.setItemCostPerUnit(cost);
+        item.setItemUnitRemaining(count);
+
+        boolean updated = new ItemDatabase(thisActivity).updateItem(item);
+        message = createItem ? (updated ? "Item is saved" : "Item not save!") : (updated ? "Item is updated" : "Item was not updated!");
+        Toast.makeText(thisActivity, message, Toast.LENGTH_SHORT).show();
+
+        Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.container), R.string.title_add_item, Snackbar.LENGTH_LONG);
+        snackbar.setAction("Yes!", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item = new Item();
+                clearFields();
+                saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
+                editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
+                changeToolbarTitle();
+            }
+        });
+
+        snackbar.addCallback(new Snackbar.Callback() {
+
+            @Override
+            public void onShown(Snackbar snackbar) {
+                super.onShown(snackbar);
+                // when snackbar is showing
+            }
+
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                super.onDismissed(snackbar, event);
+                if (event != DISMISS_EVENT_ACTION) {
+                    //will be true if user not click on Action button (for example: manual dismiss, dismiss by swipe
+                    startActivity(MainActivity.newInstance(thisActivity));
+                }
+            }
+        });
+        snackbar.show();
+    }
+
+    //endregion
 
     //region fragment life cycle
     @Nullable
@@ -199,114 +315,6 @@ public class EditItemFragment extends Fragment {
             }
         });
     }
-    //endregion
-
-    private TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-            if (event==null) {
-                if (actionId==EditorInfo.IME_ACTION_DONE)
-                {
-                    performItemSave();
-                    return true;
-                }
-                // Capture soft enters in a singleLine EditText that is the last EditText.
-                else if (actionId==EditorInfo.IME_ACTION_NEXT){
-                    return false;
-                }
-                // Capture soft enters in other singleLine EditTexts
-                else return true;  // Let system handle all other null KeyEvents
-            }
-            else if (actionId==EditorInfo.IME_NULL) {
-                // Capture most soft enters in multi-line EditTexts and all hard enters.
-                // They supply a zero actionId and a valid KeyEvent rather than
-                // a non-zero actionId and a null event like the previous cases.
-                if (event.getAction()==KeyEvent.ACTION_DOWN);
-                    // We capture the event when key is first pressed.
-                else  return true;   // We consume the event when the key is released.
-            }
-            else  return true;
-            // We let the system handle it when the listener
-            // is triggered by something that wasn't an enter.
-
-
-            // Code from this point on will execute whenever the user
-            // presses enter in an attached view, regardless of position,
-            // keyboard, or singleLine status.
-            return true;   // Consume the event
-        }
-    };
-
-    private void performItemSave()
-    {
-        final  MainActivity thisActivity = (MainActivity) getActivity();
-        String itemNameStr = itemName.getText().toString();
-        double cost = CurrencyUtility.reformatCurrency(itemPricePerUnit.getText().toString());
-        String itemCountStr = (itemCount.getText().toString().replace("units", "")).replace("unit", "").trim();
-        int count = Integer.parseInt(itemCountStr);
-
-        boolean createItem = (editorOptions == ItemEditorOptions.CREATE_NEW_ITEM);
-        String message;
-        if (itemNameStr.isEmpty() || itemCountStr.length() > 20) {
-
-            message = createItem ? "Item was not created, " : "item was not updated, ";
-            message += itemCountStr.length() > 20 ? "item\'s name exceeds the 20 character limit!" :"due to its name is not assigned.";
-            Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
-            return;
-        } else if (cost <= 0) {
-
-            message = createItem ? "Item was not created, " : "item was not updated,";
-            message += "due to its cost per unit is below standard.";
-            Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
-            return;
-        } else if (count <= 0) {
-
-            message = createItem ? "Item was not created, " : "item was not updated,";
-            message += "due to its unit are below zero or equal to zero.";
-            Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        item.setItemName(itemNameStr);
-        item.setItemCostPerUnit(cost);
-        item.setItemUnitRemaining(count);
-
-        boolean updated = new ItemDatabase(thisActivity).updateItem(item);
-        message = createItem ? (updated ? "Item is saved" : "Item not save!") : (updated ? "Item is updated" : "Item was not updated!");
-        Toast.makeText(thisActivity, message, Toast.LENGTH_SHORT).show();
-
-        Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.container), R.string.title_add_item, Snackbar.LENGTH_LONG);
-        snackbar.setAction("Yes!", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                item = new Item();
-                clearFields();
-                saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
-                editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
-                changeToolbarTitle();
-            }
-        });
-
-        snackbar.addCallback(new Snackbar.Callback() {
-
-            @Override
-            public void onShown(Snackbar snackbar) {
-                super.onShown(snackbar);
-                // when snackbar is showing
-            }
-
-            @Override
-            public void onDismissed(Snackbar snackbar, int event) {
-                super.onDismissed(snackbar, event);
-                if (event != DISMISS_EVENT_ACTION) {
-                    //will be true if user not click on Action button (for example: manual dismiss, dismiss by swipe
-                    startActivity(MainActivity.newInstance(thisActivity));
-                }
-            }
-        });
-        snackbar.show();
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -332,5 +340,5 @@ public class EditItemFragment extends Fragment {
         }
         return result;
     }
-
+    //endregion
 }

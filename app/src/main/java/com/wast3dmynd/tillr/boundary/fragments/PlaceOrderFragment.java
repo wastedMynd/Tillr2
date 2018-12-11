@@ -3,6 +3,7 @@ package com.wast3dmynd.tillr.boundary.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -32,12 +33,14 @@ import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.SettingsActivity;
 import com.wast3dmynd.tillr.boundary.adapter.PlaceOrderAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
+import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
 import com.wast3dmynd.tillr.boundary.views.PlaceOrderViewHolder;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.database.OrderDatabase;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
 import com.wast3dmynd.tillr.utils.ClearableEditText;
+import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
 import com.wast3dmynd.tillr.utils.DateFormats;
 
@@ -45,7 +48,7 @@ import java.util.ArrayList;
 
 public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder.ItemMenuViewHolderListener {
     private MainActivityListener listener;
-
+    private static ArrayList<Item> masterItems;
     private static String ARG_ORDER = "ARG_ORDER";
 
     private TextView txtOrderNumber;
@@ -57,6 +60,10 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
     private TextView txtOrderCredit;
     private TextView txtOrderUnits;
     private FloatingActionButton fab;
+
+
+    private ContentViewHolder holder;
+    private CrossFadeUtils crossFadeUtils;
 
     //data
     private Order order;
@@ -151,7 +158,13 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_place_order, container, false);
+        View view = inflater.inflate(R.layout.fragment_place_order, container, false);
+        //region Content View Loader
+        holder = new ContentViewHolder(view);
+        crossFadeUtils = new CrossFadeUtils(holder.contentRecycler, holder.contentLoader);
+        holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        //endregion
+        return view;
     }
 
     @Override
@@ -161,7 +174,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         //Toolbar toolbar = view.findViewById(R.id.toolbar);
         //((MainActivity) getActivity()).setSupportActionBar(toolbar);
         //((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.title_place_order);
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.title_place_order);
         setHasOptionsMenu(true);
 
 
@@ -175,7 +188,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         txtOrderTotal = view.findViewById(R.id.order_total);
         txtOrderFunds = view.findViewById(R.id.order_paid);
         txtOrderCredit = view.findViewById(R.id.order_credit);
-        RecyclerView recyclerView = view.findViewById(R.id.items);
+        RecyclerView recyclerView = view.findViewById(R.id.content_recycler);
         fab = view.findViewById(R.id.fab);
 
         processArgs();
@@ -354,6 +367,15 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         placeOrderAdapter = new PlaceOrderAdapter(getContext(), new ItemDatabase(getContext()).getAll(), this);
 
         recyclerView.setAdapter(placeOrderAdapter);
+
+        if (placeOrderAdapter.getItemCount() == 0)
+            holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+        else {
+            holder.contentLoaderInfo.setText(R.string.content_loader_done);
+            crossFadeUtils.crossfade();
+            masterItems = new ArrayList<>();
+            masterItems.addAll(placeOrderAdapter.getItems());
+        }
     }
 
 
@@ -362,7 +384,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         super.onCreateOptionsMenu(menu, inflater);
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_order_placement_activity_container, menu);
+        inflater.inflate(R.menu.menu_order_placement, menu);
         MenuItem search_item = menu.findItem(R.id.search_item);
         SearchView searchView = (SearchView) search_item.getActionView();
 
@@ -370,14 +392,15 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //perform the final search
-                placeOrderAdapter.searchForItem(query);
+                new QueryItemTask(placeOrderAdapter.getItems()).execute(query);
+
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 //text has changed, apply filtering?
-                placeOrderAdapter.searchForItem(newText);
+                new QueryItemTask(placeOrderAdapter.getItems()).execute(newText);
                 return true;
             }
         });
@@ -430,5 +453,45 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         if (!(context instanceof MainActivityListener))
             throw new ClassCastException("Must Implement MainActivityListener");
         listener = (MainActivityListener) context;
+    }
+
+    class QueryItemTask extends AsyncTask<String, Void, ArrayList<Item>> {
+
+        private ArrayList<Item> adapterItems;
+
+        public QueryItemTask(ArrayList<Item> defaultItems) {
+            adapterItems = defaultItems;
+            crossFadeUtils.processWork();
+            holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        }
+
+        @Override
+        protected ArrayList<Item> doInBackground(String... strings) {
+            String query = strings[0].toLowerCase();
+            if (query.isEmpty()) return masterItems;
+
+            ArrayList<Item> queriedItemResult = new ArrayList<>();
+
+            for (Item item : adapterItems) {
+                String itemName = item.getItemName().toLowerCase();
+                if (itemName.contains(query))
+                    queriedItemResult.add(item);
+            }
+
+            return queriedItemResult;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Item> items) {
+            super.onPostExecute(items);
+            placeOrderAdapter.setItems(items);
+
+            if (items.isEmpty())
+                holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+            else {
+                holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                crossFadeUtils.crossfade();
+            }
+        }
     }
 }

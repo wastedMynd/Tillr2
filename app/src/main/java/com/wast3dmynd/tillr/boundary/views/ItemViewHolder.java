@@ -17,6 +17,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.wast3dmynd.tillr.R;
+import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.utils.DateFormats;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
@@ -59,7 +60,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
 
 
         boolean selected = item.getGui().isSelected();
-        @ColorRes int color = selected ? R.color.colorAccent : android.R.color.white;
+        @ColorRes int color = selected ? R.color.colorAccent : android.R.color.transparent;
         selector.setBackgroundColor(context.getResources().getColor(color));
 
         cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -69,7 +70,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
 
                 item.getGui().setSelected(!item.getGui().isSelected());
                 boolean selected = item.getGui().isSelected();
-                @ColorRes int color = selected ? R.color.colorAccent : android.R.color.white;
+                @ColorRes int color = selected ? R.color.colorAccent : android.R.color.transparent;
                 selector.setBackgroundColor(context.getResources().getColor(color));
                 return true;
             }
@@ -206,9 +207,9 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
 
                                         //timeStamp
                                         item.setItemTimeStamp(System.currentTimeMillis());
-                                        displayTimeStamp(DateFormats.DayName_Day_Month, item, itemTimeStamp);
+                                        displayTimeStamp(DateFormats.Day_Month_Year, item, itemTimeStamp);
                                         //endregion
-
+                                        new ItemDatabase(itemCostPerUnit.getContext()).updateItem(item);
                                         break;
                                     case R.id.action_item_list_opt_edit:
                                         menuItemSelected = true;

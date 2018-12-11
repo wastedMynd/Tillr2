@@ -45,7 +45,7 @@
     </style>
 
     <style name="ItemInfoPricePerUnit" parent="ItemInfo">
-        <item name="android:textColor">#6f6fff</item>
+        <item name="android:textColor">#ff9e80</item>
         <item name="android:textAllCaps">true</item>
     </style>
 

@@ -16,16 +16,16 @@
             android:id="@+id/order_option"
             android:layout_width="19dp"
             android:layout_height="40dp"
-            android:contentDescription="@string/order_option_menu"
             android:layout_marginRight="8dp"
+            android:contentDescription="@string/order_option_menu"
             app:layout_constraintBottom_toBottomOf="@+id/view_orders_item_order_total"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/view_orders_item_order_time"
             app:srcCompat="@drawable/baseline_more_vert_black_18dp" />
 
         <TextView
-            style="@style/ItemLabel"
             android:id="@+id/textView7"
+            style="@style/ItemLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -39,8 +39,8 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            style="@style/ItemInfo"
             android:id="@+id/view_orders_item_order_number"
+            style="@style/ItemInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -50,8 +50,8 @@
             tools:text="1" />
 
         <TextView
-            style="@style/ItemLabel"
             android:id="@+id/textView12"
+            style="@style/ItemLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -63,8 +63,8 @@
             app:layout_constraintStart_toStartOf="@+id/textView2" />
 
         <TextView
-            style="@style/ItemLabel"
             android:id="@+id/textView2"
+            style="@style/ItemLabel"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_marginStart="8dp"
@@ -78,8 +78,8 @@
             app:layout_constraintStart_toEndOf="@+id/view_orders_item_order_units" />
 
         <TextView
-            style="@style/ItemInfoTotal"
             android:id="@+id/view_orders_item_order_total"
+            style="@style/ItemInfoTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView2"
@@ -89,8 +89,8 @@
             tools:text="R 30.00" />
 
         <TextView
-            style="@style/ItemInfo"
             android:id="@+id/view_orders_item_order_time"
+            style="@style/ItemInfo"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginEnd="8dp"
@@ -100,8 +100,8 @@
             tools:text="22:52" />
 
         <TextView
-            style="@style/ItemLabel"
             android:id="@+id/textView14"
+            style="@style/ItemLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -114,8 +114,8 @@
             app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
         <TextView
-            style="@style/ItemInfo"
             android:id="@+id/view_orders_item_order_units"
+            style="@style/ItemInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView14"

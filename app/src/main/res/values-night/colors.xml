@@ -12,5 +12,5 @@
     <color name="colorAdderAccent">#ffc107</color>
     <color name="colorRemoverAccent">#00e676</color>
     <color name="colorIconActive">#fff</color>
-
+    <color name="colorIconActiveMenu">#000</color>
 </resources>

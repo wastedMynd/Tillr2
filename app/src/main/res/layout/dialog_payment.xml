@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,7 +18,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        app:hintTextAppearance="@style/ItemInfo"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,20 +55,20 @@
 
     <TextView
         android:id="@+id/credit"
+        style="@style/ItemInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        style="@style/ItemInfo"
-        android:textStyle="bold"
-        tools:text="Credit: R 0.00"
         android:textColor="@color/colorAdderAccent"
+        android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@+id/total"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout3"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/total" />
+        app:layout_constraintStart_toEndOf="@+id/total"
+        tools:text="Credit: R 0.00" />
 
 </android.support.constraint.ConstraintLayout>
 

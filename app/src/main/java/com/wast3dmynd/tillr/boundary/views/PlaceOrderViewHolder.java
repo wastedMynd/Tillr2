@@ -54,7 +54,7 @@ public class PlaceOrderViewHolder extends RecyclerView.ViewHolder {
 
     private void displayIndicates(Item item) {
 
-        lyrItemStatus.setBackgroundColor(item.getItemUnits() > 0 ? itemAdder.getResources().getColor(R.color.colorAdderAccent) :
+        lyrItemStatus.setBackgroundColor(item.getGui().isSelected() ? itemAdder.getResources().getColor(R.color.colorAdderAccent) :
                 itemAdder.getResources().getColor(android.R.color.transparent));
 
         Item.ItemGui.MenuItemMode menuItemMode = item.getGui().getMenuItemMode();
@@ -124,6 +124,7 @@ public class PlaceOrderViewHolder extends RecyclerView.ViewHolder {
                 displayItemCount(item);
 
                 //(Test)
+                item.getGui().setSelected(item.getItemUnits() > 0);
                 itemMenuViewHolderListener.onOrderMenuItemChanged(item);
             }
         });

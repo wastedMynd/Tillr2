@@ -317,46 +317,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
 
                 } else {
                     //region on save order
-
-                    boolean isOrderProcessed = new OrderDatabase(v.getContext()).addItem(getOrder());
-                    String successMsg = "Your Order was Successfully processed..";
-                    String failureMsg = "Your Order was Denied!";
-                    String message = (getOrder().isOrderValid() && isOrderProcessed) ? successMsg : failureMsg;
-                    Toast.makeText(v.getContext(), message, Toast.LENGTH_LONG).show();
-
-                    if (getOrder().isOrderValid() && isOrderProcessed) {
-
-                        ItemDatabase itemDatabase = new ItemDatabase(v.getContext());
-                        ArrayList<Item> itemsDB = itemDatabase.getAll();
-
-                        //update remaining items
-                        for (Item item : itemsDB) {
-                            for (Item itemInOrder : getOrder().getItems()) {
-                                if (item.equals(itemInOrder))
-                                    item.setItemUnitRemaining(item.getItemUnitRemaining() - itemInOrder.getItemUnits());
-                            }
-                            itemDatabase.updateItem(item);
-                        }
-
-                        fab.setVisibility(View.GONE);
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setMessage(R.string.prompt_place_another_order)
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        listener.onFragmentChanged(PlaceOrderFragment.newInstance(getContext()));
-                                    }
-                                })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        startActivity(MainActivity.newInstance(getContext()));
-                                    }
-                                });
-                        // Create the AlertDialog object and show it
-                        builder.create().show();
-
-
-                    }
+                    new SaveOrderTask().execute(getOrder());
                     //endregion
                 }
             }
@@ -417,6 +378,14 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         switch (id) {
             case R.id.action_settings:
                 getActivity().startActivity(new Intent(getContext(), SettingsActivity.class));
+                return true;
+
+            case R.id.action_filter_placed_order:
+                new PlacedOrderItemsFilterTask(placeOrderAdapter.getItems()).execute();
+                return true;
+
+            case R.id.action_reload:
+                new ReloadTask().execute();
                 return true;
         }
 
@@ -494,4 +463,114 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
             }
         }
     }
+
+    class PlacedOrderItemsFilterTask extends AsyncTask<Void, Void, ArrayList<Item>> {
+
+        private ArrayList<Item> items;
+
+        public PlacedOrderItemsFilterTask(ArrayList<Item> items) {
+            this.items = items;
+            crossFadeUtils.processWork();
+            holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        }
+
+        @Override
+        protected ArrayList<Item> doInBackground(Void... args) {
+
+            ArrayList<Item> filteredItems = new ArrayList();
+            for (Item item : items)
+                if (item.getGui().isSelected())
+                    filteredItems.add(item);
+
+            return filteredItems;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Item> items) {
+            super.onPostExecute(items);
+
+            if (items.isEmpty())
+                holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+            else {
+                placeOrderAdapter.setItems(items);
+                holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                crossFadeUtils.crossfade();
+            }
+        }
+    }
+
+    class ReloadTask extends AsyncTask<Void, Void, ArrayList<Item>> {
+
+        public ReloadTask() {
+            crossFadeUtils.processWork();
+            holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        }
+
+        @Override
+        protected ArrayList<Item> doInBackground(Void... args) {
+            return new ItemDatabase(getContext()).getAll();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Item> items) {
+            super.onPostExecute(items);
+
+            if (items.isEmpty())
+                holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+            else {
+                holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                placeOrderAdapter.setItems(items);
+                crossFadeUtils.crossfade();
+            }
+        }
+    }
+
+    class SaveOrderTask extends AsyncTask<Order, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Order... orders) {
+            return new OrderDatabase(getContext()).addItem(orders[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isOrderProcessed) {
+            super.onPostExecute(isOrderProcessed);
+
+            String successMsg = "Your Order was Successfully processed..";
+            String failureMsg = "Your Order was Denied!";
+            String message = (getOrder().isOrderValid() && isOrderProcessed) ? successMsg : failureMsg;
+            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+            if (!isOrderProcessed) return;
+
+            ItemDatabase itemDatabase = new ItemDatabase(getContext());
+            ArrayList<Item> itemsDB = itemDatabase.getAll();
+
+            //update remaining items
+            for (Item item : itemsDB) {
+                for (Item itemInOrder : getOrder().getItems()) {
+                    if (item.equals(itemInOrder))
+                        item.setItemUnitRemaining(item.getItemUnitRemaining() - itemInOrder.getItemUnits());
+                }
+                itemDatabase.updateItem(item);
+            }
+
+            fab.setVisibility(View.GONE);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.prompt_place_another_order)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            listener.onFragmentChanged(PlaceOrderFragment.newInstance(getContext()));
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(MainActivity.newInstance(getContext()));
+                        }
+                    });
+            // Create the AlertDialog object and show it
+            builder.create().show();
+        }
+    }
+
 }

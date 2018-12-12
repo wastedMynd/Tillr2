@@ -125,6 +125,7 @@ public class Item implements Serializable {
 
     //endregion
     public static class ItemGui implements Serializable{
+        private  boolean highlighted =false;
         private boolean selected = false;
 
         public boolean isSelected() {
@@ -148,5 +149,14 @@ public class Item implements Serializable {
         public enum MenuItemMode{
             INCREMENT,DECREMENT
         }
+
+        public boolean isHighlighted() {
+            return highlighted;
+        }
+
+        public void setHighlighted(boolean highlighted) {
+            this.highlighted = highlighted;
+        }
+
     }
 }

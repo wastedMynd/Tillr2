@@ -1,10 +1,15 @@
 package com.wast3dmynd.tillr.boundary.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -22,11 +27,16 @@ import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
+import com.wast3dmynd.tillr.boundary.adapter.EditItemAdapter;
+import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
+import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
 
-public class EditItemFragment extends Fragment {
+import java.util.ArrayList;
+
+public class EditItemFragment extends Fragment implements EditItemAdapter.EditItemAdapterListener {
 
     //EditActivity intent dependencies
     private static final String INTENT_ITEM_EDITOR_OPTION = "INTENT_ITEM_EDITOR_OPTION";
@@ -43,6 +53,9 @@ public class EditItemFragment extends Fragment {
     //region views
     private EditText itemName, itemPricePerUnit, itemCount;
     private FloatingActionButton saveBtn;
+    private ContentViewHolder holder;
+    private CrossFadeUtils crossFadeUtils;
+    private EditItemAdapter editItemAdapter;
     //endregion
 
     //region Item Display
@@ -64,7 +77,7 @@ public class EditItemFragment extends Fragment {
     private void displayItemUnits() {
         itemCount.setText(String.valueOf(item.getItemUnitRemaining()));
     }
-//endregion
+    //endregion
 
     //region Item Controller
 
@@ -100,7 +113,6 @@ public class EditItemFragment extends Fragment {
         String title = (editorOptions.equals(ItemEditorOptions.CREATE_NEW_ITEM)) ? createNewItemTitle : editItemTitle;
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
-
 
 
     private TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
@@ -140,7 +152,7 @@ public class EditItemFragment extends Fragment {
         final MainActivity thisActivity = (MainActivity) getActivity();
         String itemNameStr = itemName.getText().toString();
         double cost = CurrencyUtility.reformatCurrency(itemPricePerUnit.getText().toString());
-        String itemCountStr = (itemCount.getText().toString().replace("units", "")).replace("unit", "").trim();
+        final String itemCountStr = (itemCount.getText().toString().replace("units", "")).replace("unit", "").trim();
         int count = Integer.parseInt(itemCountStr);
 
         boolean createItem = (editorOptions == ItemEditorOptions.CREATE_NEW_ITEM);
@@ -173,36 +185,33 @@ public class EditItemFragment extends Fragment {
         message = createItem ? (updated ? "Item is saved" : "Item not save!") : (updated ? "Item is updated" : "Item was not updated!");
         Toast.makeText(thisActivity, message, Toast.LENGTH_SHORT).show();
 
-        Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.container), R.string.title_add_item, Snackbar.LENGTH_LONG);
-        snackbar.setAction("Yes!", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                item = new Item();
-                clearFields();
-                saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
-                editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
-                changeToolbarTitle();
-            }
-        });
-
-        snackbar.addCallback(new Snackbar.Callback() {
-
-            @Override
-            public void onShown(Snackbar snackbar) {
-                super.onShown(snackbar);
-                // when snackbar is showing
-            }
-
-            @Override
-            public void onDismissed(Snackbar snackbar, int event) {
-                super.onDismissed(snackbar, event);
-                if (event != DISMISS_EVENT_ACTION) {
-                    //will be true if user not click on Action button (for example: manual dismiss, dismiss by swipe
-                    startActivity(MainActivity.newInstance(thisActivity));
-                }
-            }
-        });
-        snackbar.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.title_add_item)
+                .setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        item.getGui().setSelected(false);
+                        editItemAdapter.addItem(item);
+                        item = new Item();
+                        clearFields();
+                        saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
+                        editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
+                        changeToolbarTitle();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        item.getGui().setSelected(false);
+                        editItemAdapter.addItem(item);
+                        item = new Item();
+                        clearFields();
+                        saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
+                        editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
+                        changeToolbarTitle();
+                    }
+                });
+        // Create the AlertDialog object and show it
+        builder.create().show();
     }
 
     //endregion
@@ -211,8 +220,16 @@ public class EditItemFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_editor, container, false);
 
+        View view = inflater.inflate(R.layout.fragment_editor, container, false);
+
+        //region Content View Loader
+        holder = new ContentViewHolder(view);
+        crossFadeUtils = new CrossFadeUtils(holder.contentRecycler, holder.contentLoader);
+        holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        //endregion
+
+        return view;
     }
 
     @Override
@@ -223,8 +240,8 @@ public class EditItemFragment extends Fragment {
             return;
 
         getIntentArgs();
-
         changeToolbarTitle();
+        setHasOptionsMenu(true);
 
         saveBtn = view.findViewById(R.id.item_editor_save);
         itemName = view.findViewById(R.id.item_editor_item_name);
@@ -254,7 +271,6 @@ public class EditItemFragment extends Fragment {
                 saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
             }
         });
-
         itemName.setOnEditorActionListener(onEditorActionListener);
 
         itemPricePerUnit.setFilters(new InputFilter[]{new CurrencyUtility.CurrencyFormatInputFilter()});
@@ -314,12 +330,47 @@ public class EditItemFragment extends Fragment {
                 performItemSave();
             }
         });
+
+
+        RecyclerView content_recycler = view.findViewById(R.id.content_recycler);
+        content_recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        editItemAdapter = new EditItemAdapter(new ItemDatabase(getContext()).getAll(), this);
+        content_recycler.setAdapter(editItemAdapter);
+        if (editItemAdapter.getItemCount() == 0)
+            holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+        else {
+            holder.contentLoaderInfo.setText(R.string.content_loader_done);
+            crossFadeUtils.crossfade();
+
+            if(item==null)return;
+            item.getGui().setSelected(true);
+            editItemAdapter.setItem(item);
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.item_editor_menu, menu);
+        MenuItem search_item = menu.findItem(R.id.search_item);
+        SearchView searchView = (SearchView) search_item.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //perform the final search
+                new QueryItemTask().execute(query);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //text has changed, apply filtering?
+                new QueryItemTask().execute(newText);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -341,4 +392,57 @@ public class EditItemFragment extends Fragment {
         return result;
     }
     //endregion
+
+    //implements EditItemAdapter.EditItemAdapterListener
+    @Override
+    public void onItemSelected(Item item) {
+        this.item = item;
+        editorOptions = ItemEditorOptions.EDIT_ITEM;
+        changeToolbarTitle();
+        itemName.setText(item.getItemName());
+        itemPricePerUnit.setText("");
+        itemCount.setText("");
+        displayItem();
+        //todo this would be a user pref condition
+        itemCount.requestFocus();
+    }
+
+    class QueryItemTask extends AsyncTask<String, Void, ArrayList<Item>> {
+
+        public QueryItemTask() {
+            crossFadeUtils.processWork();
+            holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        }
+
+        @Override
+        protected ArrayList<Item> doInBackground(String... strings) {
+            String query = strings[0].toLowerCase();
+            ArrayList<Item>databaseItems = new ItemDatabase(getContext()).getAll();
+            if (query.isEmpty())return databaseItems;
+
+
+            ArrayList<Item> queriedItemResult = new ArrayList<>();
+
+            for (Item item : databaseItems) {
+                String itemName = item.getItemName().toLowerCase();
+                if (itemName.contains(query))
+                    queriedItemResult.add(item);
+            }
+
+            return queriedItemResult;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Item> items) {
+            super.onPostExecute(items);
+            editItemAdapter.setItems(items);
+
+            if (items.isEmpty())
+                holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+            else {
+                holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                crossFadeUtils.crossfade();
+            }
+        }
+    }
 }

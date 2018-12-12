@@ -192,7 +192,7 @@
         android:id="@+id/content_view_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
             layout="@layout/layout_content_loader"
@@ -231,10 +231,6 @@
 
 
     </android.support.constraint.ConstraintLayout>
-
-
-
-
 
 
     <android.support.design.widget.FloatingActionButton

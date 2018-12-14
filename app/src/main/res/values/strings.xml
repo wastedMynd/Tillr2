@@ -86,6 +86,7 @@
     <string name="label_damage">Damage</string>
     <string name="label_orders">Orders</string>
     <string name="label_stock">Stock</string>
+    <string name="label_modified_stock">Modified Stock</string>
     <string name="label_sold">Sold</string>
     <string name="prompt_place_another_order">Place another order?</string>
     <string name="title_fragment_dashboard">Dash Board</string>
@@ -93,14 +94,20 @@
     <string name="pref_title_night_mode_enabled">Night mode</string>
     <string name="pref_description_auto_theme_mode_enabled">Change theme automatically to either Night or Day mode, base on your time zone.</string>
     <string name="pref_title_auto_theme_mode_enabled">Auto Mode</string>
-    <string name="content_loader_processing">Loading...</string>
+    <string name="content_loader_processing">Loading&#8230;</string>
     <string name="content_loader_done">Done</string>
-    <string name="content_loader_empty">couldn\'t find content!</string>
+    <string name="content_loader_empty">could not find content!</string>
     <string name="label_item_name">Item\'s name</string>
     <string name="label_item_price_per_unit">Item\'s price per unit</string>
     <string name="label_item_count">Item\'s stock count</string>
-    <string name="action_filter">Filter</string>
     <string name="action_filter_by_placed_items">Filter by Placed Items</string>
     <string name="action_reload">Reload</string>
+    <string name="label_sales">Sales</string>
+    <string name="label_stock_per_item">Stock Per Item</string>
+    <string name="selected_fragment_onchange_wait">Loading please wait&#8230;</string>
+    <string name="action_redirect_fragment_content_missing">
+        wait a moment, content was not available&#8230;
+        \nredirecting you here!
+    </string>
 
 </resources>

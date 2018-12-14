@@ -23,6 +23,18 @@
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
     </style>
 
+    <style name="GraphLabel" parent="SummaryData">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="GraphData" parent="GraphLabel">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+
     <!--Item Styles-->
     <style name="ItemTitle">
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>

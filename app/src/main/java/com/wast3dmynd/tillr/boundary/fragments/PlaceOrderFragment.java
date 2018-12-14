@@ -47,10 +47,10 @@ import com.wast3dmynd.tillr.utils.DateFormats;
 import java.util.ArrayList;
 
 public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder.ItemMenuViewHolderListener {
-    private MainActivityListener listener;
-    private static ArrayList<Item> masterItems;
+
     private static String ARG_ORDER = "ARG_ORDER";
 
+    //region views
     private TextView txtOrderNumber;
     private TextView txtOrderItems;
     private TextView txtOrderDate;
@@ -61,11 +61,11 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
     private TextView txtOrderUnits;
     private FloatingActionButton fab;
 
-
     private ContentViewHolder holder;
     private CrossFadeUtils crossFadeUtils;
+    //endregion
 
-    //data
+    //region data
     private Order order;
 
     public Order getOrder() {
@@ -78,7 +78,12 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
 
     private PlaceOrderAdapter placeOrderAdapter;
 
-    //get instance of this activity
+    private MainActivityListener listener;
+
+    private static ArrayList<Item> masterItems;
+    //endregion
+
+    //get instance of this fragment
     public static Fragment newInstance(Context context) {
 
         Order order = new Order();
@@ -93,13 +98,14 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         return fragment;
     }
 
-    //get passed instance data
+    //region get passed instance data
     private void processArgs() {
         if (!getArguments().containsKey(ARG_ORDER)) return;
         setOrder((Order) getArguments().get(ARG_ORDER));
     }
+    //endregion
 
-    //display floating action button icon
+    //region display floating action button icon
     private void displayFabIcon() {
 
         boolean orderHasBeenPaidFor = getOrder().getFunds() > 0 && getOrder().getTotal() > 0 && getOrder().getFunds() >= getOrder().getTotal();
@@ -153,8 +159,9 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         //fab change
         displayFabIcon();
     }
+    //endregion
 
-
+    //region fragment life cycle
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -200,11 +207,8 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         fab.setOnClickListener(new View.OnClickListener() {
 
             private void displayResult() {
-                String msg = getOrder().isOrderValid() ? "This order has been paid." :
-                        "This order is not paid!";
-
+                String msg = getOrder().isOrderValid() ? "This order has been paid." : "This order is not paid!";
                 Toast.makeText(thisActivity, msg, Toast.LENGTH_LONG).show();
-
                 displayFabIcon();
             }
 
@@ -381,7 +385,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
                 return true;
 
             case R.id.action_filter_placed_order:
-                new PlacedOrderItemsFilterTask(placeOrderAdapter.getItems()).execute();
+                new ItemFilterTask(placeOrderAdapter.getItems()).execute();
                 return true;
 
             case R.id.action_reload:
@@ -424,6 +428,9 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         listener = (MainActivityListener) context;
     }
 
+    //endregion
+
+    //region AsyncTasks
     class QueryItemTask extends AsyncTask<String, Void, ArrayList<Item>> {
 
         private ArrayList<Item> adapterItems;
@@ -464,11 +471,11 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         }
     }
 
-    class PlacedOrderItemsFilterTask extends AsyncTask<Void, Void, ArrayList<Item>> {
+    class ItemFilterTask extends AsyncTask<Void, Void, ArrayList<Item>> {
 
         private ArrayList<Item> items;
 
-        public PlacedOrderItemsFilterTask(ArrayList<Item> items) {
+        public ItemFilterTask(ArrayList<Item> items) {
             this.items = items;
             crossFadeUtils.processWork();
             holder.contentLoaderInfo.setText(R.string.content_loader_processing);
@@ -572,5 +579,6 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
             builder.create().show();
         }
     }
+    //endregion
 
 }

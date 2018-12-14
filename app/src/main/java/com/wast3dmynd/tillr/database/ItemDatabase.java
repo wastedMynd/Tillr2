@@ -6,9 +6,11 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.wast3dmynd.tillr.database.utils.DatabaseDelegate;
+import com.wast3dmynd.tillr.entity.InventoryData;
 import com.wast3dmynd.tillr.entity.Item;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ItemDatabase extends DatabaseDelegate {
 
@@ -82,6 +84,7 @@ public class ItemDatabase extends DatabaseDelegate {
 
 
         float res;
+        startAuditInventoryProcess(itemDB, AuditOnCondition.onInsert);
         openDatabase();
         res = getDatabase().insert(DATABASE_TABLE, null, values);
         closeDatabase();
@@ -106,9 +109,13 @@ public class ItemDatabase extends DatabaseDelegate {
 
         if (!(item instanceof Item)) return false;
 
+
         Item itemDB = (Item) item;
 
         if (!itemDB.isValid()) return false;
+
+        startAuditInventoryProcess(itemDB, AuditOnCondition.onUpdate);
+
 
         String whereClause = ID_COLUMN + "=?";
 
@@ -126,17 +133,17 @@ public class ItemDatabase extends DatabaseDelegate {
 
         values.put(ITEM_DAMAGE_COLUMN, itemDB.getItemDamage());
 
-        values.put(ITEM_TOTAL_COLUMN, itemDB.getItemPriceTotal());
+        values.put(ITEM_REMAINING_COLUMN, itemDB.getItemUnitRemaining() - itemDB.getItemUnits());
 
-        values.put(ITEM_REMAINING_COLUMN, itemDB.getItemUnitRemaining());
+        values.put(ITEM_TOTAL_COLUMN, itemDB.getItemPriceTotal());
 
         values.put(ITEM_TIMESTAMP_COLUMN, itemDB.getItemTimeStamp());
 
         openDatabase();
-        ret = getDatabase().update(DATABASE_TABLE, values, whereClause, whereArgs) > 0;
+        itemDB.setId(getDatabase().update(DATABASE_TABLE, values, whereClause, whereArgs));
         closeDatabase();
 
-
+        ret = itemDB.getId() > 0;
         if (getDatabaseListener() != null) getDatabaseListener().onDatabaseItemUpdated(ret, item);
 
         return ret;
@@ -153,6 +160,9 @@ public class ItemDatabase extends DatabaseDelegate {
         String whereClause = ID_COLUMN + "=?";
 
         String[] whereArgs = {String.valueOf(itemDB.getId())};
+
+
+        startAuditInventoryProcess(itemDB, AuditOnCondition.onRemove);
 
         openDatabase();
         int res = getDatabase().delete(DATABASE_TABLE, whereClause, whereArgs);
@@ -292,5 +302,115 @@ public class ItemDatabase extends DatabaseDelegate {
         }
 
         return items;
+    }
+
+    enum AuditOnCondition {
+        onInsert, onUpdate, onRemove
+    }
+
+    private synchronized void auditInventory(Item item, AuditOnCondition auditCondition) {
+        //get All InventoryData
+        InventoryDatabase inventoryDatabase = new InventoryDatabase(getContext());
+        ItemDatabase itemDatabase = new ItemDatabase(getContext());
+        ArrayList<Item> itemsDatabase = itemDatabase.getAll();
+        ArrayList<InventoryData> inventoryDataHolder = inventoryDatabase.getAll();
+        Date itemDate = new Date(item.getItemTimeStamp());
+
+        boolean inventoryExists = false;
+        for (InventoryData inventoryData : inventoryDataHolder) {
+            Date inventoryDate = new Date(inventoryData.getTimestamp());
+            if (itemDate.getDate() == inventoryDate.getDate()) {
+                inventoryExists = true;
+                break;
+            }
+        }
+
+        long stockUnits = 0;
+        double stockPriceTotal = 0.00;
+
+        switch (auditCondition) {
+            case onInsert:
+                if (!inventoryExists) {
+                    InventoryData data = new InventoryData();
+                    data.setTimestamp(item.getItemTimeStamp());
+
+                    stockUnits = item.getItemUnitRemaining();
+                    stockPriceTotal = (item.getItemCostPerUnit() * item.getItemUnitRemaining());
+
+                    if (!inventoryDataHolder.isEmpty()) {
+                        stockUnits += inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
+                        stockPriceTotal += inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockPriceTotal();
+                    }
+
+                    data.setStockUnitCount(stockUnits);
+                    data.setStockPriceTotal(stockPriceTotal);
+
+                    inventoryDatabase.addItem(data);
+                    inventoryDataHolder.add(data);
+                    return;
+                } else if (!inventoryDataHolder.isEmpty()) {
+                    stockUnits = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
+                    stockUnits += item.getItemUnitRemaining();
+                    stockPriceTotal = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockPriceTotal();
+                    stockPriceTotal += (item.getItemUnitRemaining() * item.getItemCostPerUnit());
+                }
+                break;
+            case onUpdate:
+                if (!inventoryDataHolder.isEmpty()) {
+                    //get Item's unitRemaining before update
+                    Item itemBeforeBeingUpdated = itemsDatabase.get(itemsDatabase.indexOf(item));
+                    stockUnits = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
+                    stockUnits -= itemBeforeBeingUpdated.getItemUnitRemaining();
+                    stockUnits += item.getItemUnitRemaining();
+
+                    //stock Price Total -> before update:
+                    stockPriceTotal = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockPriceTotal();
+                    //on Update:
+                    stockPriceTotal -= (itemBeforeBeingUpdated.getItemUnitRemaining() * itemBeforeBeingUpdated.getItemCostPerUnit());
+                    //after Update:
+                    stockPriceTotal += (item.getItemUnitRemaining() * item.getItemCostPerUnit());
+                }
+                break;
+            case onRemove:
+                if (!inventoryDataHolder.isEmpty()) {
+                    //get Item's unitRemaining before being removed
+                    Item itemBeforeBeingRemoved = itemsDatabase.get(itemsDatabase.indexOf(item));
+                    stockUnits = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
+                    stockUnits -= itemBeforeBeingRemoved.getItemUnitRemaining();
+
+                    //stock Price Total -> before remove:
+                    stockPriceTotal = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockPriceTotal();
+                    //on remove:
+                    stockPriceTotal -= (itemBeforeBeingRemoved.getItemUnitRemaining() * itemBeforeBeingRemoved.getItemCostPerUnit());
+                }
+                break;
+        }
+
+
+        for (InventoryData inventoryData : inventoryDataHolder) {
+            Date inventoryDate = new Date(inventoryData.getTimestamp());
+            if (itemDate.getDate() == inventoryDate.getDate()) {
+                for (Item databaseItem : itemsDatabase) {
+                    if (!item.equals(databaseItem)) continue;
+
+                    inventoryData.setStockUnitCount(stockUnits);
+                    inventoryData.setStockPriceTotal(stockPriceTotal);
+                    inventoryData.setTimestamp(System.currentTimeMillis());
+                    break;
+                }
+            }
+            inventoryDatabase.updateItem(inventoryData);
+            break;
+        }
+    }
+
+
+    private void startAuditInventoryProcess(final Item item, final AuditOnCondition auditOnCondition) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                auditInventory(item, auditOnCondition);
+            }
+        }).start();
     }
 }

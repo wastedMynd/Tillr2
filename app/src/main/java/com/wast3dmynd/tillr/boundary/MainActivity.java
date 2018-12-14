@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,9 +37,20 @@ import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
+import com.wast3dmynd.tillr.utils.CurrencyUtility;
+import com.wast3dmynd.tillr.utils.DateFormats;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainActivityListener {
 
+    private static final boolean DEBUGGING = true;
     private static final int MAIN_ACTIVITY_CONTENT_LOADER_ID = 0;
     //view(s)
     NavigationView navigationView;
@@ -45,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ConstraintLayout container;
     private TextView nav_item_list, nav_order_list;
 
+    Fragment selectedFragment = null;
 
     //region Activity lifecycle
     @Override
@@ -63,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         //endregion
+
         setContentView(R.layout.activity_main);
 
 
@@ -105,6 +120,106 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         container = findViewById(R.id.container);
 
+        if (DEBUGGING) {
+            new Thread(new Runnable() {
+
+                class FileData {
+                    String name;
+                    String data;
+                }
+
+
+                @Override
+                public void run() {
+                    try {
+                        //Find the directory for the SD Card using the API
+                        //*Don't* hardcode "/sdcard"
+                        File sdcard = Environment.getExternalStorageDirectory();
+
+                        StringBuilder pathBuilder = new StringBuilder(sdcard.getPath());
+                        pathBuilder.append("/Til Point");
+                        String mainDir = pathBuilder.toString();
+
+                        File myFile = new File(mainDir);
+                        if (!myFile.exists()) myFile.mkdir();
+
+                        ArrayList<FileData> fileDataHolder = new ArrayList<>();
+                        FileData userItemFile = new FileData();
+                        userItemFile.name = "My_Items.txt";
+                        FileData devItemFile = new FileData();
+                        devItemFile.name = "App_Items.txt";
+
+                        ArrayList<Item> items = new ItemDatabase(getApplicationContext()).getAll();
+
+                        if (!items.isEmpty()) {
+                            for (int index = 0; index < items.size(); index++) {
+                                Item item = items.get(index);
+                                if (index > 0) {
+                                    devItemFile.data += "~";
+                                    userItemFile.data += "\n\n";
+                                }
+                                devItemFile.data += item.toJson();
+
+                                StringBuilder userItemStr = new StringBuilder("Item's Name: ");
+                                userItemStr.append(item.getItemName());
+                                userItemStr.append("\nRemaining Units: ");
+                                userItemStr.append(String.valueOf(item.getItemUnitRemaining()));
+                                userItemStr.append("\nPrice: ");
+                                userItemStr.append(CurrencyUtility.getCurrencyDisplay(item.getItemCostPerUnit()));
+                                userItemStr.append("\nTotal: ");
+                                userItemStr.append(CurrencyUtility.getCurrencyDisplay(item.getItemUnitRemaining() * item.getItemCostPerUnit()));
+                                userItemStr.append("\nLast Modify Date: ");
+                                userItemStr.append(DateFormats.getSimpleDateString(item.getItemTimeStamp(), DateFormats.DayName_Day_Month_Year));
+
+                                userItemFile.data += userItemStr.toString();
+                            }
+
+                            fileDataHolder.add(devItemFile);
+                            fileDataHolder.add(userItemFile);
+
+                            for (FileData fileData : fileDataHolder) {
+                                myFile = new File(mainDir + "/" + fileData.name);
+                                myFile.createNewFile();
+                                FileOutputStream fOut = new FileOutputStream(myFile);
+                                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                                myOutWriter.append(fileData.data);
+                                myOutWriter.close();
+                                fOut.close();
+                            }
+                        } else {
+                            //Get the text file
+                            File file = new File(mainDir, "App_Items.txt");
+                            if (file.exists()) {
+                                //Read text from file
+                                StringBuilder text = new StringBuilder();
+                                try {
+                                    BufferedReader br = new BufferedReader(new FileReader(file));
+                                    String line;
+                                    while ((line = br.readLine()) != null) text.append(line);
+                                    br.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                String[] itemsStr = text.toString().split("~");
+                                ItemDatabase itemDatabase = new ItemDatabase(getApplicationContext());
+                                for (String itemStr : itemsStr) {
+                                    //Parse itemStr from JSON to Item object
+                                    String json = itemStr.replace("null", "").trim();
+                                    Item item = Item.fromJson(json);
+                                    item.setItemTimeStamp(System.currentTimeMillis());
+                                    itemDatabase.addItem(item);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }).start();
+        }
+
     }
 
     @Override
@@ -135,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Snackbar.make(container, msg, Snackbar.LENGTH_LONG).setAction("Yes", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    finish();
                 }
             }).show();
         }
@@ -174,24 +289,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.nav_dashboard:
-                fragment = DashBoardFragment.newInstance();
+                selectedFragment = DashBoardFragment.newInstance();
                 break;
             //Employer
             case R.id.nav_create_item:
-                fragment = EditItemFragment.newItemEditorIntent(EditItemFragment.ItemEditorOptions.CREATE_NEW_ITEM, new Item());
+                selectedFragment = EditItemFragment.newItemEditorIntent(EditItemFragment.ItemEditorOptions.CREATE_NEW_ITEM, new Item());
                 break;
             case R.id.nav_item_list:
-                fragment = ItemsFragment.newItemListIntent();
+                selectedFragment = ItemsFragment.newItemListIntent();
                 break;
             case R.id.nav_order_list:
-                fragment = OrdersFragment.newInstance();
+                selectedFragment = OrdersFragment.newInstance();
                 break;
             //Employee
             case R.id.nav_order_placement:
-                fragment = PlaceOrderFragment.newInstance(this);
+                selectedFragment = PlaceOrderFragment.newInstance(this);
                 break;
         }
 
@@ -201,8 +315,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        //change fragment
-        onFragmentChanged(fragment);
+        //region change selectedFragment
+        final Snackbar snackbar;
+        snackbar = Snackbar.make(container, R.string.selected_fragment_onchange_wait, Snackbar.LENGTH_INDEFINITE);
+        //we need this, to give drawer some time to allow it to close properly
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onFragmentChanged(selectedFragment);
+                snackbar.dismiss();
+            }
+        }, 1000);
+        //endregion
+
         return true;
     }
     //endregion
@@ -287,8 +412,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             NavigationDrawerData navigationDrawerData = (NavigationDrawerData) data;
             nav_order_list.setText(String.valueOf(navigationDrawerData.getTodaysOrderCount()));
             nav_item_list.setText(String.valueOf(navigationDrawerData.getItemListSize()));
-            nav_order_list.setBackgroundResource(R.drawable.menu_counter_text_background);
-            nav_item_list.setBackgroundResource(R.drawable.menu_counter_text_background);
+            nav_order_list.setBackgroundResource(R.drawable.nav_indicate_circle_background);
+            nav_item_list.setBackgroundResource(R.drawable.nav_indicate_circle_background);
         }
 
         @Override

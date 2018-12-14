@@ -68,8 +68,8 @@ public class PlaceOrderViewHolder extends RecyclerView.ViewHolder {
 
             case DECREMENT:
                 //change button to decrement icon
-                itemAdder.setImageResource(R.drawable.ic_item_remove);
-                itemAdder.setColorFilter(itemAdder.getResources().getColor(R.color.colorRemoverAccent), PorterDuff.Mode.SRC_ATOP);
+                itemAdder.setImageResource((item.getItemUnits() == 0) ? R.drawable.ic_item_add : R.drawable.ic_item_remove);
+                itemAdder.setColorFilter(itemAdder.getResources().getColor((item.getItemUnits() == 0) ? R.color.colorAdderAccent : R.color.colorRemoverAccent), PorterDuff.Mode.SRC_ATOP);
                 break;
         }
     }

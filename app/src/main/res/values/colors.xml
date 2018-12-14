@@ -5,7 +5,7 @@
     <color name="colorPrimaryDark">#062743</color>
     <color name="colorAccent">#f44336</color>
     <color name="windowBackground">#E1E2E1</color>
-    <color name="textColorPrimary">#fff</color>
+    <color name="textColorPrimary">#000</color>
     <color name="secondaryTextColor">#000</color>
     <color name="dividerColor">#BDBDBD</color>
 
@@ -13,4 +13,5 @@
     <color name="colorRemoverAccent">#00e676</color>
     <color name="colorIconActive">#000</color>
     <color name="colorIconActiveMenu">#fff</color>
+    <color name="tabColor">#fff</color>
 </resources>

@@ -13,4 +13,5 @@
     <color name="colorRemoverAccent">#00e676</color>
     <color name="colorIconActive">#fff</color>
     <color name="colorIconActiveMenu">#000</color>
+    <color name="tabColor">#fff</color>
 </resources>

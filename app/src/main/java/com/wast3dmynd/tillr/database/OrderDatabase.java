@@ -94,6 +94,7 @@ public class OrderDatabase extends DatabaseDelegate {
         if (getDatabaseListener() != null)
             getDatabaseListener().onDatabaseItemInserted(result, objOrder);
 
+
         return result;
     }
 
@@ -233,10 +234,9 @@ public class OrderDatabase extends DatabaseDelegate {
                     for (Item item : itemsDb) {
                         for (String strItemJSON : itemsJson) {
                             Gson gson = new Gson();
-                            Item orderedItem = gson.fromJson(strItemJSON,Item.class);
+                            Item orderedItem = gson.fromJson(strItemJSON, Item.class);
                             itemFound = (item.getId() == orderedItem.getId());
-                            if(itemFound)
-                            {
+                            if (itemFound) {
                                 orderItems.add(orderedItem);
                                 break;
                             }
@@ -275,7 +275,6 @@ public class OrderDatabase extends DatabaseDelegate {
     }
 
 
-
     @Override
     public ArrayList<Object> getItemsOf(Object item) {
         return null;
@@ -288,6 +287,19 @@ public class OrderDatabase extends DatabaseDelegate {
         count = c.getCount();
         closeDatabase();
         return count;
+    }
+
+    public ArrayList<Order> getAll() {
+        ArrayList<Object> ordersDb = getItems();
+        ArrayList<Order> orders = new ArrayList<>();
+
+        for (Object objItem : ordersDb) {
+
+            Order item = (Order) objItem;
+            orders.add(item);
+        }
+
+        return orders;
     }
 
 }

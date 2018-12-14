@@ -261,7 +261,10 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
             android:background="?attr/colorPrimary"
-            app:tabMode="fixed">
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabTextColor="@color/tabColor"
+            app:tabSelectedTextColor="@color/colorAccent">
 
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"

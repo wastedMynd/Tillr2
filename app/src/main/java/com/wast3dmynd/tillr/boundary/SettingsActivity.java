@@ -166,7 +166,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     /**
-     * This method stops fragment injection in malicious applications.
+     * This method stops selectedFragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
      */
     protected boolean isValidFragment(String fragmentName) {
@@ -178,11 +178,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     //endregion
 
-    //region This fragment shows general preferences only. It is used when the activity is showing a two-pane settings UI.
+    //region This selectedFragment shows general preferences only. It is used when the activity is showing a two-pane settings UI.
     // -----------------------------------------------------------------------------------------------
 
     /**
-     * This fragment shows general preferences only. It is used when the
+     * This selectedFragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -253,10 +253,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
     //endregion
 
-    //region This fragment shows notification preferences only. It is used when the activity is showing a two-pane settings UI.
+    //region This selectedFragment shows notification preferences only. It is used when the activity is showing a two-pane settings UI.
 
     /**
-     * This fragment shows notification preferences only. It is used when the
+     * This selectedFragment shows notification preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -287,10 +287,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     //endregion
 
-    //region This fragment shows data and sync preferences only. It is used when the activity is showing a two-pane settings UI.
+    //region This selectedFragment shows data and sync preferences only. It is used when the activity is showing a two-pane settings UI.
 
     /**
-     * This fragment shows data and sync preferences only. It is used when the
+     * This selectedFragment shows data and sync preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)

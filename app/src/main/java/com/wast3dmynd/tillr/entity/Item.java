@@ -8,7 +8,7 @@ public class Item implements Serializable {
 
     private int id =0;
     private int orderId =0;
-    private String itemName = new String(), barcode = new String();
+    private String itemName, barcode;
     private double itemCostPerUnit =0;
     private int itemUnits = 0;
     private int itemDamage = 0;
@@ -109,21 +109,11 @@ public class Item implements Serializable {
     }
 
     public boolean isValid() {
+        if (getItemName() == null) return false;
         return  (!getItemName().isEmpty()) && (getItemCostPerUnit()> 0);
     }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        return this.getId() == ((Item)obj).getId();
-    }
-
-    public String toJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
-
     //endregion
+
     public static class ItemGui implements Serializable{
         private  boolean highlighted =false;
         private boolean selected = false;
@@ -159,4 +149,21 @@ public class Item implements Serializable {
         }
 
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.getId() == ((Item) obj).getId();
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static Item fromJson(String itemStr) {
+        Gson gson = new Gson();
+        return gson.fromJson(itemStr, Item.class);
+    }
+
 }

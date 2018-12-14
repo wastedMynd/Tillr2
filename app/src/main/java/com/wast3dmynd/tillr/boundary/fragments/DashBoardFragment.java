@@ -2,38 +2,46 @@ package com.wast3dmynd.tillr.boundary.fragments;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.annotation.StringRes;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.ValueDependentColor;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
-import com.wast3dmynd.tillr.boundary.adapter.DashboardAdapter;
+import com.wast3dmynd.tillr.boundary.adapter.GraphViewAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
+import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
+import com.wast3dmynd.tillr.database.InventoryDatabase;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.database.OrderDatabase;
+import com.wast3dmynd.tillr.entity.GraphDataHolder;
+import com.wast3dmynd.tillr.entity.InventoryData;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
+import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.DateFormats;
 
 import java.util.ArrayList;
@@ -45,12 +53,15 @@ import java.util.List;
 public class DashBoardFragment extends Fragment {
     private static final int DASH_BOARD_CONTENT_LOADER_ID = 1;
     private MainActivityListener listener;
-    private GraphView graph;
 
     //region views
     private TextView dashboard_date, dashboard_time, dashboard_sold, dashboard_stock, dashboard_orders;
     CoordinatorLayout dashboard_main;
     private ConstraintLayout dashboard_summary;
+    private RecyclerView recyclerView;
+    private GraphViewAdapter graphViewAdapter = null;
+    private ContentViewHolder holder;
+    private CrossFadeUtils crossFadeUtils;
     //endregion
 
     public static Fragment newInstance() {
@@ -61,7 +72,11 @@ public class DashBoardFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        holder = new ContentViewHolder(view);
+        crossFadeUtils = new CrossFadeUtils(holder.contentRecycler, holder.contentLoader);
+        holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        return view;
     }
 
     @Override
@@ -84,33 +99,11 @@ public class DashBoardFragment extends Fragment {
         getActivity().getSupportLoaderManager().initLoader(DASH_BOARD_CONTENT_LOADER_ID, null, dashboardDataLoader);
         //endregion
 
-        //region DashboardItems
-        DashboardItem dashboardItem_newItem,
-                dashboardItem_viewItems,
-                dashboardItem_viewOrders,
-                dashboardItem_placeOrder;
-
-        //init DashboardItems
-        dashboardItem_newItem = new DashboardItem(R.drawable.ic_create_item, R.string.title_add_item);
-        dashboardItem_viewItems = new DashboardItem(R.drawable.ic_item_list, R.string.title_item_list);
-        dashboardItem_viewOrders = new DashboardItem(R.drawable.ic_order_list, R.string.title_order_list);
-        dashboardItem_placeOrder = new DashboardItem(R.drawable.ic_order_placement, R.string.title_activity_place_order);
-
-        ArrayList<DashboardItem> dashboardItems = new ArrayList<>();
-        dashboardItems.add(dashboardItem_newItem);
-        dashboardItems.add(dashboardItem_viewItems);
-        dashboardItems.add(dashboardItem_viewOrders);
-        dashboardItems.add(dashboardItem_placeOrder);
-
-        DashboardAdapter adapter = new DashboardAdapter(dashboardItems, listener);
-        RecyclerView recyclerView = view.findViewById(R.id.dashboard_item_recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        recyclerView.setAdapter(adapter);
+        recyclerView = view.findViewById(R.id.content_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(graphViewAdapter);
         //endregion
 
-        //stats
-        graph = view.findViewById(R.id.graph);
-        getActivity().getSupportLoaderManager().initLoader(1989, null, inventoryDataLoaderCallbacks);
     }
 
     @Override
@@ -127,38 +120,6 @@ public class DashBoardFragment extends Fragment {
         listener = null;
     }
     //endregion
-
-    public static class DashboardItem {
-        @DrawableRes
-        private int icon;
-        @StringRes
-        private int title;
-
-        //region getters and setters
-
-        public int getIcon() {
-            return icon;
-        }
-
-        public void setIcon(@DrawableRes int icon) {
-            this.icon = icon;
-        }
-
-        public int getTitle() {
-            return title;
-        }
-
-        public void setTitle(@StringRes int title) {
-            this.title = title;
-        }
-        //endregion
-
-
-        public DashboardItem(int icon, int title) {
-            this.icon = icon;
-            this.title = title;
-        }
-    }
 
     private static class DashboardData {
 
@@ -286,6 +247,7 @@ public class DashBoardFragment extends Fragment {
             dashboard.setOrders(ordersPlaced);
             dashboard.setStock(remainingUnits);
             dashboard.setSold(soldUnits);
+
             return dashboard;
         }
     }
@@ -301,6 +263,13 @@ public class DashBoardFragment extends Fragment {
 
         @Override
         public void onLoadFinished(@NonNull Loader loader, DashboardData data) {
+
+            if (data == null) {
+                Toast.makeText(getContext(), R.string.action_redirect_fragment_content_missing, Toast.LENGTH_LONG).show();
+                listener.onFragmentChanged(PlaceOrderFragment.newInstance(getContext()));
+                return;
+            }
+
             dashboard_summary.setVisibility(View.GONE);
             DashboardData dashboard = data;
 
@@ -324,6 +293,9 @@ public class DashBoardFragment extends Fragment {
             dashboard_orders.setText(String.valueOf(dashboard.getOrders()));
 
             dashboard_summary.setVisibility(View.VISIBLE);
+
+            //stats
+            new ProcessInventoryDataAsync(getContext()).execute();
         }
 
         @Override
@@ -332,44 +304,37 @@ public class DashBoardFragment extends Fragment {
         }
     };
 
+    private class ProcessInventoryDataAsync extends AsyncTask<Void, Void, Inventory> {
 
-    private static class ProcessInventoryDataAsync extends AsyncTaskLoader<InventoryHolder> {
+        private Context context;
 
         public ProcessInventoryDataAsync(@NonNull Context context) {
-            super(context);
+            this.context = context;
         }
 
+
         @Override
-        protected void onStartLoading() {
-            super.onStartLoading();
-            forceLoad();
-        }
-
-        @Nullable
-        @Override
-        public InventoryHolder loadInBackground() {
-            InventoryHolder holder = new InventoryHolder();
-
-            //ArrayList<Object> orderObjs = new OrderDatabase(getContext()).getItems();
-            //ArrayList<Order> orders = new ArrayList<>(orderObjs.size());
-            //for (Object obj : orderObjs) orders.add((Order) obj);
-
-            //ArrayList<Object> itemObjs = new ItemDatabase(getContext()).getItems();
-            //ArrayList<Item> items = new ArrayList<>(itemObjs.size());
-            //for (Object obj : itemObjs) items.add((Item) obj);
-
-            //holder.setDatabaseItemHolder(items);
-            //holder.setDatabaseOrderHolder(orders);
-
-            holder.setTimelineDataHolder(Order.OrderTimelineHelper.get(getContext()));
+        protected Inventory doInBackground(Void... voids) {
+            Inventory holder = new Inventory();
+            holder.setDatabaseItemHolder(new ItemDatabase(getContext()).getAll());
+            holder.setDatabaseOrderHolder(new OrderDatabase(getContext()).getAll());
+            holder.setTimelineDataHolder(Order.OrderTimelineHelper.get(context));
+            holder.setInventoryDataHolder(new InventoryDatabase(context).getAll());
             return holder;
+        }
+
+        @Override
+        protected void onPostExecute(Inventory inventory) {
+            super.onPostExecute(inventory);
+            new LineGraphDataAsyncTask().execute(inventory);
         }
     }
 
-    private static class InventoryHolder {
+    private static class Inventory {
         ArrayList<Item> databaseItemHolder;
         ArrayList<Order> databaseOrderHolder;
         ArrayList<Order.Timeline> timelineHolder;
+        ArrayList<InventoryData> inventoryDataHolder;
 
         //region getters and setters
 
@@ -397,36 +362,45 @@ public class DashBoardFragment extends Fragment {
             this.timelineHolder = timelineHolder;
         }
 
+        public ArrayList<Order.Timeline> getTimelineHolder() {
+            return timelineHolder;
+        }
+
+        public void setTimelineHolder(ArrayList<Order.Timeline> timelineHolder) {
+            this.timelineHolder = timelineHolder;
+        }
+
+        public ArrayList<InventoryData> getInventoryDataHolder() {
+            return inventoryDataHolder;
+        }
+
+        public void setInventoryDataHolder(ArrayList<InventoryData> inventoryDataHolder) {
+            this.inventoryDataHolder = inventoryDataHolder;
+        }
+
 
         //endregion
     }
 
-    private LoaderManager.LoaderCallbacks inventoryDataLoaderCallbacks = new LoaderManager.LoaderCallbacks() {
-        @NonNull
-        @Override
-        public Loader onCreateLoader(int id, @Nullable Bundle args) {
-            return new ProcessInventoryDataAsync(getContext());
-        }
+    private class LineGraphDataAsyncTask extends AsyncTask<Inventory, Void, ArrayList<GraphDataHolder>> {
 
-        @Override
-        public void onLoadFinished(@NonNull Loader loader, Object data) {
+        private Inventory inventory;
 
-
-            InventoryHolder inventoryHolder = (InventoryHolder) data;
+        private GraphDataHolder getSales() {
 
             //region Sales
             LineGraphSeries<DataPoint> sales = new LineGraphSeries<>();
 
-            final int MAX_DATA_POINTS = inventoryHolder.getTimelineDataHolder().size();
+            final int MAX_DATA_POINTS = inventory.getTimelineDataHolder().size();
             int maxY = 0;
-            long end = inventoryHolder.getTimelineDataHolder().get(0).getLastPlacedOrder().getTimeStamp();
-            long start = inventoryHolder.getTimelineDataHolder().get(MAX_DATA_POINTS - 1).getLastPlacedOrder().getTimeStamp();
+            long end = System.currentTimeMillis();
+            long start = inventory.getTimelineDataHolder().get(MAX_DATA_POINTS - 1).getLastPlacedOrder().getTimeStamp();
 
             //remember timeline contains the last placed order until - the first placed order
             //so we need to cycle backwards
             for (int index = MAX_DATA_POINTS - 1; index > -1; index--) {
                 int sold = 0;
-                Order.Timeline timeline = inventoryHolder.getTimelineDataHolder().get(index);
+                Order.Timeline timeline = inventory.getTimelineDataHolder().get(index);
                 for (Item item : timeline.getLastPlacedOrder().getItems())
                     sold += item.getItemUnits();
                 for (Order order : timeline.getChildOrders())
@@ -441,37 +415,253 @@ public class DashBoardFragment extends Fragment {
             String endDate = DateFormats.getSimpleDateString(end, DateFormats.Day_Month_Year);
 
             //decor
-            sales.setTitle("Sales from " + startDate + "-" + endDate);
+            StringBuilder salesTitleBuilder = new StringBuilder(getContext().getResources().getString(R.string.label_sales));
+            salesTitleBuilder.append("\n");
+            salesTitleBuilder.append(startDate);
+            salesTitleBuilder.append(" - ");
+            salesTitleBuilder.append(endDate);
+
+            sales.setTitle(salesTitleBuilder.toString());
             sales.setColor(Color.GREEN);
             sales.setDrawDataPoints(true);
             sales.setDataPointsRadius(6);
             sales.setThickness(2);
 
-            //append
-            graph.addSeries(sales);
+            sales.setOnDataPointTapListener(new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
 
-            //set date label formatter
-            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
-            graph.getGridLabelRenderer().setNumHorizontalLabels(2);
+                    String date = DateFormats.getSimpleDateString((long) dataPoint.getX(), DateFormats.DayName_Day_Month_Year);
+                    StringBuilder msg = new StringBuilder(date);
+                    msg.append("\nSold: ");
+                    msg.append(String.valueOf((int) dataPoint.getY()));
+                    msg.append(" unit");
+                    msg.append(dataPoint.getY() > 1 ? "s" : "");
+                    Toast.makeText(getContext(), msg.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
 
-            graph.getViewport().setMinY(0);
-            graph.getViewport().setMaxY(maxY);
-            graph.getViewport().setYAxisBoundsManual(true);
 
-            //set manual x bound to have nice steps
-            graph.getViewport().setMinX(start);
-            graph.getViewport().setMaxX(end);
-            graph.getViewport().setXAxisBoundsManual(true);
+            GraphDataHolder salesDataHolder = new GraphDataHolder();
+            salesDataHolder.setTitle(salesTitleBuilder.toString());
+            salesDataHolder.setYLabel(getContext().getResources().getString(R.string.label_units));
+            salesDataHolder.setXLabel(getContext().getResources().getString(R.string.label_date));
+            salesDataHolder.setMinX(start);
+            salesDataHolder.setMaxX(end);
+            salesDataHolder.setMinY(0);
+            salesDataHolder.setMaxY(maxY + 2);
+            salesDataHolder.setDataPoints(sales);
 
-            //as we use dates as labels,the human rounding to nice readable numbers is not necessary.
-            graph.getGridLabelRenderer().setHumanRounding(true);
+            return salesDataHolder;
+        }
+
+        private GraphDataHolder getStockPerItem() {
+
+            //region StockPerItem
+
+            final ArrayList<Item> items = new ItemDatabase(getContext()).getAll();
+
+            GraphDataHolder graphDataHolder = new GraphDataHolder();
+
+            int maxX = 0, maxY = 0;
+
+            int index = 0;
+
+            int maxDataPoints = items.size();
+
+            BarGraphSeries<DataPoint> dataPointBarGraphSeries = new BarGraphSeries<>();
+
+            for (Item item : items) {
+
+
+                //region dataPointBarGraphSeries append DataPoints
+
+                int remainingItems = item.getItemUnitRemaining();
+
+                maxY = remainingItems > maxY ? remainingItems : remainingItems;
+
+                remainingItems = remainingItems > 0 ? remainingItems : -3;
+
+                DataPoint dataPoint = new DataPoint(index, remainingItems);
+
+                dataPointBarGraphSeries.appendData(dataPoint, true, maxDataPoints);
+
+                index++;
+
+                maxX++;
+
+                //endregion
+
+                //region dataPointBarGraphSeries onTapListener
+                dataPointBarGraphSeries.setOnDataPointTapListener(new OnDataPointTapListener() {
+                    @Override
+                    public void onTap(Series series, DataPointInterface dataPoint) {
+
+                        Item item = items.get((int) dataPoint.getX());
+
+                        long timestamp = item.getItemTimeStamp();
+                        DateFormats dateFormats = DateFormats.DayName_Day_Month_Year;
+                        String date = DateFormats.getSimpleDateString(timestamp, dateFormats);
+
+                        int soldUnits = item.getItemUnits();
+                        int remainingUnits = item.getItemUnitRemaining();
+
+                        StringBuilder msg = new StringBuilder(date);
+                        msg.append("\n");
+                        msg.append(item.getItemName());
+
+                        msg.append("\nRemains: ");
+                        msg.append(String.valueOf(remainingUnits));
+                        msg.append(" unit");
+                        msg.append(remainingUnits > 1 ? "s" : "");
+
+                        msg.append("\nSold: ");
+                        msg.append(String.valueOf(soldUnits));
+                        msg.append(" unit");
+                        msg.append(soldUnits > 1 ? "s" : "");
+
+                        Toast.makeText(getContext(), msg.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                //endregion
+
+                //region dataPointBarGraphSeries styling
+                dataPointBarGraphSeries.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+                    @Override
+                    public int get(DataPoint data) {
+                        return Color.rgb((int) data.getX() * 255 / 4, (int) Math.abs(data.getY() * 255 / 6), 100);
+                    }
+                });
+                dataPointBarGraphSeries.setSpacing(5);
+                dataPointBarGraphSeries.setDataWidth(.5d);
+                //dataPointBarGraphSeries.setAnimated(true);
+                //endregion
+            }
+
+            graphDataHolder.setDataPoints(dataPointBarGraphSeries);
+
+            graphDataHolder.setMaxX(maxX);
+            graphDataHolder.setMaxY(maxY);
+            graphDataHolder.setMinX(0);
+            graphDataHolder.setMinY(-5);
+
+
+            long lastOrderTimestamp = System.currentTimeMillis();
+            long startTimestamp = inventory.getDatabaseOrderHolder().get(inventory.getDatabaseOrderHolder().size() - 1).getTimeStamp();
+
+            DateFormats dateFormats = DateFormats.Day_Month_Year;
+            String startDate = DateFormats.getSimpleDateString(startTimestamp, dateFormats);
+            String endDate = DateFormats.getSimpleDateString(lastOrderTimestamp, dateFormats);
+
+            StringBuilder salesTitleBuilder = new StringBuilder(getContext().getResources().getString(R.string.label_stock_per_item));
+            salesTitleBuilder.append("\n");
+            salesTitleBuilder.append(startDate);
+            salesTitleBuilder.append(" - ");
+            salesTitleBuilder.append(endDate);
             //endregion
 
+            graphDataHolder.setTitle(salesTitleBuilder.toString());
+            graphDataHolder.setYLabel(getContext().getResources().getString(R.string.label_units));
+            graphDataHolder.setXLabel(getContext().getResources().getString(R.string.label_items));
+
+            return graphDataHolder;
+        }
+
+        private GraphDataHolder getModifiedStock() {
+            //region Sales
+            LineGraphSeries<DataPoint> stock = new LineGraphSeries<>();
+
+            final int MAX_DATA_POINTS = inventory.getInventoryDataHolder().size();
+            long minY = 0;
+            long maxY = 0;
+            final long maxX = inventory.getInventoryDataHolder().get(0).getTimestamp();
+            final long minX = inventory.getInventoryDataHolder().get(MAX_DATA_POINTS - 1).getTimestamp();
+
+            for (int index = MAX_DATA_POINTS - 1; index > -1; index--) {
+
+                InventoryData inventoryData = inventory.getInventoryDataHolder().get(index);
+
+                long stockUnitCount = inventoryData.getStockUnitCount();
+
+                long date = inventoryData.getTimestamp();
+
+                maxY = stockUnitCount > maxY ? stockUnitCount : maxY;
+                stock.appendData(new DataPoint(new Date(date), stockUnitCount), true, MAX_DATA_POINTS, true);
+            }
+
+
+            String startDate = DateFormats.getSimpleDateString(minX, DateFormats.Day_Month_Year);
+            String endDate = DateFormats.getSimpleDateString(maxX, DateFormats.Day_Month_Year);
+
+            //region stock data
+            StringBuilder stockTitleBuilder = new StringBuilder(getContext().getResources().getString(R.string.label_modified_stock));
+            stockTitleBuilder.append("\n");
+            stockTitleBuilder.append(startDate);
+            stockTitleBuilder.append(" - ");
+            stockTitleBuilder.append(endDate);
+            stock.setTitle(stockTitleBuilder.toString());
+            stock.setColor(Color.RED);
+            stock.setDrawDataPoints(true);
+            stock.setDataPointsRadius(7);
+            stock.setThickness(3);
+            stock.setAnimated(true);
+            stock.setOnDataPointTapListener(new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+
+                    String date = DateFormats.getSimpleDateString((long) dataPoint.getX(), DateFormats.DayName_Day_Month_Year);
+                    StringBuilder msg = new StringBuilder(date);
+                    msg.append("\nModified Stock: ");
+                    msg.append(String.valueOf((int) dataPoint.getY()));
+                    msg.append(" unit");
+                    msg.append(dataPoint.getY() > 1 ? "s" : "");
+                    Toast.makeText(getContext(), msg.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            GraphDataHolder stockDataHolder = new GraphDataHolder();
+            stockDataHolder.setTitle(stockTitleBuilder.toString());
+            stockDataHolder.setYLabel(getContext().getResources().getString(R.string.label_units));
+            stockDataHolder.setXLabel(getContext().getResources().getString(R.string.label_date));
+            stockDataHolder.setMinX(minX);
+            stockDataHolder.setMaxX(maxX);
+            stockDataHolder.setMinY(minY);
+            stockDataHolder.setMaxY(maxY + 5);
+            stockDataHolder.setDataPoints(stock);
+            //endregion
+            return stockDataHolder;
         }
 
         @Override
-        public void onLoaderReset(@NonNull Loader loader) {
+        protected ArrayList<GraphDataHolder> doInBackground(Inventory... inventories) {
 
+            ArrayList<GraphDataHolder> dataHolders = new ArrayList<>();
+            if (inventories[0].getInventoryDataHolder().isEmpty()) return dataHolders;
+            inventory = inventories[0];
+
+            dataHolders.add(getSales());
+            dataHolders.add(getStockPerItem());
+            dataHolders.add(getModifiedStock());
+
+            return dataHolders;
         }
-    };
+
+        @Override
+        protected void onPostExecute(ArrayList<GraphDataHolder> graphDataHolders) {
+            super.onPostExecute(graphDataHolders);
+
+            if (graphViewAdapter == null) {
+                graphViewAdapter = new GraphViewAdapter(graphDataHolders);
+                recyclerView.setAdapter(graphViewAdapter);
+            } else
+                graphViewAdapter.setDataHolders(graphDataHolders);
+
+            if (graphViewAdapter.getItemCount() == 0)
+                holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+            else {
+                holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                crossFadeUtils.crossfade();
+            }
+        }
+    }
 }

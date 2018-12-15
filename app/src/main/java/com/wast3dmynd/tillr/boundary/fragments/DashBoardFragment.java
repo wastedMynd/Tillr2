@@ -472,6 +472,19 @@ public class DashBoardFragment extends Fragment {
 
             BarGraphSeries<DataPoint> dataPointBarGraphSeries = new BarGraphSeries<>();
 
+
+            //sort items according to date
+            Collections.sort(items, new Comparator<Item>() {
+                @Override
+                public int compare(Item item1, Item item2) {
+
+                    Date date1 = new Date(item1.getItemTimeStamp());
+                    Date date2 = new Date(item2.getItemTimeStamp());
+
+                    return date1.compareTo(date2);
+                }
+            });
+
             for (Item item : items) {
 
 
@@ -556,8 +569,8 @@ public class DashBoardFragment extends Fragment {
             graphDataHolder.setMinY(-10);
 
 
-            long lastOrderTimestamp = System.currentTimeMillis();
-            long startTimestamp = inventory.getDatabaseOrderHolder().get(inventory.getDatabaseOrderHolder().size() - 1).getTimeStamp();
+            long lastOrderTimestamp = items.get(items.size() - 1).getItemTimeStamp();
+            long startTimestamp = items.get(0).getItemTimeStamp();
 
             DateFormats dateFormats = DateFormats.Day_Month_Year;
             String startDate = DateFormats.getSimpleDateString(startTimestamp, dateFormats);

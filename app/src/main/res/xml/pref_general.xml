@@ -44,7 +44,7 @@
 
         <Preference
             android:key="version"
-            android:summary="1.07122018"
+            android:summary="2.15122018"
             android:title="Build version" />
 
         <Preference

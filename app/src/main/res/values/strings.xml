@@ -86,9 +86,9 @@
     <string name="label_damage">Damage</string>
     <string name="label_orders">Orders</string>
     <string name="label_stock">Stock</string>
-    <string name="label_modified_stock">Modified Stock</string>
+    <string name="label_modified_stock">Replenished Stock</string>
     <string name="label_sold">Sold</string>
-    <string name="prompt_place_another_order">Place another order?</string>
+    <string name="prompt_place_another_order">Want to place another order?</string>
     <string name="title_fragment_dashboard">Dash Board</string>
     <string name="pref_description_night_mode_enabled">Changes theme to night mode.</string>
     <string name="pref_title_night_mode_enabled">Night mode</string>
@@ -103,7 +103,7 @@
     <string name="action_filter_by_placed_items">Filter by Placed Items</string>
     <string name="action_reload">Reload</string>
     <string name="label_sales">Sales</string>
-    <string name="label_stock_per_item">Stock Per Item</string>
+    <string name="label_stock_per_item">Item Units</string>
     <string name="selected_fragment_onchange_wait">Loading please wait&#8230;</string>
     <string name="action_redirect_fragment_content_missing">
         wait a moment, content was not available&#8230;

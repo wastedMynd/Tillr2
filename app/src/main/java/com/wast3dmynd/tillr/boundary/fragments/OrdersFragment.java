@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
@@ -109,6 +110,7 @@ public class OrdersFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(DATA_LOADER_ARGS_ORDER,order);
+
                 getActivity().getSupportLoaderManager().initLoader(CONTENT_LOADER_ORDER_ID,bundle,loaderCallbacks);
             }
 
@@ -308,6 +310,12 @@ public class OrdersFragment extends Fragment {
         @Override
         public void onLoadFinished(@NonNull Loader loader, Order.TimelineData data) {
             Order.TimelineData timelineData = data;
+
+            if (data == null) {
+                Toast.makeText(getContext(), R.string.action_redirect_fragment_content_missing, Toast.LENGTH_LONG).show();
+                listener.onFragmentChanged(PlaceOrderFragment.newInstance(getContext()));
+                return;
+            }
 
             //display order timeline date
             DateFormats dateFormats = DateFormats.Day_Month_Year;

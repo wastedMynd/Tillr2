@@ -45,10 +45,9 @@ public class GraphViewHolder extends RecyclerView.ViewHolder {
         graph.getViewport().setMaxX(dataHolder.getMaxX());
         graph.getViewport().setXAxisBoundsManual(true);
 
-
         if (dataHolder.getDataPoints() instanceof BarGraphSeries) {
             graph.getLegendRenderer().setVisible(false);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.BOTTOM);
+            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
             graph.getGridLabelRenderer().setHumanRounding(true);
             return;
         }

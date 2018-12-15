@@ -308,6 +308,7 @@ public class ItemDatabase extends DatabaseDelegate {
         onInsert, onUpdate, onRemove
     }
 
+
     private synchronized void auditInventory(Item item, AuditOnCondition auditCondition) {
         //get All InventoryData
         InventoryDatabase inventoryDatabase = new InventoryDatabase(getContext());

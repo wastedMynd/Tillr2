@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -385,6 +386,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
                 return true;
 
             case R.id.action_filter_placed_order:
+
                 new ItemFilterTask(placeOrderAdapter.getItems()).execute();
                 return true;
 
@@ -489,17 +491,31 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
                 if (item.getGui().isSelected())
                     filteredItems.add(item);
 
+
             return filteredItems;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Item> items) {
-            super.onPostExecute(items);
+        protected void onPostExecute(final ArrayList<Item> filteredItems) {
+            super.onPostExecute(filteredItems);
 
-            if (items.isEmpty())
+            if (filteredItems.isEmpty()) {
+
                 holder.contentLoaderInfo.setText(R.string.content_loader_empty);
-            else {
-                placeOrderAdapter.setItems(items);
+
+                //this is implemented for ux
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (filteredItems.isEmpty())
+                            filteredItems.addAll(items);
+
+                        holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                        crossFadeUtils.crossfade();
+                    }
+                }, 1500);
+            } else {
+                placeOrderAdapter.setItems(filteredItems);
                 holder.contentLoaderInfo.setText(R.string.content_loader_done);
                 crossFadeUtils.crossfade();
             }

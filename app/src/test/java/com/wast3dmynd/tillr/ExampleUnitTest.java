@@ -1,11 +1,8 @@
 package com.wast3dmynd.tillr;
 
-import com.wast3dmynd.tillr.utils.CurrencyUtility;
-
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -15,9 +12,8 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
 
     @Test
-    public void isCurrencyCorrect()
-    {
-        assertEquals("R 15,00", CurrencyUtility.getCurrencyDisplay(15));
+    public void number_isRandom() {
+        assertEquals(-1, (int) ((Math.random() * 255) + 1));
     }
 
     @Test

@@ -121,6 +121,7 @@ public class DashBoardFragment extends Fragment {
     }
     //endregion
 
+    //region control logic
     private static class DashboardData {
 
         //data
@@ -478,9 +479,9 @@ public class DashBoardFragment extends Fragment {
 
                 int remainingItems = item.getItemUnitRemaining();
 
-                maxY = remainingItems > maxY ? remainingItems : remainingItems;
+                maxY = remainingItems > maxY ? remainingItems : maxY;
 
-                remainingItems = remainingItems > 0 ? remainingItems : -3;
+                remainingItems = remainingItems > 0 ? remainingItems : -5;
 
                 DataPoint dataPoint = new DataPoint(index, remainingItems);
 
@@ -529,21 +530,30 @@ public class DashBoardFragment extends Fragment {
                 dataPointBarGraphSeries.setValueDependentColor(new ValueDependentColor<DataPoint>() {
                     @Override
                     public int get(DataPoint data) {
-                        return Color.rgb((int) data.getX() * 255 / 4, (int) Math.abs(data.getY() * 255 / 6), 100);
+                        return Color.rgb((int) data.getX() * 255 / 4, (int) Math.abs(data.getY() * 255 / 6), (int) ((Math.random() * 255) + 1));
                     }
                 });
-                dataPointBarGraphSeries.setSpacing(5);
-                dataPointBarGraphSeries.setDataWidth(.5d);
+
+                //dataPointBarGraphSeries.setColor(color);
+                dataPointBarGraphSeries.setDrawValuesOnTop(true);
+                dataPointBarGraphSeries.setTitle(item.getItemName());
+                int colorAccent = getContext().getResources().getColor(R.color.colorAccent);
+                dataPointBarGraphSeries.setValuesOnTopColor(colorAccent);
+                dataPointBarGraphSeries.setSpacing(0);
+                dataPointBarGraphSeries.setDataWidth(0.25d);
+
+                //this seems to cause a null pointer exception at at com.jjoe64.graphview.series.BarGraphSeries.draw(BarGraphSeries.java:304)
                 //dataPointBarGraphSeries.setAnimated(true);
+
                 //endregion
             }
 
             graphDataHolder.setDataPoints(dataPointBarGraphSeries);
 
             graphDataHolder.setMaxX(maxX);
-            graphDataHolder.setMaxY(maxY);
+            graphDataHolder.setMaxY(maxY + 20);
             graphDataHolder.setMinX(0);
-            graphDataHolder.setMinY(-5);
+            graphDataHolder.setMinY(-10);
 
 
             long lastOrderTimestamp = System.currentTimeMillis();
@@ -639,8 +649,8 @@ public class DashBoardFragment extends Fragment {
             if (inventories[0].getInventoryDataHolder().isEmpty()) return dataHolders;
             inventory = inventories[0];
 
-            dataHolders.add(getSales());
             dataHolders.add(getStockPerItem());
+            dataHolders.add(getSales());
             dataHolders.add(getModifiedStock());
 
             return dataHolders;
@@ -664,4 +674,7 @@ public class DashBoardFragment extends Fragment {
             }
         }
     }
+
+    //endregion
+
 }

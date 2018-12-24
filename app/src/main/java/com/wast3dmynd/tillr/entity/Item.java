@@ -15,6 +15,14 @@ public class Item implements Serializable {
     private double itemPriceTotal =0;
     private int itemUnitRemaining=0;
     private long itemTimeStamp= System.currentTimeMillis();
+
+    //special
+    private double specialPrice;
+    private long specialStartDate;
+    private long specialEndDate;
+    private long specialStartTime;
+    private long specialEndTime;
+
     private ItemGui gui = new ItemGui();
 
     //region getters and setters
@@ -100,23 +108,63 @@ public class Item implements Serializable {
         this.itemDamage = itemDamage;
     }
 
+
+    public double getSpecialPrice() {
+        return specialPrice;
+    }
+
+    public void setSpecialPrice(double specialPrice) {
+        this.specialPrice = specialPrice;
+    }
+
+    public long getSpecialStartDate() {
+        return specialStartDate;
+    }
+
+    public void setSpecialStartDate(long specialStartDate) {
+        this.specialStartDate = specialStartDate;
+    }
+
+    public long getSpecialEndDate() {
+        return specialEndDate;
+    }
+
+    public void setSpecialEndDate(long specialEndDate) {
+        this.specialEndDate = specialEndDate;
+    }
+
+    public long getSpecialStartTime() {
+        return specialStartTime;
+    }
+
+    public void setSpecialStartTime(long specialStartTime) {
+        this.specialStartTime = specialStartTime;
+    }
+
+    public long getSpecialEndTime() {
+        return specialEndTime;
+    }
+
+    public void setSpecialEndTime(long specialEndTime) {
+        this.specialEndTime = specialEndTime;
+    }
+
     public ItemGui getGui() {
         return gui;
     }
 
-    public void setGui(ItemGui gui) {
-        this.gui = gui;
-    }
 
     public boolean isValid() {
         if (getItemName() == null) return false;
         return  (!getItemName().isEmpty()) && (getItemCostPerUnit()> 0);
     }
+
     //endregion
 
     public static class ItemGui implements Serializable{
         private  boolean highlighted =false;
         private boolean selected = false;
+        private int color =0;
 
         public boolean isSelected() {
             return selected;
@@ -148,6 +196,13 @@ public class Item implements Serializable {
             this.highlighted = highlighted;
         }
 
+        public void setColor(int color) {
+            this.color = color;
+        }
+
+        public int getColor() {
+            return color;
+        }
     }
 
 

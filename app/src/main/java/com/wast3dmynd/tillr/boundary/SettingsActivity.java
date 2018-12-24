@@ -13,12 +13,13 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.support.v4.app.NavUtils;
 import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
@@ -38,17 +39,6 @@ import java.util.List;
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
-    //region setup
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -56,8 +46,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-
-            //region updates pref summary
             String stringValue = value.toString();
 
             if (preference instanceof ListPreference) {
@@ -100,10 +88,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 preference.setSummary(stringValue);
             }
             return true;
-            //endregion
         }
     };
 
+    /**
+     * Helper method to determine if the device has an extra-large screen. For
+     * example, 10" tablets are extra-large.
+     */
+    private static boolean isXLargeTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
+    }
 
     /**
      * Binds a preference's summary to its value. More specifically, when the
@@ -118,17 +113,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
+        try{
         // Trigger the listener immediately with the preference's
         // current value.
-        try {
-
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getString(preference.getKey(), ""));
-        }catch (ClassCastException e){
-            e.printStackTrace();
-        }
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getString(preference.getKey(), ""));}
+                        catch (Exception e){e.printStackTrace();}
     }
 
     @Override
@@ -146,6 +138,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            if (!super.onMenuItemSelected(featureId, item)) {
+                NavUtils.navigateUpFromSameTask(this);
+            }
+            return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
     }
 
     /**
@@ -166,7 +170,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     /**
-     * This method stops selectedFragment injection in malicious applications.
+     * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
      */
     protected boolean isValidFragment(String fragmentName) {
@@ -176,11 +180,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
-    //endregion
-
-    //region This selectedFragment shows general preferences only. It is used when the activity is showing a two-pane settings UI.
-    // -----------------------------------------------------------------------------------------------
-
+    /**
+     * This fragment shows general preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+     */
     /**
      * This selectedFragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
@@ -190,6 +193,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         public static final String PREF_NIGHT_MODE_KEY = "night_mode_enabled";
         public static final String PREF_AUTO_THEME_MODE_KEY = "auto_theme_mode_enabled";
+        public static final String PREF_ITEM_MAXIMUM_VALUE = "item_max_value";
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -204,7 +208,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference(PREF_NIGHT_MODE_KEY));
             bindPreferenceSummaryToValue(findPreference(PREF_AUTO_THEME_MODE_KEY));
-            //bindPreferenceSummaryToValue(findPreference("scanner_flash_light"));
+            bindPreferenceSummaryToValue(findPreference(PREF_ITEM_MAXIMUM_VALUE));
             //bindPreferenceSummaryToValue(findPreference("scanner_auto_focus"));
         }
 
@@ -253,10 +257,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
     //endregion
 
-    //region This selectedFragment shows notification preferences only. It is used when the activity is showing a two-pane settings UI.
-
     /**
-     * This selectedFragment shows notification preferences only. It is used when the
+     * This fragment shows notification preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -285,12 +287,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
-    //endregion
-
-    //region This selectedFragment shows data and sync preferences only. It is used when the activity is showing a two-pane settings UI.
-
     /**
-     * This selectedFragment shows data and sync preferences only. It is used when the
+     * This fragment shows data and sync preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -318,6 +316,4 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
     }
-    //endregion
-
 }

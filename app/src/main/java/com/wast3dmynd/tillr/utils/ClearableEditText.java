@@ -84,7 +84,7 @@ public class ClearableEditText  extends android.support.v7.widget.AppCompatEditT
 
     private void init(final Context context) {
 
-        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_close_grey600_18dp);
+        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
 
         final Drawable wrappedDrawable = DrawableCompat.wrap(drawable); //Wrap the drawable so that it can be tinted pre Lollipop
 

@@ -277,39 +277,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/content_view_root"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <include
-            layout="@layout/layout_content_loader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/content_recycler"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingTop="16dp"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_place_order"
-            tools:orientation="vertical"
-            tools:scrollbars="vertical" />
-
-
-    </android.support.constraint.ConstraintLayout>
+    <include layout="@layout/layout_content_recycler"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

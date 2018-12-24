@@ -82,7 +82,7 @@ public class ViewOrderFragment extends Fragment {
         orderTotal.setText(CurrencyUtility.getCurrencyDisplay(order.getTotal()));
 
         //link Adapter
-        RecyclerView recyclerView = view.findViewById(R.id.itemRecyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.content_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         ViewOrderAdapter adapter = new ViewOrderAdapter(getContext(), order);

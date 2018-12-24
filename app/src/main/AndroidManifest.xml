@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wast3dmynd.tillr">
 
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -38,8 +37,10 @@
         <activity
             android:name=".boundary.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme">
-
+            android:parentActivityName=".boundary.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.wast3dmynd.tillr.boundary.MainActivity" />
         </activity>
     </application>
 

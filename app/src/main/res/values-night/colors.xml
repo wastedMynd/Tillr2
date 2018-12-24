@@ -14,4 +14,7 @@
     <color name="colorIconActive">#fff</color>
     <color name="colorIconActiveMenu">#000</color>
     <color name="tabColor">#fff</color>
+
+    <color name="menu_item_tint">#fff</color>
+    <color name="highlight">#505959ff</color>
 </resources>

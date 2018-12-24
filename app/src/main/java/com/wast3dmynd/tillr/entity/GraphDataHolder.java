@@ -2,18 +2,26 @@ package com.wast3dmynd.tillr.entity;
 
 import com.jjoe64.graphview.series.BaseSeries;
 import com.jjoe64.graphview.series.DataPoint;
+import com.wast3dmynd.tillr.boundary.views.GraphViewHolder;
 
-public class GraphDataHolder {
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class GraphDataHolder implements Serializable {
+
     private String title;
     private String yLabel;
     private String xLabel;
     private BaseSeries<DataPoint> dataPoints;
+    private ArrayList<BaseSeries<DataPoint>> colectionOfDataPoints;
     private long minX;
     private long maxX;
     private long minY;
     private long maxY;
+    private ArrayList<Item> rootItems;
 
-    //region getters and setters
+
+        //region getters and setters
 
     public String getTitle() {
         return title;
@@ -79,6 +87,21 @@ public class GraphDataHolder {
         this.maxY = maxY;
     }
 
+    public ArrayList<Item> getRootItems() {
+        return rootItems;
+    }
+
+    public void setRootItems(ArrayList<Item> rootItems) {
+        this.rootItems = rootItems;
+    }
+
+    public ArrayList<BaseSeries<DataPoint>> getColectionOfDataPoints() {
+        return colectionOfDataPoints;
+    }
+
+    public void setColectionOfDataPoints(ArrayList<BaseSeries<DataPoint>> colectionOfDataPoints) {
+        this.colectionOfDataPoints = colectionOfDataPoints;
+    }
 
     //endregion
 

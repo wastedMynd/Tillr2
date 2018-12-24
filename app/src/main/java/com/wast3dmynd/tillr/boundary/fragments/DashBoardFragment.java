@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.BaseSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -41,6 +42,7 @@ import com.wast3dmynd.tillr.entity.GraphDataHolder;
 import com.wast3dmynd.tillr.entity.InventoryData;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
+import com.wast3dmynd.tillr.utils.ColorGenerator;
 import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.DateFormats;
 
@@ -49,6 +51,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class DashBoardFragment extends Fragment {
     private static final int DASH_BOARD_CONTENT_LOADER_ID = 1;
@@ -58,10 +61,15 @@ public class DashBoardFragment extends Fragment {
     private TextView dashboard_date, dashboard_time, dashboard_sold, dashboard_stock, dashboard_orders;
     CoordinatorLayout dashboard_main;
     private ConstraintLayout dashboard_summary;
-    private RecyclerView recyclerView;
+
     private GraphViewAdapter graphViewAdapter = null;
-    private ContentViewHolder holder;
+
+
+    //<include layout="@layout/layout_content_recycler"/>
     private CrossFadeUtils crossFadeUtils;
+    private ContentViewHolder holder;
+    private RecyclerView recyclerView;
+
     //endregion
 
     public static Fragment newInstance() {
@@ -327,7 +335,7 @@ public class DashBoardFragment extends Fragment {
         @Override
         protected void onPostExecute(Inventory inventory) {
             super.onPostExecute(inventory);
-            new LineGraphDataAsyncTask().execute(inventory);
+            new DashboardGraphDataAsyncTask().execute(inventory);
         }
     }
 
@@ -383,9 +391,15 @@ public class DashBoardFragment extends Fragment {
         //endregion
     }
 
-    private class LineGraphDataAsyncTask extends AsyncTask<Inventory, Void, ArrayList<GraphDataHolder>> {
+    private class DashboardGraphDataAsyncTask extends AsyncTask<Inventory, Void, ArrayList<GraphDataHolder>> {
 
         private Inventory inventory;
+
+        private Random random;
+
+        public DashboardGraphDataAsyncTask() {
+            this.random = new Random(1);
+        }
 
         private GraphDataHolder getSales() {
 
@@ -470,8 +484,6 @@ public class DashBoardFragment extends Fragment {
 
             int maxDataPoints = items.size();
 
-            BarGraphSeries<DataPoint> dataPointBarGraphSeries = new BarGraphSeries<>();
-
 
             //sort items according to date
             Collections.sort(items, new Comparator<Item>() {
@@ -485,7 +497,23 @@ public class DashBoardFragment extends Fragment {
                 }
             });
 
-            for (Item item : items) {
+            graphDataHolder.setColectionOfDataPoints(new ArrayList<BaseSeries<DataPoint>>());
+
+            BarGraphSeries<DataPoint> dataPointBarGraphSeries = new BarGraphSeries<>();
+
+            final ArrayList<Integer> colors = new ArrayList<>();
+            final ArrayList<Item> temp = new ArrayList<>();
+            for (final Item i : items) {
+                i.getGui().setColor(ColorGenerator.generateColor());
+                temp.add(i);
+                colors.add(i.getGui().getColor());
+            }
+
+            items.clear();
+            items.addAll(temp);
+
+            for (final Item item : items) {
+
 
 
                 //region dataPointBarGraphSeries append DataPoints
@@ -543,15 +571,15 @@ public class DashBoardFragment extends Fragment {
                 dataPointBarGraphSeries.setValueDependentColor(new ValueDependentColor<DataPoint>() {
                     @Override
                     public int get(DataPoint data) {
-                        return Color.rgb((int) data.getX() * 255 / 4, (int) Math.abs(data.getY() * 255 / 6), (int) ((Math.random() * 255) + 1));
+                        return colors.get((int)(data.getX()));
                     }
                 });
 
                 //dataPointBarGraphSeries.setColor(color);
                 dataPointBarGraphSeries.setDrawValuesOnTop(true);
                 dataPointBarGraphSeries.setTitle(item.getItemName());
-                int colorAccent = getContext().getResources().getColor(R.color.colorAccent);
-                dataPointBarGraphSeries.setValuesOnTopColor(colorAccent);
+                //int colorAccent = getContext().getResources().getColor(R.color.colorAccent);
+                //dataPointBarGraphSeries.setValuesOnTopColor(colorAccent);
                 dataPointBarGraphSeries.setSpacing(0);
                 dataPointBarGraphSeries.setDataWidth(0.25d);
 
@@ -559,9 +587,8 @@ public class DashBoardFragment extends Fragment {
                 //dataPointBarGraphSeries.setAnimated(true);
 
                 //endregion
+                graphDataHolder.setDataPoints(dataPointBarGraphSeries);
             }
-
-            graphDataHolder.setDataPoints(dataPointBarGraphSeries);
 
             graphDataHolder.setMaxX(maxX);
             graphDataHolder.setMaxY(maxY + 20);
@@ -586,6 +613,7 @@ public class DashBoardFragment extends Fragment {
             graphDataHolder.setTitle(salesTitleBuilder.toString());
             graphDataHolder.setYLabel(getContext().getResources().getString(R.string.label_units));
             graphDataHolder.setXLabel(getContext().getResources().getString(R.string.label_items));
+            graphDataHolder.setRootItems(items);
 
             return graphDataHolder;
         }
@@ -600,6 +628,7 @@ public class DashBoardFragment extends Fragment {
             final long maxX = inventory.getInventoryDataHolder().get(0).getTimestamp();
             final long minX = inventory.getInventoryDataHolder().get(MAX_DATA_POINTS - 1).getTimestamp();
 
+            long prevDate = System.currentTimeMillis();
             for (int index = MAX_DATA_POINTS - 1; index > -1; index--) {
 
                 InventoryData inventoryData = inventory.getInventoryDataHolder().get(index);
@@ -609,7 +638,14 @@ public class DashBoardFragment extends Fragment {
                 long date = inventoryData.getTimestamp();
 
                 maxY = stockUnitCount > maxY ? stockUnitCount : maxY;
-                stock.appendData(new DataPoint(new Date(date), stockUnitCount), true, MAX_DATA_POINTS, true);
+
+                try {
+                    stock.appendData(new DataPoint(new Date(date), stockUnitCount), true, MAX_DATA_POINTS, true);
+                    prevDate = date;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    stock.appendData(new DataPoint(new Date(prevDate), stockUnitCount), true, MAX_DATA_POINTS, true);
+                }
             }
 
 
@@ -675,6 +711,7 @@ public class DashBoardFragment extends Fragment {
 
             if (graphViewAdapter == null) {
                 graphViewAdapter = new GraphViewAdapter(graphDataHolders);
+                graphViewAdapter.setMainActivityListener((MainActivity) getActivity());
                 recyclerView.setAdapter(graphViewAdapter);
             } else
                 graphViewAdapter.setDataHolders(graphDataHolders);

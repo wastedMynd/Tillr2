@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -245,7 +246,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
                     creditTv.setText(creditBuilder.toString());
 
                     //payment edit text
-                    ClearableEditText txtPayment = view.findViewById(R.id.payment);
+                    EditText txtPayment = view.findViewById(R.id.payment);
                     txtPayment.addTextChangedListener(new TextWatcher() {
 
                         private void refreshCredit() {
@@ -381,9 +382,6 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
 
         //noinspection SimplifiableIfStatement
         switch (id) {
-            case R.id.action_settings:
-                getActivity().startActivity(new Intent(getContext(), SettingsActivity.class));
-                return true;
 
             case R.id.action_filter_placed_order:
 

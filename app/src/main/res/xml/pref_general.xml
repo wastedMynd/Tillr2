@@ -39,6 +39,19 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="ItemSettings"
+        android:title="Item">
+
+        <EditTextPreference
+            android:defaultValue="100"
+            android:key="item_max_value"
+            android:summary="@string/pref_description_item_max_value"
+            android:title="@string/pref_item_max_value" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
         android:key="about"
         android:title="About">
 

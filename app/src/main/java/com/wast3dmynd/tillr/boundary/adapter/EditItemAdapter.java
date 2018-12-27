@@ -108,8 +108,12 @@ public class EditItemAdapter extends RecyclerView.Adapter<EditItemViewHolder> {
     }
 
     public void addItem(Item item) {
+
+
+
         if(!items.contains(item)) {
             items.add(item);
+            item.getGui().setHighlighted(true);
             notifyDataSetChanged();
         }else {
             int indexOfItem = items.indexOf(item);

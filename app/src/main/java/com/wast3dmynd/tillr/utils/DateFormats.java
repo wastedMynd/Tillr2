@@ -2,12 +2,12 @@ package com.wast3dmynd.tillr.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by sizwe on 21-Dec-15.
  */
-public enum DateFormats
-{
+public enum DateFormats {
     Day_Month_Year("dd MMMM yyyy"),
 
     //with day field eg. Fri
@@ -33,19 +33,16 @@ public enum DateFormats
 
     private String format;
 
-    DateFormats(String mFormat)
-    {
+    DateFormats(String mFormat) {
         format = mFormat;
     }
 
-    public String getFormat()
-    {
+    public String getFormat() {
         return format;
     }
 
 
-    public static String getSimpleDateString(long date)
-    {
+    public static String getSimpleDateString(long date) {
         String dateString;
 
         DateFormats dateFormat = Day_Month_Year;
@@ -54,12 +51,10 @@ public enum DateFormats
 
         Date subjectDate = new Date(date);
 
-        if (subjectDate.getYear() == currentDate.getYear())
-        {
+        if (subjectDate.getYear() == currentDate.getYear()) {
             dateFormat = Day_Month;
 
-            if (subjectDate.getMonth() == currentDate.getMonth())
-            {
+            if (subjectDate.getMonth() == currentDate.getMonth()) {
                 dateFormat = DayName_Day;
             }
         }
@@ -71,8 +66,7 @@ public enum DateFormats
         return dateString;
     }
 
-    public static String getSimpleDateString(long date, DateFormats dateFormat)
-    {
+    public static String getSimpleDateString(long date, DateFormats dateFormat) {
         String dateString;
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat.getFormat());
@@ -82,8 +76,7 @@ public enum DateFormats
         return dateString;
     }
 
-    public static String getSimpleDateString(Date date, DateFormats dateFormat)
-    {
+    public static String getSimpleDateString(Date date, DateFormats dateFormat) {
         String dateString;
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat.getFormat());
@@ -93,8 +86,34 @@ public enum DateFormats
         return dateString;
     }
 
-    public static String getEstimatedRemaingTimeString(long started, long load, long load_done)
-    {
+
+    public static String getSimplifiedDateString(long date){
+       return getSimplifiedDateString(new Date(date));
+    }
+
+    public static String getSimplifiedDateString(Date date) {
+        String dateString;
+
+        DateFormats dateFormat;
+        Date currentDate = new Date(System.currentTimeMillis());
+        if (date.getYear() == currentDate.getYear()) {
+
+            if (date.getMonth() == currentDate.getMonth())
+                dateFormat = DayName_Day;
+            else
+                dateFormat = Day_Month;
+
+        } else dateFormat = Day_Month_Year;
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat.getFormat(),Locale.ENGLISH);
+
+        dateString = simpleDateFormat.format(date);
+
+        return dateString;
+    }
+
+
+    public static String getEstimatedRemaingTimeString(long started, long load, long load_done) {
         final long SEC = getEstimatedRemainingSec(started, load, load_done);
 
         long sec = SEC;
@@ -122,8 +141,7 @@ public enum DateFormats
         return time;
     }
 
-    public static long getEstimatedRemainingSec(long started, long load, long load_done)
-    {
+    public static long getEstimatedRemainingSec(long started, long load, long load_done) {
         long elapsed_time = System.currentTimeMillis() - started;
         long work_time = elapsed_time * load / load_done;
         long remaining_time = work_time - elapsed_time;

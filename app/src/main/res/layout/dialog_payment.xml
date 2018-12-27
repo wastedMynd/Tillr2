@@ -9,7 +9,7 @@
 
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayout3"
+        android:id="@+id/bundles_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -49,8 +49,8 @@
         android:layout_weight="1"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
+        app:layout_constraintStart_toStartOf="@+id/bundles_holder"
+        app:layout_constraintTop_toBottomOf="@+id/bundles_holder"
         tools:text="Total: R 30.00 " />
 
     <TextView
@@ -65,7 +65,7 @@
         android:textColor="@color/colorAdderAccent"
         android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@+id/total"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayout3"
+        app:layout_constraintEnd_toEndOf="@+id/bundles_holder"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/total"
         tools:text="Credit: R 0.00" />

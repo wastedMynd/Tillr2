@@ -2,12 +2,12 @@
     <string name="app_name">Til Point</string>
 
     <!--employee activities-->
-    <string name="title_place_order">Place An Order</string>
+    <string name="title_place_order">place an order</string>
 
     <!--employer activities-->
-    <string name="title_add_item">Create A New Item</string>
-    <string name="title_item_list">View Items</string>
-    <string name="title_item_editor">Edit An Item</string>
+    <string name="title_add_item">create a new item</string>
+    <string name="title_item_list">view Items</string>
+    <string name="title_item_editor">edit an item</string>
 
 
     <!--Staff Text-->
@@ -40,11 +40,11 @@
     <string name="action_item_list_opt_save">update</string>
     <string name="action_item_list_opt_edit">edit</string>
     <string name="action_item_list_opt_delete">delete</string>
-    <string name="title_order_list">View Orders</string>
-    <string name="title_activity_view_order">View Order</string>
+    <string name="title_order_list">view Orders</string>
+    <string name="title_activity_view_order">view Order</string>
     <string name="search_item_title">Search</string>
     <string name="order_option_menu">Order option menu</string>
-    <string name="title_activity_view_all_orders">View All Orders</string>
+    <string name="title_activity_view_all_orders">view orders</string>
 
     <string name="label_date">Date</string>
     <string name="label_time">Time</string>
@@ -61,7 +61,7 @@
     <string name="label_modified_stock">Replenished Stock</string>
     <string name="label_sold">Sold</string>
     <string name="prompt_place_another_order">Want to place another order?</string>
-    <string name="title_fragment_dashboard">Dash Board</string>
+    <string name="title_fragment_dashboard">dashboard</string>
     <string name="pref_description_night_mode_enabled">Changes theme to night mode.</string>
     <string name="pref_title_night_mode_enabled">Night mode</string>
     <string name="pref_description_auto_theme_mode_enabled">Change theme automatically to either Night or Day mode, base on your time zone.</string>
@@ -75,7 +75,7 @@
     <string name="action_filter_by_placed_items">Filter by Placed Items</string>
     <string name="action_reload">Reload</string>
     <string name="label_sales">Sales</string>
-    <string name="label_stock_per_item">Item Units</string>
+    <string name="label_stock_per_item">Units Remaining</string>
     <string name="selected_fragment_onchange_wait">Loading please wait&#8230;</string>
     <string name="action_redirect_fragment_content_missing">
         wait a moment, content was not available&#8230;
@@ -117,10 +117,10 @@
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_title_vibrate">Vibrate</string>
 
-    <string name="action_show_minimum_units">min range</string>
+    <string name="action_show_minimum_units">min</string>
     <string name="action_filter_by_items">Filter items</string>
-    <string name="action_show_maximum_units">max range</string>
-    <string name="action_show_medium_units">med range</string>
+    <string name="action_show_maximum_units">max</string>
+    <string name="action_show_medium_units">mid</string>
     <string name="action_revert">reload</string>
     <string name="label_advanced">Show advanced settings</string>
     <string name="label_item_price_per_unit_specials">Special\'s price</string>
@@ -128,6 +128,12 @@
     <string name="label_item_special_end">End date</string>
     <string name="label_item_special_start_time">Start time</string>
     <string name="label_item_special_end_time">End time</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="units_per_bundle">units per bundle</string>
+    <string name="bundles">bundles</string>
+    <string name="calculated_units">calculated units</string>
+    <string name="calculate_units">calculate units</string>
+    <string name="save">Save</string>
 
 
 </resources>

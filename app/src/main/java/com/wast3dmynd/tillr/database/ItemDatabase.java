@@ -8,6 +8,7 @@ import android.database.Cursor;
 import com.wast3dmynd.tillr.database.utils.DatabaseDelegate;
 import com.wast3dmynd.tillr.entity.InventoryData;
 import com.wast3dmynd.tillr.entity.Item;
+import com.wast3dmynd.tillr.entity.ItemSpecial;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,10 +16,11 @@ import java.util.Date;
 public class ItemDatabase extends DatabaseDelegate {
 
     //database table
-    private final String DATABASE_TABLE = "Items";
+    public static final String DATABASE_TABLE = "Items";
 
     // Columns
-    private final String ID_COLUMN = "id";
+    public static final String ID_COLUMN = "id";
+    private final String FORIEN_KEY_COLUMN = "order_id";
     private final String ITEM_NAME_COLUMN = "item_name";
     private final String ITEM_BARCODE_COLUMN = "item_barcode";
     private final String ITEM_COST_PER_UNIT_COLUMN = "item_cost_per_unit";
@@ -38,14 +40,17 @@ public class ItemDatabase extends DatabaseDelegate {
 
         return "CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE +
                 String.format("(%s INTEGER PRIMARY KEY  AUTOINCREMENT,", ID_COLUMN) +
+                String.format("%s INTEGER,", FORIEN_KEY_COLUMN) +
                 String.format("%s TEXT NOT NULL,", ITEM_NAME_COLUMN) +
                 String.format("%s TEXT,", ITEM_BARCODE_COLUMN) +
                 String.format("%s DOUBLE,", ITEM_COST_PER_UNIT_COLUMN) +
                 String.format("%s INTEGER,", ITEM_DAMAGE_COLUMN) +
                 String.format("%s DOUBLE,", ITEM_TOTAL_COLUMN) +
                 String.format("%s INTEGER,", ITEM_REMAINING_COLUMN) +
+                String.format("%s INTEGER,", ITEM_UNITS_COLUMN) +
                 String.format("%s LONG,", ITEM_TIMESTAMP_COLUMN) +
-                String.format("%s INTEGER);", ITEM_UNITS_COLUMN);
+                String.format("FOREIGN KEY(%s) REFERENCES %s(%s));", FORIEN_KEY_COLUMN, OrderDatabase.DATABASE_TABLE,
+                        OrderDatabase.ORDER_ID_COLUMN);
     }
 
     @Override
@@ -81,7 +86,6 @@ public class ItemDatabase extends DatabaseDelegate {
         values.put(ITEM_REMAINING_COLUMN, itemDB.getItemUnitRemaining());
 
         values.put(ITEM_TIMESTAMP_COLUMN, itemDB.getItemTimeStamp());
-
 
         float res;
         startAuditInventoryProcess(itemDB, AuditOnCondition.onInsert);
@@ -238,6 +242,7 @@ public class ItemDatabase extends DatabaseDelegate {
                     long itemTimeStamp;
                     itemTimeStamp = c.getLong(c.getColumnIndex(ITEM_TIMESTAMP_COLUMN));
 
+
                     //endregion
 
                     //region apply database content to Token item
@@ -260,6 +265,7 @@ public class ItemDatabase extends DatabaseDelegate {
                     item.setItemPriceTotal(itemPriceTotal);
 
                     item.setItemDamage(itemDamage);
+
                     //endregion
 
                     items.add(item);
@@ -273,6 +279,21 @@ public class ItemDatabase extends DatabaseDelegate {
 
         closeDatabase();
 
+        //get ItemSpecial
+        ArrayList<ItemSpecial> itemSpecials = new ItemSpecialDatabase(getContext()).getAll();
+        int previousIndex = 0;
+        for (ItemSpecial special : itemSpecials) {
+            for (int currentIndex = previousIndex; currentIndex < items.size(); currentIndex++) {
+                Object objItem = items.get(currentIndex);
+                Item item = (Item) objItem;
+                if (special.getItemId() == item.getId()) {
+                    item.setSpecial(special);
+                    previousIndex = currentIndex;
+                    break;
+                }
+            }
+        }
+
         return items;
     }
 
@@ -284,12 +305,16 @@ public class ItemDatabase extends DatabaseDelegate {
     public int getCount() {
         int count;
         openDatabase();
-        @SuppressLint("Recycle") Cursor c = getDatabase().query(DATABASE_TABLE, null, null, null, null, null, null);
-        count = c.getCount();
+        try {
+            @SuppressLint("Recycle") Cursor c = getDatabase().query(DATABASE_TABLE, null, null, null, null, null, null);
+            count = c.getCount();
+
+        } catch (Exception e) {
+            count = 0;
+        }
         closeDatabase();
         return count;
     }
-
 
     public ArrayList<Item> getAll() {
         ArrayList<Object> itemsDb = getItems();
@@ -304,10 +329,10 @@ public class ItemDatabase extends DatabaseDelegate {
         return items;
     }
 
+
     enum AuditOnCondition {
         onInsert, onUpdate, onRemove
     }
-
 
     private synchronized void auditInventory(Item item, AuditOnCondition auditCondition) {
         //get All InventoryData
@@ -335,8 +360,9 @@ public class ItemDatabase extends DatabaseDelegate {
                     InventoryData data = new InventoryData();
                     data.setTimestamp(item.getItemTimeStamp());
 
-                    stockUnits = item.getItemUnitRemaining();
-                    stockPriceTotal = (item.getItemCostPerUnit() * item.getItemUnitRemaining());
+                    stockUnits = item.getItemUnitRemaining() - item.getItemUnits();
+                    item.setItemUnitRemaining((int) stockUnits);
+                    stockPriceTotal = (item.getItemCostPerUnit() * stockUnits);
 
                     if (!inventoryDataHolder.isEmpty()) {
                         stockUnits += inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
@@ -358,18 +384,21 @@ public class ItemDatabase extends DatabaseDelegate {
                 break;
             case onUpdate:
                 if (!inventoryDataHolder.isEmpty()) {
-                    //get Item's unitRemaining before update
-                    Item itemBeforeBeingUpdated = itemsDatabase.get(itemsDatabase.indexOf(item));
-                    stockUnits = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
-                    stockUnits -= itemBeforeBeingUpdated.getItemUnitRemaining();
-                    stockUnits += item.getItemUnitRemaining();
+                    if (item.getItemUnits() > 0) {
 
-                    //stock Price Total -> before update:
-                    stockPriceTotal = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockPriceTotal();
-                    //on Update:
-                    stockPriceTotal -= (itemBeforeBeingUpdated.getItemUnitRemaining() * itemBeforeBeingUpdated.getItemCostPerUnit());
-                    //after Update:
-                    stockPriceTotal += (item.getItemUnitRemaining() * item.getItemCostPerUnit());
+                        //get Item's unitRemaining before update
+                        stockUnits = item.getItemUnitRemaining() + item.getItemUnits();
+                        item.setItemUnitRemaining((int) stockUnits);
+
+                        stockUnits = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
+                        stockUnits += item.getItemUnits();
+
+                        //stock Price Total -> before update:
+                        stockPriceTotal = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockPriceTotal();
+
+                        //on Update:
+                        stockPriceTotal += (item.getItemCostPerUnit() * item.getItemUnits());
+                    }
                 }
                 break;
             case onRemove:
@@ -397,21 +426,14 @@ public class ItemDatabase extends DatabaseDelegate {
                     inventoryData.setStockUnitCount(stockUnits);
                     inventoryData.setStockPriceTotal(stockPriceTotal);
                     inventoryData.setTimestamp(System.currentTimeMillis());
+                    inventoryDatabase.updateItem(inventoryData);
                     break;
                 }
             }
-            inventoryDatabase.updateItem(inventoryData);
-            break;
         }
     }
 
-
     private void startAuditInventoryProcess(final Item item, final AuditOnCondition auditOnCondition) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                auditInventory(item, auditOnCondition);
-            }
-        }).start();
+        auditInventory(item, auditOnCondition);
     }
 }

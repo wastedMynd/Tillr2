@@ -222,7 +222,7 @@ public class ItemUnitsInStockFragment extends Fragment {
         private final int ITEM_MAX_VALUE;
         private final int ITEM_MED_VALUE;
         private final int ITEM_MIN_VALUE = 0;
-        private boolean filter =false;
+        private boolean filter;
 
         public FilterItemsAsyncTask(Context context, ArrayList<Item> rootItems, WeakReference<ItemLegendAdapter> adapter,boolean filter) {
             this.rootItems = rootItems;

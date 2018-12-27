@@ -7,18 +7,20 @@ import android.database.Cursor;
 
 import com.google.gson.Gson;
 import com.wast3dmynd.tillr.database.utils.DatabaseDelegate;
+import com.wast3dmynd.tillr.entity.InventoryData;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class OrderDatabase extends DatabaseDelegate {
 
     //database table
-    private final String DATABASE_TABLE = "Orders";
+    public static final String DATABASE_TABLE = "Orders";
 
     // Columns
-    private final String ORDER_ID_COLUMN = "ORDER_ID_COLUMN";
+    public static final String ORDER_ID_COLUMN = "ORDER_ID_COLUMN";
     private final String ORDER_TOTAL_COLUMN = "ORDER_TOTAL_COLUMN";
     private final String ORDER_FUNDS_COLUMN = "ORDER_FUNDS_COLUMN";
     private final String ORDER_CREDIT_COLUMN = "ORDER_CREDIT_COLUMN";
@@ -94,6 +96,8 @@ public class OrderDatabase extends DatabaseDelegate {
         if (getDatabaseListener() != null)
             getDatabaseListener().onDatabaseItemInserted(result, objOrder);
 
+        for (Item item : order.getItems())
+            startAuditInventoryProcess(item);
 
         return result;
     }
@@ -302,4 +306,63 @@ public class OrderDatabase extends DatabaseDelegate {
         return orders;
     }
 
+    enum AuditOnCondition {
+        onInsert, onUpdate, onRemove
+    }
+
+
+    private synchronized void auditInventory(Item item, AuditOnCondition auditCondition) {
+        //get All InventoryData
+        InventoryDatabase inventoryDatabase = new InventoryDatabase(getContext());
+        ItemDatabase itemDatabase = new ItemDatabase(getContext());
+        ArrayList<Item> itemsDatabase = itemDatabase.getAll();
+        ArrayList<InventoryData> inventoryDataHolder = inventoryDatabase.getAll();
+        Date itemDate = new Date(item.getItemTimeStamp());
+
+        long stockUnits = 0;
+        double stockPriceTotal = 0.00;
+
+        switch (auditCondition) {
+            case onInsert:
+                if (!inventoryDataHolder.isEmpty()) {
+                    //get Item's unitRemaining before update
+                    double total = (item.getItemCostPerUnit() * item.getItemUnits());
+                    int units = item.getItemUnits();
+                    item.setItemUnitRemaining(item.getItemUnitRemaining() - item.getItemUnits());
+                    item.setItemUnits(0);
+                    itemDatabase.updateItem(item);
+
+                    stockUnits = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockUnitCount();
+                    stockUnits -= units;
+
+                    //stock Price Total -> before update:
+                    stockPriceTotal = inventoryDataHolder.get(inventoryDataHolder.size() - 1).getStockPriceTotal();
+
+                    //on Update:
+                    stockPriceTotal -= total;
+                }
+                break;
+        }
+
+
+        for (InventoryData inventoryData : inventoryDataHolder) {
+            Date inventoryDate = new Date(inventoryData.getTimestamp());
+            if (itemDate.getDate() == inventoryDate.getDate()) {
+                for (Item databaseItem : itemsDatabase) {
+                    if (!item.equals(databaseItem)) continue;
+
+                    inventoryData.setStockUnitCount(stockUnits);
+                    inventoryData.setStockPriceTotal(stockPriceTotal);
+                    inventoryData.setTimestamp(System.currentTimeMillis());
+                    inventoryDatabase.updateItem(inventoryData);
+                    return;
+                }
+            }
+        }
+    }
+
+
+    private void startAuditInventoryProcess(final Item item) {
+        auditInventory(item, AuditOnCondition.onInsert);
+    }
 }

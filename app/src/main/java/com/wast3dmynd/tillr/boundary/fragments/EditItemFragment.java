@@ -38,8 +38,10 @@ import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.adapter.EditItemAdapter;
 import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
+import com.wast3dmynd.tillr.boundary.views.dialogs.BundleUnitCalculatorDialog;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
+import com.wast3dmynd.tillr.entity.ItemSpecial;
 import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
 import com.wast3dmynd.tillr.utils.DateFormats;
@@ -62,9 +64,12 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         EDIT_ITEM
     }
 
+    private boolean isItemCancelable = false;
+    private ItemSpecial special;
+
     //region views
-    private EditText itemName, itemPricePerUnit, itemCount, item_editor_item_price_per_unit_specials,
-            item_editor_special_start_date, item_editor_special_end_date, item_editor_special_start_time, item_editor_special_end_time;
+    private EditText itemName, itemPricePerUnit, itemCount, itemSpecialPrice,
+            itemSpecialStartDate, itemSpecialEndDate, itemSpecialStartTime, itemSpecialEndTime;
     private Switch item_advanced_setting_switch;
     private View item_advanced_setting_container, item_control_details_container;
     private FloatingActionButton saveBtn;
@@ -74,8 +79,8 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
     //endregion
 
     //region Item Display
-    private void displayItem() {
 
+    private void displayItem() {
         displayItemName();
         displayItemPricePerUnit();
         displayItemUnits();
@@ -91,6 +96,28 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
     private void displayItemUnits() {
         itemCount.setText(String.valueOf(item.getItemUnitRemaining()));
+    }
+
+    private void displayItemSpecialPrice() {
+        itemSpecialPrice.setText(CurrencyUtility.getCurrencyDisplay(special.getSpecialPrice()));
+    }
+
+    private void displayItemSpecialStartDate() {
+        itemSpecialStartDate.setText(DateFormats.getSimplifiedDateString(special.getSpecialStartDate()));
+    }
+
+    private void displayItemSpecialEndDate() {
+        itemSpecialEndDate.setText(DateFormats.getSimplifiedDateString(special.getSpecialEndDate()));
+    }
+
+    private void displayItemSpecialStartTime() {
+        DateFormats dateFormat = DateFormats.Hours_Minutes;
+        itemSpecialStartTime.setText(DateFormats.getSimpleDateString(special.getSpecialStartTime(), dateFormat));
+    }
+
+    private void displayItemSpecialEndTime() {
+        DateFormats dateFormat = DateFormats.Hours_Minutes;
+        itemSpecialEndTime.setText(DateFormats.getSimpleDateString(special.getSpecialEndTime(), dateFormat));
     }
     //endregion
 
@@ -108,18 +135,43 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         return fragment;
     }
 
-
     private void getIntentArgs() {
         editorOptions = (ItemEditorOptions) getArguments().get(INTENT_ITEM_EDITOR_OPTION);
         item = (editorOptions == ItemEditorOptions.EDIT_ITEM) ? (Item) getArguments().get(INTENT_ITEM_EDITOR_ITEM_INSTANCE) : new Item();
+        initializeSpecial(item);
     }
 
+    private void initializeSpecial(Item item) {
+        special = new ItemSpecial();
+        special.setItemId(item.getId());
+        special.setSpecialPrice(item.getSpecial().getSpecialPrice());
+        special.setSpecialStartDate(item.getSpecial().getSpecialStartDate());
+        special.setSpecialEndDate(item.getSpecial().getSpecialEndDate());
+        special.setSpecialStartTime(item.getSpecial().getSpecialStartTime());
+        special.setSpecialEndTime(item.getSpecial().getSpecialEndTime());
+    }
 
     private void clearFields() {
         itemName.setText("");
         itemPricePerUnit.setText("");
         itemCount.setText("");
+        itemSpecialPrice.setText("");
+        itemSpecialPrice.setHint(getContext().getResources().getString(R.string.label_item_price_per_unit_specials));
+        itemSpecialStartDate.setText("");
+        itemSpecialEndDate.setText("");
+        itemSpecialStartTime.setText("");
+        itemSpecialEndTime.setText("");
+
         itemName.requestFocus();
+    }
+
+    private void invalidateCancelAction(boolean isItemCancelable) {
+        try {
+            this.isItemCancelable = isItemCancelable;
+            getActivity().invalidateOptionsMenu();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private void changeToolbarTitle() {
@@ -129,10 +181,9 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
-
     private TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+
+        boolean performEditorAction(int actionId, KeyEvent event) {
             if (event == null) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     performItemSave();
@@ -157,7 +208,24 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             // keyboard, or singleLine status.
             return true;   // Consume the event
         }
+
+        @Override
+        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+            return performEditorAction(actionId, event);
+        }
     };
+
+    private void performItemCancel() {
+        item.getGui().setSelected(false);
+        editItemAdapter.addItem(item);
+        item = new Item();
+        special = new ItemSpecial();
+        clearFields();
+        invalidateCancelAction(false);
+        saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
+        editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
+        changeToolbarTitle();
+    }
 
     private void performItemSave() {
         final MainActivity thisActivity = (MainActivity) getActivity();
@@ -168,10 +236,10 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
         boolean createItem = (editorOptions == ItemEditorOptions.CREATE_NEW_ITEM);
         String message;
-        if (itemNameStr.isEmpty() && itemCountStr.length() > 20) {
+        if (itemNameStr.isEmpty() && itemName.getText().toString().length() > 20) {
 
             message = createItem ? "Item was not created, " : "item was not updated, ";
-            message += itemCountStr.length() > 20 ? "item\'s name exceeds the 20 character limit!" : "due to its name is not assigned.";
+            message += itemName.getText().toString().length() > 20 ? "item\'s name exceeds the 20 character limit!" : "due to its name is not assigned.";
             Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
             return;
 
@@ -181,12 +249,12 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             message += "due to its cost per unit is below standard.";
             Toast.makeText(thisActivity, message, Toast.LENGTH_LONG).show();
             return;
-
         }
 
         item.setItemName(itemNameStr);
         item.setItemCostPerUnit(cost);
         item.setItemUnitRemaining(count);
+        item.setSpecial(special);
 
         boolean updated = new ItemDatabase(thisActivity).updateItem(item);
         message = createItem ? (updated ? "Item is saved" : "Item not save!") : (updated ? "Item is updated" : "Item was not updated!");
@@ -199,7 +267,9 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                         item.getGui().setSelected(false);
                         editItemAdapter.addItem(item);
                         item = new Item();
+                        special = new ItemSpecial();
                         clearFields();
+                        invalidateCancelAction(false);
                         saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
                         editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
                         changeToolbarTitle();
@@ -211,7 +281,9 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                         item.getGui().setSelected(false);
                         editItemAdapter.addItem(item);
                         item = new Item();
+                        special = new ItemSpecial();
                         clearFields();
+                        invalidateCancelAction(false);
                         saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
                         editorOptions = ItemEditorOptions.CREATE_NEW_ITEM;
                         changeToolbarTitle();
@@ -220,7 +292,6 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         // Create the AlertDialog object and show it
         builder.create().show();
     }
-
     //endregion
 
     //region fragment life cycle
@@ -254,10 +325,19 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         itemPricePerUnit = view.findViewById(R.id.item_editor_item_price_per_unit);
         itemCount = view.findViewById(R.id.item_editor_item_count);
 
-
-        if (editorOptions.equals(ItemEditorOptions.EDIT_ITEM)) displayItem();
-        else clearFields();
-
+        itemCount.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                new BundleUnitCalculatorDialog(getContext(), new BundleUnitCalculatorDialog.DialogListener() {
+                    @Override
+                    public void onUnitsCalculated(int units) {
+                        itemCount.setText(String.valueOf(units));
+                        item.setItemUnitRemaining(units);
+                    }
+                });
+                return false;
+            }
+        });
         itemName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -294,12 +374,14 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             @Override
             public void afterTextChanged(Editable s) {
 
-                try {
-                    if (!s.toString().isEmpty())
-                        item.setItemCostPerUnit(CurrencyUtility.reformatCurrency(s.toString()));
-                } finally {
-                    saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
+                if (s != null && !s.toString().isEmpty()) {
+                    item.setItemCostPerUnit(CurrencyUtility.reformatCurrency(s.toString()));
+                    StringBuilder hintBuilder = new StringBuilder(getContext().getResources().getString(R.string.label_item_price_per_unit_specials));
+                    hintBuilder.append(" must be less then ");
+                    hintBuilder.append(CurrencyUtility.getCurrencyDisplay(item.getItemCostPerUnit()));
+                    itemSpecialPrice.setHint(hintBuilder.toString());
                 }
+                saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
             }
         });
         itemPricePerUnit.setOnEditorActionListener(onEditorActionListener);
@@ -329,21 +411,15 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         });
         itemCount.setOnEditorActionListener(onEditorActionListener);
 
-
         //advanced settings
         item_control_details_container = view.findViewById(R.id.item_control_details_container);
-
         item_advanced_setting_switch = view.findViewById(R.id.item_advanced_setting_switch);
-
         item_advanced_setting_container = view.findViewById(R.id.item_advanced_setting_container);
-
-        item_editor_item_price_per_unit_specials = view.findViewById(R.id.item_editor_item_price_per_unit_specials);
-
-        item_editor_special_start_date = view.findViewById(R.id.item_editor_special_start_date);
-        item_editor_special_end_date = view.findViewById(R.id.item_editor_special_end_date);
-
-        item_editor_special_start_time = view.findViewById(R.id.item_editor_special_start_time);
-        item_editor_special_end_time = view.findViewById(R.id.item_editor_special_end_time);
+        itemSpecialPrice = view.findViewById(R.id.item_special_price);
+        itemSpecialStartDate = view.findViewById(R.id.item_special_start_date);
+        itemSpecialEndDate = view.findViewById(R.id.item_special_end_date);
+        itemSpecialStartTime = view.findViewById(R.id.item_special_start_time);
+        itemSpecialEndTime = view.findViewById(R.id.item_special_end_time);
 
         item_advanced_setting_container.setVisibility(item_advanced_setting_switch.isChecked() ? View.VISIBLE : View.GONE);
         item_advanced_setting_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -385,8 +461,8 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             }
         });
 
-        item_editor_item_price_per_unit_specials.setFilters(new InputFilter[]{new CurrencyUtility.CurrencyFormatInputFilter()});
-        item_editor_item_price_per_unit_specials.addTextChangedListener(new TextWatcher() {
+        itemSpecialPrice.setFilters(new InputFilter[]{new CurrencyUtility.CurrencyFormatInputFilter()});
+        itemSpecialPrice.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -399,16 +475,14 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
             @Override
             public void afterTextChanged(Editable s) {
-                try {
-                    if (!s.toString().isEmpty())
-                        item.setSpecialPrice(CurrencyUtility.reformatCurrency(s.toString()));
-                } finally {
-                    saveBtn.setVisibility(item.isValid() ? View.VISIBLE : View.GONE);
-                }
+
+                if (s != null && !s.toString().isEmpty())
+                    special.setSpecialPrice(CurrencyUtility.reformatCurrency(s.toString()));
+                saveBtn.setVisibility(item.isSpecialValid() && item.isValid() ? View.VISIBLE : View.GONE);
+
             }
         });
-        item_editor_item_price_per_unit_specials.setOnEditorActionListener(onEditorActionListener);
-        item_editor_special_start_date.setOnClickListener(new View.OnClickListener() {
+        itemSpecialStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View clickedView) {
                 showDatePickerDialog(clickedView);
@@ -419,8 +493,7 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                 DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
                     private String getDateString(Date date) {
-                        DateFormats dateFormat = DateFormats.Day_Month_Year;
-                        return DateFormats.getSimpleDateString(date, dateFormat);
+                        return DateFormats.getSimplifiedDateString(date);
                     }
 
                     @Override
@@ -445,8 +518,9 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                             return;
                         }
 
-                        ((EditText) clickedView).setText(getDateString(startDate));
-                        item.setSpecialStartDate(startDate.getTime());
+                        special.setSpecialStartDate(startDate.getTime());
+                        displayItemSpecialStartDate();
+                        saveBtn.setVisibility(item.isSpecialValid() && special.isSpecialValid() ? View.VISIBLE : View.GONE);
                     }
 
                 };
@@ -456,18 +530,18 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-        item_editor_special_end_date.setOnClickListener(new View.OnClickListener() {
+        itemSpecialEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View clickedView) {
-                showDatePickerDialog(clickedView);
+                showDatePickerDialog();
             }
 
-            private void showDatePickerDialog(final View clickedView) {
+            private void showDatePickerDialog() {
                 final Calendar myCalendar = Calendar.getInstance();
 
-                final long specialStartDate = item.getSpecialStartDate();
+                final long startDate = special.getSpecialStartDate();
 
-                boolean isSpecialStartDateValid = specialStartDate > 0;
+                boolean isSpecialStartDateValid = startDate > 0;
 
                 if (!isSpecialStartDateValid) {
                     Toast.makeText(getContext(), "Set special start date first!", Toast.LENGTH_SHORT).show();
@@ -476,11 +550,6 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
                 DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
-                    private String getDateString() {
-                        DateFormats dateFormat = DateFormats.Day_Month_Year;
-                        return DateFormats.getSimpleDateString(myCalendar.getTimeInMillis(), dateFormat);
-                    }
-
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear,
                                           int dayOfMonth) {
@@ -488,13 +557,13 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                         myCalendar.set(Calendar.MONTH, monthOfYear);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                        long specialEndDate;
-                        specialEndDate = myCalendar.getTimeInMillis();
+                        Date endDate;
+                        endDate = new Date(myCalendar.getTimeInMillis());
 
-                        boolean isSpecialDateRangeValid = specialEndDate >= specialStartDate;
+                        boolean isSpecialDateRangeValid = endDate.after(new Date(startDate)) || endDate.getTime() == new Date(startDate).getTime();
                         if (!isSpecialDateRangeValid) {
 
-                            String startDateString = DateFormats.getSimpleDateString(specialStartDate, DateFormats.Day_Month_Year);
+                            String startDateString = DateFormats.getSimplifiedDateString(startDate);
                             StringBuilder msg = new StringBuilder("Special end time, is invalid!");
                             msg.append("\nMust be on or after ");
                             msg.append(startDateString);
@@ -502,9 +571,10 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                             return;
                         }
 
-                        ((EditText) clickedView).setText(getDateString());
 
-                        item.setSpecialEndDate(specialEndDate);
+                        special.setSpecialEndDate(endDate.getTime());
+                        displayItemSpecialEndDate();
+                        saveBtn.setVisibility(special.isSpecialValid() ? View.VISIBLE : View.GONE);
                     }
 
                 };
@@ -514,7 +584,7 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-        item_editor_special_start_time.setOnClickListener(new View.OnClickListener() {
+        itemSpecialStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View clickedView) {
                 showTimePickerDialog(clickedView);
@@ -526,19 +596,15 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                 int minute = myCalendar.get(Calendar.MINUTE);
 
                 new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-                    private String getTimeString() {
-                        DateFormats dateFormat = DateFormats.Hours_Minutes; //In which you need put here
-                        return DateFormats.getSimpleDateString(myCalendar.getTimeInMillis(), dateFormat);
-                    }
 
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
                         myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         myCalendar.set(Calendar.MINUTE, minute);
 
-                        ((EditText) clickedView).setText(getTimeString());
-
-                        item.setSpecialStartTime(myCalendar.getTimeInMillis());
+                        special.setSpecialStartTime(myCalendar.getTimeInMillis());
+                        displayItemSpecialStartTime();
+                        saveBtn.setVisibility(special.isSpecialValid() ? View.VISIBLE : View.GONE);
                     }
                 },
                         hour,
@@ -546,9 +612,9 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                         DateFormat.is24HourFormat(getContext())).show();
             }
         });
-        item_editor_special_end_time.setOnClickListener(new View.OnClickListener() {
+        itemSpecialEndTime.setOnClickListener(new View.OnClickListener() {
 
-            private void showTimePickerDialog(final View clickedView) {
+            private void showTimePickerDialog() {
                 final Calendar myCalendar = Calendar.getInstance();
                 int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
                 int minute = myCalendar.get(Calendar.MINUTE);
@@ -572,9 +638,9 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
                         long specialEndTime = myCalendar.getTimeInMillis();
                         long specialStartDate, specialEndDate, specialStartTime;
-                        specialStartDate = item.getSpecialStartDate();
-                        specialEndDate = item.getSpecialEndDate();
-                        specialStartTime = item.getSpecialStartTime();
+                        specialStartDate = item.getSpecial().getSpecialStartDate();
+                        specialEndDate = item.getSpecial().getSpecialEndDate();
+                        specialStartTime = item.getSpecial().getSpecialStartTime();
 
 
                         boolean isSpecialDateRangeValid = specialEndDate >= specialStartDate;
@@ -605,9 +671,10 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                             return;
                         }
 
-                        ((EditText) clickedView).setText(getTimeString(specialEndTime));
+                        special.setSpecialEndTime(specialEndTime);
+                        displayItemSpecialEndTime();
+                        saveBtn.setVisibility(special.isSpecialValid() ? View.VISIBLE : View.GONE);
 
-                        item.setSpecialEndTime(myCalendar.getTimeInMillis());
                     }
                 },
                         hour,
@@ -618,12 +685,12 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
             @Override
             public void onClick(final View clickedView) {
-                if (item.getSpecialStartTime() == 0) {
+                if (special.getSpecialStartTime() == 0) {
                     Toast.makeText(getContext(), "Set special start time first!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                showTimePickerDialog(clickedView);
+                showTimePickerDialog();
             }
         });
 
@@ -649,6 +716,9 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             item.getGui().setSelected(true);
             editItemAdapter.setItem(item);
         }
+
+        if (editorOptions.equals(ItemEditorOptions.EDIT_ITEM)) displayItem();
+        else clearFields();
     }
 
     @Override
@@ -663,7 +733,6 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             public boolean onQueryTextSubmit(String query) {
                 //perform the final search
                 new QueryItemTask().execute(query);
-
                 return true;
             }
 
@@ -674,26 +743,26 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                 return true;
             }
         });
+
+        MenuItem actionCancel = menu.findItem(R.id.action_cancel);
+        actionCancel.setVisible(isItemCancelable);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        boolean result;
         switch (menuItem.getItemId()) {
 
             case android.R.id.home:
-                result = true;
-                //region
                 startActivity(MainActivity.newInstance(getContext()));
-                //endregion
-                break;
-
+                return true;
+            case R.id.action_cancel:
+                performItemCancel();
+                return true;
             default:
-                result = super.onOptionsItemSelected(menuItem);
-                break;
+                return super.onOptionsItemSelected(menuItem);
         }
-        return result;
     }
+
     //endregion
 
     //implements EditItemAdapter.EditItemAdapterListener
@@ -706,8 +775,19 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         itemPricePerUnit.setText("");
         itemCount.setText("");
         displayItem();
+
+        invalidateCancelAction(true);
+
         //todo this would be a user pref condition
         itemCount.requestFocus();
+
+        initializeSpecial(item);
+        displayItemSpecialPrice();
+        displayItemSpecialStartDate();
+        displayItemSpecialEndDate();
+        displayItemSpecialStartTime();
+        displayItemSpecialEndTime();
+
     }
 
     class QueryItemTask extends AsyncTask<String, Void, ArrayList<Item>> {
@@ -748,4 +828,5 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             }
         }
     }
+
 }

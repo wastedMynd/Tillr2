@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/unit_holder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/units_display"
+            style="@style/ItemInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_collections"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorIconActive"
+            android:focusable="false"
+            android:hint="@string/calculated_units"
+            android:inputType="numberDecimal"
+            android:textStyle="bold" />
+        
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/item_control_details_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="true"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        app:layout_constraintEnd_toEndOf="@+id/unit_holder"
+        app:layout_constraintTop_toBottomOf="@+id/unit_holder">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/bundles_holder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center_horizontal">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/bundles_edit"
+                style="@style/ItemInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_bundle_each"
+                android:drawablePadding="8dp"
+                android:drawableTint="@color/colorAccent"
+                android:hint="@string/bundles"
+                android:inputType="numberDecimal"
+                android:textStyle="bold"
+                android:focusable="true"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/units_per_bundle_holder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="0.5"
+            android:gravity="center_horizontal">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/units_per_bundle_edit"
+                style="@style/ItemInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_bundle"
+                android:drawablePadding="8dp"
+                android:drawableTint="@color/colorAccent"
+                android:hint="@string/units_per_bundle"
+                android:inputType="number"
+                android:textStyle="bold"
+                android:focusable="true"/>
+
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/calculate_units_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/calculate_units"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/item_control_details_container"
+        app:layout_constraintTop_toBottomOf="@+id/item_control_details_container"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</android.support.constraint.ConstraintLayout>

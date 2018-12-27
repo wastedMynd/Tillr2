@@ -2,7 +2,6 @@ package com.wast3dmynd.tillr.boundary.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +31,6 @@ import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
-import com.wast3dmynd.tillr.boundary.SettingsActivity;
 import com.wast3dmynd.tillr.boundary.adapter.PlaceOrderAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
 import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
@@ -41,7 +39,6 @@ import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.database.OrderDatabase;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
-import com.wast3dmynd.tillr.utils.ClearableEditText;
 import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
 import com.wast3dmynd.tillr.utils.DateFormats;
@@ -550,7 +547,8 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
 
         @Override
         protected Boolean doInBackground(Order... orders) {
-            return new OrderDatabase(getContext()).addItem(orders[0]);
+            boolean isOrderAdded = new OrderDatabase(getContext()).addItem(orders[0]);
+            return isOrderAdded;
         }
 
         @Override
@@ -559,38 +557,31 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
 
             String successMsg = "Your Order was Successfully processed..";
             String failureMsg = "Your Order was Denied!";
-            String message = (getOrder().isOrderValid() && isOrderProcessed) ? successMsg : failureMsg;
-            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-            if (!isOrderProcessed) return;
+            String message = (isOrderProcessed) ? successMsg : failureMsg;
+            try {
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 
-            ItemDatabase itemDatabase = new ItemDatabase(getContext());
-            ArrayList<Item> itemsDB = itemDatabase.getAll();
 
-            //update remaining items
-            for (Item item : itemsDB) {
-                for (Item itemInOrder : getOrder().getItems()) {
-                    if (item.equals(itemInOrder))
-                        item.setItemUnitRemaining(item.getItemUnitRemaining() - itemInOrder.getItemUnits());
-                }
-                itemDatabase.updateItem(item);
+                if (!isOrderProcessed) return;
+                fab.setVisibility(View.GONE);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(R.string.prompt_place_another_order)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                listener.onFragmentChanged(PlaceOrderFragment.newInstance(getContext()));
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                startActivity(MainActivity.newInstance(getContext()));
+                            }
+                        });
+                // Create the AlertDialog object and show it
+                builder.create().show();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
-
-            fab.setVisibility(View.GONE);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(R.string.prompt_place_another_order)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            listener.onFragmentChanged(PlaceOrderFragment.newInstance(getContext()));
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            startActivity(MainActivity.newInstance(getContext()));
-                        }
-                    });
-            // Create the AlertDialog object and show it
-            builder.create().show();
         }
     }
     //endregion

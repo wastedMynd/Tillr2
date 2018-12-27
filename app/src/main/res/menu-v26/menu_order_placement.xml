@@ -13,15 +13,15 @@
     <item
         android:id="@+id/action_filter_placed_order"
         android:title="@string/action_filter_by_placed_items"
-        android:icon="@drawable/twotone_filter_list_black_24"
+        android:icon="@drawable/ic_filter_list"
         android:iconTint="@color/colorIconActiveMenu"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_reload"
-        android:icon="@drawable/twotone_refresh_black_24"
+        android:icon="@drawable/ic_refresh"
         android:iconTint="@color/colorIconActiveMenu"
         android:title="@string/action_reload"
-        app:showAsAction="collapseActionView" />
+        app:showAsAction="ifRoom" />
 
 </menu>

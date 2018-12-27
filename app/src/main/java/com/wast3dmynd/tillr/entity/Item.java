@@ -15,13 +15,7 @@ public class Item implements Serializable {
     private double itemPriceTotal =0;
     private int itemUnitRemaining=0;
     private long itemTimeStamp= System.currentTimeMillis();
-
-    //special
-    private double specialPrice;
-    private long specialStartDate;
-    private long specialEndDate;
-    private long specialStartTime;
-    private long specialEndTime;
+    private ItemSpecial special = new ItemSpecial();
 
     private ItemGui gui = new ItemGui();
 
@@ -108,45 +102,12 @@ public class Item implements Serializable {
         this.itemDamage = itemDamage;
     }
 
-
-    public double getSpecialPrice() {
-        return specialPrice;
+    public ItemSpecial getSpecial() {
+        return special;
     }
 
-    public void setSpecialPrice(double specialPrice) {
-        this.specialPrice = specialPrice;
-    }
-
-    public long getSpecialStartDate() {
-        return specialStartDate;
-    }
-
-    public void setSpecialStartDate(long specialStartDate) {
-        this.specialStartDate = specialStartDate;
-    }
-
-    public long getSpecialEndDate() {
-        return specialEndDate;
-    }
-
-    public void setSpecialEndDate(long specialEndDate) {
-        this.specialEndDate = specialEndDate;
-    }
-
-    public long getSpecialStartTime() {
-        return specialStartTime;
-    }
-
-    public void setSpecialStartTime(long specialStartTime) {
-        this.specialStartTime = specialStartTime;
-    }
-
-    public long getSpecialEndTime() {
-        return specialEndTime;
-    }
-
-    public void setSpecialEndTime(long specialEndTime) {
-        this.specialEndTime = specialEndTime;
+    public void setSpecial(ItemSpecial special) {
+        this.special = special;
     }
 
     public ItemGui getGui() {
@@ -157,6 +118,12 @@ public class Item implements Serializable {
     public boolean isValid() {
         if (getItemName() == null) return false;
         return  (!getItemName().isEmpty()) && (getItemCostPerUnit()> 0);
+    }
+
+    public boolean isSpecialValid()
+    {
+
+        return false;
     }
 
     //endregion

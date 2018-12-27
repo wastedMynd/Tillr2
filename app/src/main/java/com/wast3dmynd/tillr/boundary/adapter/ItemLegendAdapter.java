@@ -52,8 +52,18 @@ public class ItemLegendAdapter extends RecyclerView.Adapter<ItemLegendViewHolder
     //implements ItemUnitsInStockFragment.ItemUnitsInStockFragmentListener
     @Override
     public void onItemGraphSelected(Item item, int position) {
-        item.getGui().setSelected(true);
 
+        for (int index=0;index<items.size();index++) {
+            Item temp = items.get(index);
+            temp.getGui().setHighlighted(false);
+
+            items.remove(index);
+            items.add(index, temp);
+
+            notifyItemChanged(index);
+        }
+
+        item.getGui().setHighlighted(true);
         if (!items.contains(item)) {
             if (rootItems.contains(item)) {
 
@@ -71,6 +81,7 @@ public class ItemLegendAdapter extends RecyclerView.Adapter<ItemLegendViewHolder
             items.add(position, item);
             notifyItemChanged(position);
         }
+
     }
 
 
@@ -101,7 +112,7 @@ public class ItemLegendAdapter extends RecyclerView.Adapter<ItemLegendViewHolder
         this.items.clear();
         this.items.addAll(rootItems);
 
-        if(items.isEmpty())items.addAll(this.rootItems);
+        if (items.isEmpty()) items.addAll(this.rootItems);
         notifyDataSetChanged();
     }
 }

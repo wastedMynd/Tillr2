@@ -180,8 +180,8 @@ public class DashBoardFragment extends Fragment {
             this.orders = orders;
         }
 
-        //endregion
     }
+    //endregion
 
     private static class ProcessDashboardDataAsync extends AsyncTaskLoader<DashboardData> {
 
@@ -437,6 +437,7 @@ public class DashBoardFragment extends Fragment {
             salesTitleBuilder.append(endDate);
 
             sales.setTitle(salesTitleBuilder.toString());
+            sales.setAnimated(true);
             sales.setColor(Color.GREEN);
             sales.setDrawDataPoints(true);
             sales.setDataPointsRadius(6);
@@ -515,7 +516,6 @@ public class DashBoardFragment extends Fragment {
             for (final Item item : items) {
 
 
-
                 //region dataPointBarGraphSeries append DataPoints
 
                 int remainingItems = item.getItemUnitRemaining();
@@ -571,7 +571,7 @@ public class DashBoardFragment extends Fragment {
                 dataPointBarGraphSeries.setValueDependentColor(new ValueDependentColor<DataPoint>() {
                     @Override
                     public int get(DataPoint data) {
-                        return colors.get((int)(data.getX()));
+                        return colors.get((int) (data.getX()));
                     }
                 });
 
@@ -580,6 +580,7 @@ public class DashBoardFragment extends Fragment {
                 dataPointBarGraphSeries.setTitle(item.getItemName());
                 //int colorAccent = getContext().getResources().getColor(R.color.colorAccent);
                 //dataPointBarGraphSeries.setValuesOnTopColor(colorAccent);
+                //dataPointBarGraphSeries.setAnimated(true);
                 dataPointBarGraphSeries.setSpacing(0);
                 dataPointBarGraphSeries.setDataWidth(0.25d);
 
@@ -625,15 +626,15 @@ public class DashBoardFragment extends Fragment {
             final int MAX_DATA_POINTS = inventory.getInventoryDataHolder().size();
             long minY = 0;
             long maxY = 0;
-            final long maxX = inventory.getInventoryDataHolder().get(0).getTimestamp();
-            final long minX = inventory.getInventoryDataHolder().get(MAX_DATA_POINTS - 1).getTimestamp();
+            final long maxX = inventory.getInventoryDataHolder().get(MAX_DATA_POINTS - 1).getTimestamp();
+            final long minX = inventory.getInventoryDataHolder().get(0).getTimestamp();
 
             long prevDate = System.currentTimeMillis();
-            for (int index = MAX_DATA_POINTS - 1; index > -1; index--) {
-
-                InventoryData inventoryData = inventory.getInventoryDataHolder().get(index);
+            for (InventoryData inventoryData : inventory.getInventoryDataHolder()) {
 
                 long stockUnitCount = inventoryData.getStockUnitCount();
+
+                stockUnitCount = stockUnitCount > 0 ? stockUnitCount : -3;
 
                 long date = inventoryData.getTimestamp();
 
@@ -642,7 +643,7 @@ public class DashBoardFragment extends Fragment {
                 try {
                     stock.appendData(new DataPoint(new Date(date), stockUnitCount), true, MAX_DATA_POINTS, true);
                     prevDate = date;
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     stock.appendData(new DataPoint(new Date(prevDate), stockUnitCount), true, MAX_DATA_POINTS, true);
                 }
@@ -684,7 +685,7 @@ public class DashBoardFragment extends Fragment {
             stockDataHolder.setXLabel(getContext().getResources().getString(R.string.label_date));
             stockDataHolder.setMinX(minX);
             stockDataHolder.setMaxX(maxX);
-            stockDataHolder.setMinY(minY);
+            stockDataHolder.setMinY(-5);
             stockDataHolder.setMaxY(maxY + 5);
             stockDataHolder.setDataPoints(stock);
             //endregion

@@ -1,11 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.wast3dmynd.tillr.boundary.PlaceOrderActivity">
+    tools:context="com.wast3dmynd.tillr.boundary.PlaceOrderActivity"
+    >
 
     <item
         android:id="@+id/search_item"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@android:drawable/ic_search_category_default"
         android:orderInCategory="99"
         android:title="@string/search_item_title"
         app:actionViewClass="android.support.v7.widget.SearchView"
@@ -13,13 +14,13 @@
 
     <item
         android:id="@+id/action_filter_placed_order"
-        android:icon="@drawable/twotone_filter_list_black_24"
+        android:icon="@drawable/ic_filter_list"
         android:title="@string/action_filter_by_placed_items"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_reload"
-        android:icon="@drawable/twotone_refresh_black_24"
+        android:icon="@drawable/ic_refresh"
         android:title="@string/action_reload"
         app:showAsAction="collapseActionView" />
 

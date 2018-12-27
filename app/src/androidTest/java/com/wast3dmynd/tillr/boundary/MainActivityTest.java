@@ -83,7 +83,7 @@ public class MainActivityTest {
                 allOf(withId(R.id.item_editor_item_price_per_unit), withText("0"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.textInputLayout3),
+                                        withId(R.id.bundles_holder),
                                         0),
                                 0),
                         isDisplayed()));
@@ -93,7 +93,7 @@ public class MainActivityTest {
                 allOf(withId(R.id.item_editor_item_price_per_unit), withText("13.40"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.textInputLayout3),
+                                        withId(R.id.bundles_holder),
                                         0),
                                 0),
                         isDisplayed()));

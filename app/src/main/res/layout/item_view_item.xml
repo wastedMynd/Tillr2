@@ -105,10 +105,10 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:textColor="#f00"
+            app:layout_constraintBaseline_toBaselineOf="@+id/itemName"
             app:layout_constraintEnd_toEndOf="@+id/itemUnitsRemaining"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/itemName"
-            tools:layout_editor_absoluteY="18dp"
             tools:text="R 30.00" />
 
         <TextView

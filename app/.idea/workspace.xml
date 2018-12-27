@@ -16,56 +16,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="160250a0-a453-4f6a-b36a-74fd16ae0ade" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/dialogs/BundleUnitCalculatorDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/ItemSpecialDatabase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/entity/ItemSpecial.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_attach_money.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_bundle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_bundle_each.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_cancel.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_collections.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_filter_list.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_item.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_refresh.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_search.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_special_money.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout-v23/dialog_bundle_unit_calculator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout/dialog_bundle_unit_calculator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/androidTest/java/com/wast3dmynd/tillr/boundary/MainActivityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/androidTest/java/com/wast3dmynd/tillr/boundary/MainActivityTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/adapter/EditItemAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/adapter/EditItemAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/adapter/ItemLegendAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/adapter/ItemLegendAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/DashBoardFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/DashBoardFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/ItemUnitsInStockFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/ItemUnitsInStockFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/PlaceOrderFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/PlaceOrderFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/ItemDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/ItemDatabase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/OrderDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/OrderDatabase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/utils/DatabaseDelegate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/utils/DatabaseDelegate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/utils/DatabaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/utils/DatabaseListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/entity/Item.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/utils/DateFormats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/utils/DateFormats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/nav_indicate_circle_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/nav_indicate_circle_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/side_nav_bar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/side_nav_bar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/action_view_drawer_counter.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/action_view_drawer_counter.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/dialog_payment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/dialog_payment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_editor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_item_units_in_stock.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_item_units_in_stock.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/item_dashboard_graph.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/item_dashboard_graph.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/item_view_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/item_view_item.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/nav_header_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/nav_header_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu-v26/menu_item_units_in_stock.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu-v26/menu_order_placement.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/menu-v26/menu_order_placement.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu/activity_main_drawer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/menu/activity_main_drawer.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu/item_editor_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/menu/item_editor_menu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu/menu_item_units_in_stock.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/menu/menu_item_units_in_stock.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu/menu_order_placement.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/menu/menu_order_placement.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/dimens.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/dimens.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -4814,7 +4765,14 @@
       <option name="project" value="LOCAL" />
       <updated>1545689985101</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="version 2.1(28-12-18)&#10;implemented:&#10;Advance Item Feature(s), unit calculator dialog for Item(s).&#10;Separated ItemSpecial">
+      <created>1545950357864</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1545950357864</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -4862,7 +4820,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="version 2.1(25-12-18)&#10;working on implementing:&#10;Advance Item Feature(s), setting up Special's for Item(s)&#10;Tablet App version" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 2.1(25-12-18)&#10;working on implementing:&#10;Advance Item Feature(s), setting up Special's for Item(s)&#10;Tablet App version" />
+    <MESSAGE value="version 2.1(28-12-18)&#10;implemented:&#10;Advance Item Feature(s), unit calculator dialog for Item(s).&#10;Separated ItemSpecial" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 2.1(28-12-18)&#10;implemented:&#10;Advance Item Feature(s), unit calculator dialog for Item(s).&#10;Separated ItemSpecial" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

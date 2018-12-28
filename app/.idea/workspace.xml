@@ -7,7 +7,7 @@
   </component>
   <component name="AndroidLogFilters">
     <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -15,38 +15,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="160250a0-a453-4f6a-b36a-74fd16ae0ade" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/res/anim/item_animation_fall_down.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/anim/item_animation_from_bottom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/anim/item_animation_from_right.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/anim/layout_animation_fall_down.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/anim/layout_animation_from_bottom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/anim/layout_animation_slide_right.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_settings_applications.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/values/integers.xml" afterDir="false" />
+    <list default="true" id="160250a0-a453-4f6a-b36a-74fd16ae0ade" name="Default" comment="version 2.2(28-12-18 21:30)&#10;implemented:&#10;ContentLoader RecycleView Animations.&#10;PlaceOrderFragment now highlights ItemSpecial(s).">
+      <change afterPath="$PROJECT_DIR$/src/main/res/anim/slide_down.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/anim/slide_up.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/AppCompatPreferenceActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/AppCompatPreferenceActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/SettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/SettingsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/adapter/PlaceOrderAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/adapter/PlaceOrderAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/DashBoardFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/DashBoardFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/OrdersFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/OrdersFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/PlaceOrderFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/PlaceOrderFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/ViewOrderFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/ViewOrderFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/ContentViewHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/ContentViewHolder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/PlaceOrderViewHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/PlaceOrderViewHolder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/ItemDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/ItemDatabase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/ItemSpecialDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/ItemSpecialDatabase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/utils/DatabaseDelegate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/database/utils/DatabaseDelegate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/entity/Item.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/entity/ItemSpecial.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/entity/ItemSpecial.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/side_nav_bar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/side_nav_bar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/layout_view_orders_container.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu/activity_main_drawer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/menu/activity_main_drawer.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -69,124 +42,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="OrdersFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/OrdersFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="192" column="12" selection-start-line="192" selection-start-column="12" selection-end-line="192" selection-end-column="94" />
-              <folding>
-                <element signature="method#onViewCreated#0;class#OrdersFragment#0" />
-                <element signature="e#3713#3752#0" expanded="true" />
-                <element signature="method#newInstance#0;class#PlaceholderFragment#0;class#OrdersFragment#0" />
-                <element signature="e#7046#7071#0" expanded="true" />
-                <element signature="e#8272#8301#0" expanded="true" />
-                <element signature="e#8372#8400#0" expanded="true" />
-                <element signature="e#8445#8623#0" expanded="true" />
-                <element signature="e#8622#8623#0" expanded="true" />
-                <element signature="e#13564#13613#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CrossFadeUtils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/utils/CrossFadeUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-              <folding>
-                <element signature="method#CrossFadeUtils#0;class#CrossFadeUtils#0" />
-                <element signature="method#processWork#0;class#CrossFadeUtils#0" />
-                <element signature="method#crossfade#0;class#CrossFadeUtils#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="integers.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/res/values/integers.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DashBoardFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/DashBoardFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="386">
-              <caret line="80" column="29" selection-start-line="80" selection-start-column="29" selection-end-line="80" selection-end-column="29" />
-              <folding>
-                <element signature="e#3374#3408#0" expanded="true" />
-                <element signature="e#3667#3700#0" expanded="true" />
-                <element signature="method#onDetach#0;class#DashBoardFragment#0" />
-                <element signature="e#5060#5082#0" />
-                <element signature="class#ProcessDashboardDataAsync#0;class#DashBoardFragment#0" />
-                <element signature="e#6250#6251#0" expanded="true" />
-                <element signature="e#6288#6289#0" expanded="true" />
-                <element signature="e#8064#8478#0" expanded="true" />
-                <element signature="e#8477#8478#0" expanded="true" />
-                <element signature="e#10277#10326#0" expanded="true" />
-                <element signature="class#ProcessInventoryDataAsync#0;class#DashBoardFragment#0" />
-                <element signature="class#Inventory#0;class#DashBoardFragment#0" />
-                <element signature="class#DashboardGraphDataAsyncTask#0;class#DashBoardFragment#0" />
-                <element signature="method#getSales#0;class#DashboardGraphDataAsyncTask#0;class#DashBoardFragment#0" />
-                <element signature="e#15582#15636#0" expanded="true" />
-                <element signature="e#16592#17269#0" expanded="true" />
-                <element signature="e#17268#17269#0" expanded="true" />
-                <element signature="e#17449#17508#0" expanded="true" />
-                <element signature="e#17549#17607#0" expanded="true" />
-                <element signature="method#getStockPerItem#0;class#DashboardGraphDataAsyncTask#0;class#DashBoardFragment#0" />
-                <element signature="e#18315#18649#0" expanded="true" />
-                <element signature="e#18648#18649#0" expanded="true" />
-                <element signature="e#19926#21283#0" expanded="true" />
-                <element signature="e#21282#21283#0" expanded="true" />
-                <element signature="e#21435#21660#0" expanded="true" />
-                <element signature="e#21659#21660#0" expanded="true" />
-                <element signature="e#23175#23243#0" expanded="true" />
-                <element signature="e#23562#23621#0" expanded="true" />
-                <element signature="e#23662#23721#0" expanded="true" />
-                <element signature="e#25425#25493#0" expanded="true" />
-                <element signature="e#25979#26666#0" expanded="true" />
-                <element signature="e#26665#26666#0" expanded="true" />
-                <element signature="e#26845#26904#0" expanded="true" />
-                <element signature="e#26945#27003#0" expanded="true" />
-                <element signature="e#28356#28385#0" expanded="true" />
-                <element signature="e#28456#28484#0" expanded="true" />
-                <element signature="e#28519#28720#0" expanded="true" />
-                <element signature="e#28719#28720#0" expanded="true" />
-                <element signature="e#28048#28114#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ContentViewHolder.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/ContentViewHolder.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="460">
-              <caret line="49" column="5" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
-              <folding>
-                <element signature="e#1284#1285#0" expanded="true" />
-                <element signature="e#1336#1337#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="item_animation_from_right.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/res/anim/item_animation_from_right.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
-              <folding>
-                <element signature="e#124#153#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="layout_animation_slide_right.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/res/anim/layout_animation_slide_right.xml">
           <provider selected="true" editor-type-id="text-editor">
@@ -196,35 +51,35 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="item_animation_from_bottom.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/res/anim/item_animation_from_bottom.xml">
+      <file leaf-file-name="item_animation_fall_down.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/res/anim/item_animation_fall_down.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+            <state relative-caret-position="204">
+              <caret line="12" column="71" selection-start-line="9" selection-start-column="4" selection-end-line="12" selection-end-column="71" />
               <folding>
-                <element signature="e#124#153#0" expanded="true" />
+                <element signature="e#124#155#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layout_animation_from_bottom.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/res/anim/layout_animation_from_bottom.xml">
+      <file leaf-file-name="slide_down.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/res/anim/slide_down.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
+            <state relative-caret-position="153">
+              <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+              <folding>
+                <element signature="e#353#384#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PlaceOrderFragment.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/PlaceOrderFragment.java">
+      <file leaf-file-name="slide_up.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/res/anim/slide_up.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="347" column="3" selection-start-line="347" selection-start-column="3" selection-end-line="347" selection-end-column="3" />
-              <folding>
-                <element signature="e#4338#5387#0" />
-              </folding>
+            <state relative-caret-position="102">
+              <caret line="6" column="26" selection-start-line="6" selection-start-column="26" selection-end-line="6" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -258,6 +113,8 @@
     </replaceStrings>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="PUSH_UPDATE_ALL_ROOTS" value="false" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GradleLocalSettings">
@@ -4594,11 +4451,8 @@
         <option value="$PROJECT_DIR$/src/main/res/drawable/side_nav_bar.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/src/main/res/anim/item.xml" />
-        <option value="$PROJECT_DIR$/src/main/res/anim/slide_down.xml" />
-        <option value="$PROJECT_DIR$/src/main/res/anim/slide_up.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/layout_content_recycler.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/ViewOrderFragment.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/anim/layout_animation_fall_down.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values/integers.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/DashBoardFragment.java" />
@@ -4609,6 +4463,9 @@
         <option value="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/ContentViewHolder.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/OrdersFragment.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/PlaceOrderFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/res/anim/slide_up.xml" />
+        <option value="$PROJECT_DIR$/src/main/res/anim/slide_down.xml" />
       </list>
     </option>
   </component>
@@ -4657,13 +4514,6 @@
               <item name="tillr" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="boundary" type="462c0819:PsiDirectoryNode" />
               <item name="fragments" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="app" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="tillr" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="app" type="1abcf292:AndroidViewProjectNode" />
@@ -4993,12 +4843,18 @@
       <option name="project" value="LOCAL" />
       <updated>1545950749465</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="version 2.2(28-12-18 21:30)&#10;implemented:&#10;ContentLoader RecycleView Animations.&#10;PlaceOrderFragment now highlights ItemSpecial(s).">
+      <created>1546025424853</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1546025424853</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="Android Profiler" order="7" />
       <window_info id="Build Variants" order="2" side_tool="true" />
@@ -5080,7 +4936,10 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="version 2.1(25-12-18)&#10;working on implementing:&#10;Advance Item Feature(s), setting up Special's for Item(s)&#10;Tablet App version" />
     <MESSAGE value="version 2.1(28-12-18)&#10;implemented:&#10;Advance Item Feature(s), unit calculator dialog for Item(s).&#10;Separated ItemSpecial" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 2.1(28-12-18)&#10;implemented:&#10;Advance Item Feature(s), unit calculator dialog for Item(s).&#10;Separated ItemSpecial" />
+    <MESSAGE value="version 2.2(28-12-18 21:30)&#10;implemented:&#10;ContentLoader RecycleView Animations.&#10;PlaceOrderFragment now highlights ItemSpecial(s)." />
+    <option name="LAST_COMMIT_MESSAGE" value="version 2.2(28-12-18 21:30)&#10;implemented:&#10;ContentLoader RecycleView Animations.&#10;PlaceOrderFragment now highlights ItemSpecial(s)." />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -5524,27 +5383,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/anim/item_animation_fall_down.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="45" selection-start-line="2" selection-start-column="45" selection-end-line="2" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/anim/slide_down.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/anim/slide_up.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="55" selection-start-line="4" selection-start-column="55" selection-end-line="4" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/ViewOrderFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -5579,25 +5417,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="717" column="83" selection-start-line="717" selection-start-column="83" selection-end-line="717" selection-end-column="83" />
-          <folding>
-            <element signature="e#31196#31514#0" expanded="true" />
-            <element signature="e#31513#31514#0" expanded="true" />
-            <element signature="e#31516#31582#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/anim/layout_animation_fall_down.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/values/integers.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -5607,25 +5426,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/anim/item_animation_from_right.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+        <state relative-caret-position="102">
+          <caret line="6" column="31" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
           <folding>
             <element signature="e#124#153#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/anim/layout_animation_slide_right.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/anim/item_animation_from_bottom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+        <state relative-caret-position="238">
+          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
           <folding>
             <element signature="e#124#153#0" expanded="true" />
           </folding>
@@ -5702,7 +5514,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/views/ContentViewHolder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="460">
-          <caret line="49" column="5" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
+          <caret line="44" column="92" selection-start-line="44" selection-start-column="92" selection-end-line="44" selection-end-column="92" />
           <folding>
             <element signature="e#1284#1285#0" expanded="true" />
             <element signature="e#1336#1337#0" expanded="true" />
@@ -5713,7 +5525,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/OrdersFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
-          <caret line="192" column="12" selection-start-line="192" selection-start-column="12" selection-end-line="192" selection-end-column="94" />
+          <caret line="190" column="12" selection-start-line="190" selection-start-column="12" selection-end-line="190" selection-end-column="94" />
           <folding>
             <element signature="method#onViewCreated#0;class#OrdersFragment#0" />
             <element signature="e#3713#3752#0" expanded="true" />
@@ -5731,9 +5543,115 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/PlaceOrderFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
-          <caret line="347" column="3" selection-start-line="347" selection-start-column="3" selection-end-line="347" selection-end-column="3" />
+          <caret line="345" column="3" selection-start-line="345" selection-start-column="3" selection-end-line="345" selection-end-column="3" />
           <folding>
             <element signature="e#4338#5387#0" />
+            <element signature="e#5849#5883#0" expanded="true" />
+            <element signature="e#6391#6417#0" expanded="true" />
+            <element signature="e#10674#10915#0" expanded="true" />
+            <element signature="e#10914#10915#0" expanded="true" />
+            <element signature="e#10976#13031#0" expanded="true" />
+            <element signature="e#13030#13031#0" expanded="true" />
+            <element signature="e#13762#13791#0" expanded="true" />
+            <element signature="e#13854#13882#0" expanded="true" />
+            <element signature="e#13923#14204#0" expanded="true" />
+            <element signature="e#14203#14204#0" expanded="true" />
+            <element signature="e#14206#14272#0" expanded="true" />
+            <element signature="e#17438#17472#0" expanded="true" />
+            <element signature="e#18271#18300#0" expanded="true" />
+            <element signature="e#18371#18399#0" expanded="true" />
+            <element signature="e#18766#18800#0" expanded="true" />
+            <element signature="e#19371#19400#0" expanded="true" />
+            <element signature="e#19491#19868#0" expanded="true" />
+            <element signature="e#19746#19774#0" expanded="true" />
+            <element signature="e#19867#19868#0" expanded="true" />
+            <element signature="e#20006#20034#0" expanded="true" />
+            <element signature="e#20300#20334#0" expanded="true" />
+            <element signature="e#20705#20734#0" expanded="true" />
+            <element signature="e#20805#20833#0" expanded="true" />
+            <element signature="e#21897#21932#0" expanded="true" />
+            <element signature="e#21984#22267#0" expanded="true" />
+            <element signature="e#22266#22267#0" expanded="true" />
+            <element signature="e#22318#22582#0" expanded="true" />
+            <element signature="e#22581#22582#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/wast3dmynd/tillr/boundary/fragments/EditItemFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="477">
+          <caret line="455" column="49" selection-start-line="455" selection-start-column="49" selection-end-line="455" selection-end-column="49" />
+          <folding>
+            <element signature="e#5455#5537#0" expanded="true" />
+            <element signature="e#6107#6156#0" expanded="true" />
+            <element signature="e#6189#6241#0" expanded="true" />
+            <element signature="e#10354#10377#0" expanded="true" />
+            <element signature="e#10422#11089#0" expanded="true" />
+            <element signature="e#11088#11089#0" expanded="true" />
+            <element signature="e#11132#11832#0" expanded="true" />
+            <element signature="e#11831#11832#0" expanded="true" />
+            <element signature="e#12394#12428#0" expanded="true" />
+            <element signature="e#13150#13680#0" expanded="true" />
+            <element signature="e#13318#13624#0" expanded="true" />
+            <element signature="e#13623#13624#0" expanded="true" />
+            <element signature="e#13679#13680#0" expanded="true" />
+            <element signature="e#15084#15166#0" expanded="true" />
+            <element signature="e#23167#24663#0" expanded="true" />
+            <element signature="e#24662#24663#0" expanded="true" />
+            <element signature="e#25472#26056#0" expanded="true" />
+            <element signature="e#26055#26056#0" expanded="true" />
+            <element signature="e#30447#30598#0" expanded="true" />
+            <element signature="e#30597#30598#0" expanded="true" />
+            <element signature="e#31045#31074#0" expanded="true" />
+            <element signature="e#31137#31165#0" expanded="true" />
+            <element signature="e#31206#31514#0" expanded="true" />
+            <element signature="e#31513#31514#0" expanded="true" />
+            <element signature="e#31516#31582#0" expanded="true" />
+            <element signature="e#34103#34137#0" expanded="true" />
+            <element signature="e#35023#35052#0" expanded="true" />
+            <element signature="e#35123#35151#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/anim/layout_animation_fall_down.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/anim/layout_animation_slide_right.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/anim/item_animation_fall_down.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="71" selection-start-line="9" selection-start-column="4" selection-end-line="12" selection-end-column="71" />
+          <folding>
+            <element signature="e#124#155#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/anim/slide_up.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="26" selection-start-line="6" selection-start-column="26" selection-end-line="6" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/anim/slide_down.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+          <folding>
+            <element signature="e#353#384#0" expanded="true" />
           </folding>
         </state>
       </provider>

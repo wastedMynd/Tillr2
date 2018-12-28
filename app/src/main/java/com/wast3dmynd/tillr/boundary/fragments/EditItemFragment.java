@@ -448,10 +448,10 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                 if (item_control_details_container.getVisibility() == View.VISIBLE)
                     showAnimation(R.anim.slide_up, 350, item_control_details_container, View.GONE);
                 else
-                    showAnimation(R.anim.item_animation_fall_down, 350, item_control_details_container, View.VISIBLE);
+                    showAnimation(R.anim.slide_down, 350, item_control_details_container, View.VISIBLE);
 
                 if (item_advanced_setting_container.getVisibility() == View.GONE)
-                    showAnimation(R.anim.item_animation_fall_down, 1000, item_advanced_setting_container, View.VISIBLE);
+                    showAnimation(R.anim.slide_down, 1000, item_advanced_setting_container, View.VISIBLE);
                 else
                     showAnimation(R.anim.slide_up, 1000, item_advanced_setting_container, View.GONE);
             }

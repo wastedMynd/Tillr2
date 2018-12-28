@@ -2,13 +2,14 @@ package com.wast3dmynd.tillr.entity;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ItemSpecial {
+public class ItemSpecial implements Serializable {
 
     //region attributes
-    int id = 0;
-    int itemId = 0;
+    private int id = 0;
+    private int itemId = 0;
     private double specialPrice = 0;
     private long specialStartDate = System.currentTimeMillis();
     private long specialEndDate = System.currentTimeMillis();
@@ -88,15 +89,19 @@ public class ItemSpecial {
 
     public boolean isSpecialValid() {
 
+        //region validate the special price
+        if (getSpecialPrice() < 0) return false;
+        //endregion
+
         //region startDate logic
         Date currentDate = new Date(System.currentTimeMillis()), startDate = new Date(getSpecialStartDate());
-        boolean isSpecialDateRangeValid = startDate.after(currentDate) || startDate.equals(currentDate);
+        boolean isSpecialDateRangeValid = startDate.after(currentDate) || startDate.getDate() == currentDate.getDate();
         if (!isSpecialDateRangeValid) return false;
         //endregion
 
         //region endDate logic
         Date endDate = new Date(getSpecialEndDate());
-        isSpecialDateRangeValid = endDate.after(startDate) || endDate.equals(startDate);
+        isSpecialDateRangeValid = endDate.after(startDate) || endDate.getDate() >= startDate.getDate();
         if (!isSpecialDateRangeValid) return false;
         //endregion
 
@@ -105,10 +110,55 @@ public class ItemSpecial {
         //endregion
 
         //region endTime logic
-        boolean isSpecialTimeRangeValid = getSpecialEndTime() >= getSpecialStartTime();
+        Date endTime = new Date(getSpecialEndTime());
+        endTime.setYear(endDate.getYear());
+        endTime.setMonth(endDate.getMonth());
+        endTime.setDate(endDate.getDate());
+
+        Date startTime = new Date(getSpecialStartTime());
+        startTime.setYear(startDate.getYear());
+        startTime.setMonth(startDate.getMonth());
+        startTime.setDate(startDate.getDate());
+
+        boolean isSpecialTimeRangeValid = (endTime.after(startTime)) && (endTime.getDate() >= startTime.getDate());
         if (getSpecialEndTime() == 0) return false;
         else return isSpecialTimeRangeValid;
         //endregion
+    }
+
+    public boolean isSpecialActive() {
+        //check whether the special's is valid
+        if (!isSpecialValid()) return false;
+
+        //check whether the special's start date is happening today
+        Date currentDate = new Date(System.currentTimeMillis());
+        Date startDate = new Date(getSpecialStartDate());
+        if (currentDate.before(startDate)) return false;
+
+        //check whether the special's end date already happened
+        Date endDate = new Date(getSpecialEndDate());
+        boolean isEndDateReached = currentDate.getDate() > endDate.getDate();
+        if (isEndDateReached) return false;
+
+        //check whether the special's
+        Date endTime = new Date(getSpecialEndTime());
+        endTime.setYear(endDate.getYear());
+        endTime.setMonth(endDate.getMonth());
+        endTime.setDate(endDate.getDate());
+
+        Date startTime = new Date(getSpecialStartTime());
+        startTime.setYear(startDate.getYear());
+        startTime.setMonth(startDate.getMonth());
+        startTime.setDate(startDate.getDate());
+
+        //is before start time
+        if (currentDate.before(startTime)) return false;
+
+        //,and is after end time
+        if (currentDate.after(endTime)) return false;
+
+        //everything want well this special is active
+        return true;
     }
 
     public String toJson() {
@@ -124,6 +174,6 @@ public class ItemSpecial {
     @Override
     public boolean equals(Object obj) {
         ItemSpecial objSpecial = (ItemSpecial) obj;
-        return ((getId() == objSpecial.getId()) && (getItemId() == objSpecial.getItemId()));
+        return ((getItemId() == objSpecial.getItemId()) || (getId() == objSpecial.getId()));
     }
 }

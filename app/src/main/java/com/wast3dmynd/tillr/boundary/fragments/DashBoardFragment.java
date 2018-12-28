@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -51,7 +52,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class DashBoardFragment extends Fragment {
     private static final int DASH_BOARD_CONTENT_LOADER_ID = 1;
@@ -62,14 +62,11 @@ public class DashBoardFragment extends Fragment {
     CoordinatorLayout dashboard_main;
     private ConstraintLayout dashboard_summary;
 
-    private GraphViewAdapter graphViewAdapter = null;
-
 
     //<include layout="@layout/layout_content_recycler"/>
     private CrossFadeUtils crossFadeUtils;
     private ContentViewHolder holder;
     private RecyclerView recyclerView;
-
     //endregion
 
     public static Fragment newInstance() {
@@ -109,7 +106,6 @@ public class DashBoardFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.content_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(graphViewAdapter);
         //endregion
 
     }
@@ -304,7 +300,7 @@ public class DashBoardFragment extends Fragment {
             dashboard_summary.setVisibility(View.VISIBLE);
 
             //stats
-            new ProcessInventoryDataAsync(getContext()).execute();
+            new ProcessInventoryDataAsync().execute();
         }
 
         @Override
@@ -315,20 +311,14 @@ public class DashBoardFragment extends Fragment {
 
     private class ProcessInventoryDataAsync extends AsyncTask<Void, Void, Inventory> {
 
-        private Context context;
-
-        public ProcessInventoryDataAsync(@NonNull Context context) {
-            this.context = context;
-        }
-
 
         @Override
         protected Inventory doInBackground(Void... voids) {
             Inventory holder = new Inventory();
             holder.setDatabaseItemHolder(new ItemDatabase(getContext()).getAll());
             holder.setDatabaseOrderHolder(new OrderDatabase(getContext()).getAll());
-            holder.setTimelineDataHolder(Order.OrderTimelineHelper.get(context));
-            holder.setInventoryDataHolder(new InventoryDatabase(context).getAll());
+            holder.setTimelineDataHolder(Order.OrderTimelineHelper.get(getContext()));
+            holder.setInventoryDataHolder(new InventoryDatabase(getContext()).getAll());
             return holder;
         }
 
@@ -395,10 +385,10 @@ public class DashBoardFragment extends Fragment {
 
         private Inventory inventory;
 
-        private Random random;
+        private GraphViewAdapter adapter = null;
 
         public DashboardGraphDataAsyncTask() {
-            this.random = new Random(1);
+
         }
 
         private GraphDataHolder getSales() {
@@ -624,7 +614,7 @@ public class DashBoardFragment extends Fragment {
             LineGraphSeries<DataPoint> stock = new LineGraphSeries<>();
 
             final int MAX_DATA_POINTS = inventory.getInventoryDataHolder().size();
-            long minY = 0;
+            long minY = -5;
             long maxY = 0;
             final long maxX = inventory.getInventoryDataHolder().get(MAX_DATA_POINTS - 1).getTimestamp();
             final long minX = inventory.getInventoryDataHolder().get(0).getTimestamp();
@@ -685,7 +675,7 @@ public class DashBoardFragment extends Fragment {
             stockDataHolder.setXLabel(getContext().getResources().getString(R.string.label_date));
             stockDataHolder.setMinX(minX);
             stockDataHolder.setMaxX(maxX);
-            stockDataHolder.setMinY(-5);
+            stockDataHolder.setMinY(minY);
             stockDataHolder.setMaxY(maxY + 5);
             stockDataHolder.setDataPoints(stock);
             //endregion
@@ -710,18 +700,24 @@ public class DashBoardFragment extends Fragment {
         protected void onPostExecute(ArrayList<GraphDataHolder> graphDataHolders) {
             super.onPostExecute(graphDataHolders);
 
-            if (graphViewAdapter == null) {
-                graphViewAdapter = new GraphViewAdapter(graphDataHolders);
-                graphViewAdapter.setMainActivityListener((MainActivity) getActivity());
-                recyclerView.setAdapter(graphViewAdapter);
-            } else
-                graphViewAdapter.setDataHolders(graphDataHolders);
+            if (adapter == null) {
+                adapter = new GraphViewAdapter(graphDataHolders);
+                adapter.setMainActivityListener(listener);
 
-            if (graphViewAdapter.getItemCount() == 0)
+                recyclerView.setAdapter(adapter);
+            } else
+                adapter.setDataHolders(graphDataHolders);
+
+            if (adapter.getItemCount() == 0)
                 holder.contentLoaderInfo.setText(R.string.content_loader_empty);
             else {
                 holder.contentLoaderInfo.setText(R.string.content_loader_done);
-                crossFadeUtils.crossfade();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        crossFadeUtils.crossfade();
+                    }
+                }, getContext().getResources().getInteger(R.integer.loading_duration));
             }
         }
     }

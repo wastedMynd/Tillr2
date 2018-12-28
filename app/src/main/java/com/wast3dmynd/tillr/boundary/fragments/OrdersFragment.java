@@ -2,6 +2,7 @@ package com.wast3dmynd.tillr.boundary.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -26,15 +27,19 @@ import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.adapter.ViewOrdersAdapter;
 import com.wast3dmynd.tillr.boundary.interfaces.MainActivityListener;
+import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
 import com.wast3dmynd.tillr.boundary.views.ViewOrdersViewHolder;
 import com.wast3dmynd.tillr.database.ItemDatabase;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
+import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
 import com.wast3dmynd.tillr.utils.DateFormats;
 import com.wast3dmynd.tillr.utils.DayFormats;
 
 import java.util.ArrayList;
+
+import static com.wast3dmynd.tillr.R.string.content_loader_processing;
 
 public class OrdersFragment extends Fragment {
     private static final String DATA_LOADER_ARGS_ORDER = "DATA_LOADER_ARGS_ORDER" ;
@@ -63,7 +68,8 @@ public class OrdersFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_view_orders, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_orders, container, false);
+        return view;
     }
 
     @Override
@@ -143,6 +149,9 @@ public class OrdersFragment extends Fragment {
         private PlaceholderFragmentListener listener;
         private DayFormats dayFormat;
 
+        private ContentViewHolder holder;
+        private CrossFadeUtils crossFadeUtils;
+
         public PlaceholderFragment() {
         }
 
@@ -157,7 +166,11 @@ public class OrdersFragment extends Fragment {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.layout_view_orders_container, container, false);
+            View view = inflater.inflate(R.layout.layout_content_recycler, container, false);
+            holder = new ContentViewHolder(view);
+            crossFadeUtils = new CrossFadeUtils(holder.contentRecycler, holder.contentLoader);
+            holder.contentLoaderInfo.setText(content_loader_processing);
+            return view;
         }
 
         @Override
@@ -173,11 +186,25 @@ public class OrdersFragment extends Fragment {
                 orders.addAll(timeline.getChildOrders());
             }
 
-            RecyclerView recyclerView = view.findViewById(R.id.items);
+            RecyclerView recyclerView = view.findViewById(R.id.content_recycler);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            holder.overrideContentRecylerLayoutAnimation(R.anim.layout_animation_from_bottom);
+
             ViewOrdersAdapter adapter = new ViewOrdersAdapter(this, orders);
             adapter.summarizeDaysOrders(DayFormats.getTodaysFormat(),true);
             recyclerView.setAdapter(adapter);
+
+            if (adapter.getItemCount() == 0)
+                holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+            else {
+                holder.contentLoaderInfo.setText(R.string.content_loader_done);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        crossFadeUtils.crossfade();
+                    }
+                }, getContext().getResources().getInteger(R.integer.loading_duration));
+            }
         }
 
         @Override

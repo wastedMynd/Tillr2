@@ -26,9 +26,9 @@ public class ItemSpecialDatabase extends DatabaseDelegate {
     private final String ITEM_SPECIAL_END_TIME_COLUMN = "end_time";
     private final String ITEM_TIMESTAMP_COLUMN = "timestamp";
 
-
     public ItemSpecialDatabase(Context context) {
         super(context);
+
     }
 
     @Override
@@ -36,14 +36,14 @@ public class ItemSpecialDatabase extends DatabaseDelegate {
 
         return "CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE +
                 String.format("(%s INTEGER PRIMARY KEY  AUTOINCREMENT,", ID_COLUMN) +
-                String.format("%s TEXT NOT NULL,", FOREIGN_KEY_COLUMN) +
+                String.format("%s INTEGER,", FOREIGN_KEY_COLUMN) +
                 String.format("%s DOUBLE,", ITEM_SPECIAL_PRICE_COLUMN) +
                 String.format("%s LONG,", ITEM_SPECIAL_START_DATE_COLUMN) +
                 String.format("%s LONG,", ITEM_SPECIAL_END_DATE_COLUMN) +
                 String.format("%s LONG,", ITEM_SPECIAL_START_TIME_COLUMN) +
                 String.format("%s LONG,", ITEM_SPECIAL_END_TIME_COLUMN) +
-                String.format("%s LONG,", ITEM_TIMESTAMP_COLUMN)+
-                String.format("FOREIGN KEY(%s) REFERENCES %s(%s));",FOREIGN_KEY_COLUMN, ItemDatabase.DATABASE_TABLE,
+                String.format("%s LONG,", ITEM_TIMESTAMP_COLUMN) +
+                String.format("FOREIGN KEY(%s) REFERENCES %s(%s));", FOREIGN_KEY_COLUMN, ItemDatabase.DATABASE_TABLE,
                         ItemDatabase.ID_COLUMN);
     }
 
@@ -84,6 +84,7 @@ public class ItemSpecialDatabase extends DatabaseDelegate {
 
         if (getDatabaseListener() != null)
             getDatabaseListener().onDatabaseItemInserted(result, item);
+
 
         return result;
     }
@@ -136,7 +137,7 @@ public class ItemSpecialDatabase extends DatabaseDelegate {
 
         String whereClause = ID_COLUMN + "=? AND " + FOREIGN_KEY_COLUMN + "=?";
 
-        String[] whereArgs = {String.valueOf(itemSpecial.getId()),String.valueOf(itemSpecial.getItemId())};
+        String[] whereArgs = {String.valueOf(itemSpecial.getId()), String.valueOf(itemSpecial.getItemId())};
 
         openDatabase();
         int res = getDatabase().delete(DATABASE_TABLE, whereClause, whereArgs);
@@ -190,7 +191,7 @@ public class ItemSpecialDatabase extends DatabaseDelegate {
                 try {
                     //region get database content
                     int id = c.getInt(c.getColumnIndex(ID_COLUMN));
-                    int foreign_key =c.getInt(c.getColumnIndex(FOREIGN_KEY_COLUMN));
+                    int foreign_key = c.getInt(c.getColumnIndex(FOREIGN_KEY_COLUMN));
                     double price = c.getDouble(c.getColumnIndex(ITEM_SPECIAL_PRICE_COLUMN));
                     long startDate = c.getLong(c.getColumnIndex(ITEM_SPECIAL_START_DATE_COLUMN));
                     long endDate = c.getLong(c.getColumnIndex(ITEM_SPECIAL_END_DATE_COLUMN));

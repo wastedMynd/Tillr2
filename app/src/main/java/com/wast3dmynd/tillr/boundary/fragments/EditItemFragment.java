@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.AnimRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -99,7 +100,7 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
     }
 
     private void displayItemSpecialPrice() {
-        itemSpecialPrice.setText(CurrencyUtility.getCurrencyDisplay(special.getSpecialPrice()));
+        itemSpecialPrice.setText(String.valueOf(special.getSpecialPrice()));
     }
 
     private void displayItemSpecialStartDate() {
@@ -142,13 +143,7 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
     }
 
     private void initializeSpecial(Item item) {
-        special = new ItemSpecial();
-        special.setItemId(item.getId());
-        special.setSpecialPrice(item.getSpecial().getSpecialPrice());
-        special.setSpecialStartDate(item.getSpecial().getSpecialStartDate());
-        special.setSpecialEndDate(item.getSpecial().getSpecialEndDate());
-        special.setSpecialStartTime(item.getSpecial().getSpecialStartTime());
-        special.setSpecialEndTime(item.getSpecial().getSpecialEndTime());
+        special = item.getSpecial();
     }
 
     private void clearFields() {
@@ -254,6 +249,7 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
         item.setItemName(itemNameStr);
         item.setItemCostPerUnit(cost);
         item.setItemUnitRemaining(count);
+        special.setItemId(item.getId());
         item.setSpecial(special);
 
         boolean updated = new ItemDatabase(thisActivity).updateItem(item);
@@ -452,10 +448,10 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
                 if (item_control_details_container.getVisibility() == View.VISIBLE)
                     showAnimation(R.anim.slide_up, 350, item_control_details_container, View.GONE);
                 else
-                    showAnimation(R.anim.slide_down, 350, item_control_details_container, View.VISIBLE);
+                    showAnimation(R.anim.item_animation_fall_down, 350, item_control_details_container, View.VISIBLE);
 
                 if (item_advanced_setting_container.getVisibility() == View.GONE)
-                    showAnimation(R.anim.slide_down, 1000, item_advanced_setting_container, View.VISIBLE);
+                    showAnimation(R.anim.item_animation_fall_down, 1000, item_advanced_setting_container, View.VISIBLE);
                 else
                     showAnimation(R.anim.slide_up, 1000, item_advanced_setting_container, View.GONE);
             }
@@ -478,7 +474,8 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
                 if (s != null && !s.toString().isEmpty())
                     special.setSpecialPrice(CurrencyUtility.reformatCurrency(s.toString()));
-                saveBtn.setVisibility(item.isSpecialValid() && item.isValid() ? View.VISIBLE : View.GONE);
+
+                saveBtn.setVisibility(special.isSpecialValid() && item.isValid() ? View.VISIBLE : View.GONE);
 
             }
         });
@@ -520,7 +517,7 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
 
                         special.setSpecialStartDate(startDate.getTime());
                         displayItemSpecialStartDate();
-                        saveBtn.setVisibility(item.isSpecialValid() && special.isSpecialValid() ? View.VISIBLE : View.GONE);
+                        saveBtn.setVisibility(special.isSpecialValid() && special.isSpecialValid() ? View.VISIBLE : View.GONE);
                     }
 
                 };
@@ -710,11 +707,15 @@ public class EditItemFragment extends Fragment implements EditItemAdapter.EditIt
             holder.contentLoaderInfo.setText(R.string.content_loader_empty);
         else {
             holder.contentLoaderInfo.setText(R.string.content_loader_done);
-            crossFadeUtils.crossfade();
-
-            if (item == null) return;
-            item.getGui().setSelected(true);
-            editItemAdapter.setItem(item);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    crossFadeUtils.crossfade();
+                    if (item == null) return;
+                    item.getGui().setSelected(true);
+                    editItemAdapter.setItem(item);
+                }
+            }, getContext().getResources().getInteger(R.integer.loading_duration));
         }
 
         if (editorOptions.equals(ItemEditorOptions.EDIT_ITEM)) displayItem();

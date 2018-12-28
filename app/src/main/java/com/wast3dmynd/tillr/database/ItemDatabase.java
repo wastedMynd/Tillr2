@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.wast3dmynd.tillr.database.utils.DatabaseDelegate;
+import com.wast3dmynd.tillr.database.utils.DatabaseListener;
 import com.wast3dmynd.tillr.entity.InventoryData;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.ItemSpecial;
@@ -15,12 +16,13 @@ import java.util.Date;
 
 public class ItemDatabase extends DatabaseDelegate {
 
+
     //database table
     public static final String DATABASE_TABLE = "Items";
 
     // Columns
     public static final String ID_COLUMN = "id";
-    private final String FORIEN_KEY_COLUMN = "order_id";
+    private final String FOREIGN_KEY_COLUMN = "order_id";
     private final String ITEM_NAME_COLUMN = "item_name";
     private final String ITEM_BARCODE_COLUMN = "item_barcode";
     private final String ITEM_COST_PER_UNIT_COLUMN = "item_cost_per_unit";
@@ -30,9 +32,33 @@ public class ItemDatabase extends DatabaseDelegate {
     private final String ITEM_REMAINING_COLUMN = "item_remaining";
     private final String ITEM_TIMESTAMP_COLUMN = "item_timestamp";
 
+    private ItemSpecialDatabase itemSpecialDatabase;
 
     public ItemDatabase(Context context) {
         super(context);
+        itemSpecialDatabase = new ItemSpecialDatabase(context);
+        setDatabaseListener(new DatabaseListener() {
+            @Override
+            public void onDatabaseItemRemoved(boolean isItemRemoved, Object objItem) {
+                if (!isItemRemoved) return;
+                Item item = (Item) objItem;
+                itemSpecialDatabase.updateItem(item.getSpecial());
+            }
+
+            @Override
+            public void onDatabaseItemInserted(boolean isItemInserted, Object objItem) {
+                if (!isItemInserted) return;
+                Item item = (Item) objItem;
+                itemSpecialDatabase.addItem(item.getSpecial());
+            }
+
+            @Override
+            public void onDatabaseItemUpdated(boolean isItemUpdated, Object objItem) {
+                if (!isItemUpdated) return;
+                Item item = (Item) objItem;
+                itemSpecialDatabase.updateItem(item.getSpecial());
+            }
+        });
     }
 
     @Override
@@ -40,7 +66,7 @@ public class ItemDatabase extends DatabaseDelegate {
 
         return "CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE +
                 String.format("(%s INTEGER PRIMARY KEY  AUTOINCREMENT,", ID_COLUMN) +
-                String.format("%s INTEGER,", FORIEN_KEY_COLUMN) +
+                String.format("%s INTEGER,", FOREIGN_KEY_COLUMN) +
                 String.format("%s TEXT NOT NULL,", ITEM_NAME_COLUMN) +
                 String.format("%s TEXT,", ITEM_BARCODE_COLUMN) +
                 String.format("%s DOUBLE,", ITEM_COST_PER_UNIT_COLUMN) +
@@ -49,7 +75,7 @@ public class ItemDatabase extends DatabaseDelegate {
                 String.format("%s INTEGER,", ITEM_REMAINING_COLUMN) +
                 String.format("%s INTEGER,", ITEM_UNITS_COLUMN) +
                 String.format("%s LONG,", ITEM_TIMESTAMP_COLUMN) +
-                String.format("FOREIGN KEY(%s) REFERENCES %s(%s));", FORIEN_KEY_COLUMN, OrderDatabase.DATABASE_TABLE,
+                String.format("FOREIGN KEY(%s) REFERENCES %s(%s));", FOREIGN_KEY_COLUMN, OrderDatabase.DATABASE_TABLE,
                         OrderDatabase.ORDER_ID_COLUMN);
     }
 
@@ -149,7 +175,6 @@ public class ItemDatabase extends DatabaseDelegate {
 
         ret = itemDB.getId() > 0;
         if (getDatabaseListener() != null) getDatabaseListener().onDatabaseItemUpdated(ret, item);
-
         return ret;
     }
 
@@ -175,7 +200,6 @@ public class ItemDatabase extends DatabaseDelegate {
         ret = res > 0;
 
         if (getDatabaseListener() != null) getDatabaseListener().onDatabaseItemRemoved(ret, item);
-
         return ret;
     }
 
@@ -205,6 +229,7 @@ public class ItemDatabase extends DatabaseDelegate {
     @Override
     public ArrayList<Object> getItems() {
         ArrayList<Object> items = new ArrayList<>();
+        ArrayList<ItemSpecial> specials = itemSpecialDatabase.getAll();
 
         openDatabase();
 
@@ -265,6 +290,13 @@ public class ItemDatabase extends DatabaseDelegate {
                     item.setItemPriceTotal(itemPriceTotal);
 
                     item.setItemDamage(itemDamage);
+
+                    //this links the special to this item reference
+                    for (ItemSpecial itemSpecial : specials) {
+                        if (itemSpecial.getItemId() != item.getId()) continue;
+                        item.setSpecial(itemSpecial);
+                        break;
+                    }
 
                     //endregion
 

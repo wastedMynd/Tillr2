@@ -1,6 +1,7 @@
 package com.wast3dmynd.tillr.boundary.views;
 
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -54,8 +55,16 @@ public class PlaceOrderViewHolder extends RecyclerView.ViewHolder {
 
     private void displayIndicates(Item item) {
 
+
         lyrItemStatus.setBackgroundColor(item.getGui().isSelected() ? itemAdder.getResources().getColor(R.color.colorAdderAccent) :
                 itemAdder.getResources().getColor(android.R.color.transparent));
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int itemSpecialColorActive = cdItem.getResources().getColor(R.color.item_on_special_highlight);
+            int itemSpecialColorNeutral = cdItem.getResources().getColor(android.R.color.white);
+            cdItem.getBackground().setTint(item.getSpecial().isSpecialActive() ? itemSpecialColorActive : itemSpecialColorNeutral);
+        }
 
         Item.ItemGui.MenuItemMode menuItemMode = item.getGui().getMenuItemMode();
 
@@ -87,7 +96,7 @@ public class PlaceOrderViewHolder extends RecyclerView.ViewHolder {
         itemName.setText(item.getItemName());
 
         //itemCostPerUnit TextView update
-        StringBuilder itemCostPerUnitB = new StringBuilder(CurrencyUtility.getCurrencyDisplay(item.getItemCostPerUnit()));
+        StringBuilder itemCostPerUnitB = new StringBuilder(CurrencyUtility.getCurrencyDisplay(item.getPriceChangedPerUnit()));
         itemCostPerUnitB.append("/unit");
         itemCostPerUnit.setText(itemCostPerUnitB.toString());
 

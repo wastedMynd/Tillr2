@@ -6,15 +6,15 @@ import java.io.Serializable;
 
 public class Item implements Serializable {
 
-    private int id =0;
-    private int orderId =0;
+    private int id = 0;
+    private int orderId = 0;
     private String itemName, barcode;
-    private double itemCostPerUnit =0;
+    private double itemCostPerUnit = 0;
     private int itemUnits = 0;
     private int itemDamage = 0;
-    private double itemPriceTotal =0;
-    private int itemUnitRemaining=0;
-    private long itemTimeStamp= System.currentTimeMillis();
+    private double itemPriceTotal = 0;
+    private int itemUnitRemaining = 0;
+    private long itemTimeStamp = System.currentTimeMillis();
     private ItemSpecial special = new ItemSpecial();
 
     private ItemGui gui = new ItemGui();
@@ -69,9 +69,22 @@ public class Item implements Serializable {
         this.itemUnits = itemUnits;
     }
 
+    public Double getPriceChangedPerUnit() {
+
+        double normalPrice = getItemCostPerUnit();
+
+        double specialPrice = getSpecial().getSpecialPrice();
+
+        double cost = getSpecial().isSpecialActive() ? specialPrice : normalPrice;
+
+        return cost;
+    }
+
     public double getItemPriceTotal() {
-         itemPriceTotal = getItemUnits() * getItemCostPerUnit();
-         return itemPriceTotal;
+
+        itemPriceTotal = getItemUnits() * getPriceChangedPerUnit();
+
+        return itemPriceTotal;
     }
 
     public void setItemPriceTotal(double itemPriceTotal) {
@@ -117,21 +130,16 @@ public class Item implements Serializable {
 
     public boolean isValid() {
         if (getItemName() == null) return false;
-        return  (!getItemName().isEmpty()) && (getItemCostPerUnit()> 0);
+        return (!getItemName().isEmpty()) && (getItemCostPerUnit() > 0);
     }
 
-    public boolean isSpecialValid()
-    {
-
-        return false;
-    }
 
     //endregion
 
-    public static class ItemGui implements Serializable{
-        private  boolean highlighted =false;
+    public static class ItemGui implements Serializable {
+        private boolean highlighted = false;
         private boolean selected = false;
-        private int color =0;
+        private int color = 0;
 
         public boolean isSelected() {
             return selected;
@@ -151,8 +159,8 @@ public class Item implements Serializable {
             this.menuItemMode = menuItemMode;
         }
 
-        public enum MenuItemMode{
-            INCREMENT,DECREMENT
+        public enum MenuItemMode {
+            INCREMENT, DECREMENT
         }
 
         public boolean isHighlighted() {

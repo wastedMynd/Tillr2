@@ -328,6 +328,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
         //endregion
 
         recyclerView.setLayoutManager(new LinearLayoutManager(thisActivity, LinearLayoutManager.VERTICAL, false));
+        holder.overrideContentRecylerLayoutAnimation(R.anim.layout_animation_slide_right);
         placeOrderAdapter = new PlaceOrderAdapter(getContext(), new ItemDatabase(getContext()).getAll(), this);
 
         recyclerView.setAdapter(placeOrderAdapter);
@@ -336,9 +337,14 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
             holder.contentLoaderInfo.setText(R.string.content_loader_empty);
         else {
             holder.contentLoaderInfo.setText(R.string.content_loader_done);
-            crossFadeUtils.crossfade();
-            masterItems = new ArrayList<>();
-            masterItems.addAll(placeOrderAdapter.getItems());
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    crossFadeUtils.crossfade();
+                    masterItems = new ArrayList<>();
+                    masterItems.addAll(placeOrderAdapter.getItems());
+                }
+            }, getContext().getResources().getInteger(R.integer.loading_duration));
         }
     }
 
@@ -424,6 +430,7 @@ public class PlaceOrderFragment extends Fragment implements PlaceOrderViewHolder
             throw new ClassCastException("Must Implement MainActivityListener");
         listener = (MainActivityListener) context;
     }
+
 
     //endregion
 

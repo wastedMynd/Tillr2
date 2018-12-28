@@ -13,13 +13,13 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 import android.widget.Toast;
 
 import com.wast3dmynd.tillr.R;
@@ -127,6 +127,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+
     }
 
     /**
@@ -228,7 +229,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), MainActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -280,7 +281,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), MainActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -310,7 +311,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), MainActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);

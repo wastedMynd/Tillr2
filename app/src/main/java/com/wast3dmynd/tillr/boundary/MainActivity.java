@@ -307,10 +307,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_order_placement:
                 selectedFragment = PlaceOrderFragment.newInstance(this);
                 break;
+            case R.id.nav_settings:
+                selectedFragment = null;
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
         }
 
         //todo when navigation drawer is opened
-        //displayNavigationData();
+        displayNavigationData();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -341,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //region implements ItemsFragmentListener
     @Override
     public void onFragmentChanged(Fragment fragment) {
+        if (fragment == null) return;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(container.getId(), fragment);
         transaction.commit();

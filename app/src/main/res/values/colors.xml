@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#616161</color>
+    <color name="colorPrimary">#383838</color>
     <color name="colorLightPrimary">#064b60</color>
     <color name="colorPrimaryDark">@color/colorPrimary</color>
     <color name="colorAccent">#f44336</color>
-    <color name="windowBackground">#E1E2E1</color>
+    <color name="windowBackground">#aeaeae</color>
     <color name="textColorPrimary">#fff</color>
     <color name="secondaryTextColor">#000</color>
     <color name="dividerColor">#BDBDBD</color>
 
-    <color name="colorAdderAccent">#ffc107</color>
+    <color name="colorAdderAccent">#f50057</color>
     <color name="colorRemoverAccent">#00e676</color>
     <color name="colorIconActive">#000</color>
     <color name="colorIconActiveMenu">#fff</color>
@@ -21,5 +21,8 @@
         <item>#ffd600</item>
         <item>#ff3d00</item>
     </array>
+
     <color name="highlight">#505959ff</color>
+    <!--Items on special highlight color-->
+    <color name="item_on_special_highlight">#80536DFE</color>
 </resources>

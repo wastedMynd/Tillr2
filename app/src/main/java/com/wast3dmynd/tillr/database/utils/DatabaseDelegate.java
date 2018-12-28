@@ -12,8 +12,6 @@ public abstract class DatabaseDelegate
 {
     //region Database Variables
 
-
-
     //region Context
     private Context context;
 
@@ -148,11 +146,9 @@ public abstract class DatabaseDelegate
     }
 
     //database access functions
-
     protected abstract String onCreateScheme();
 
     //client accessed functions
-
     public abstract boolean addItem(Object item);
 
     public abstract boolean updateItem(Object item);

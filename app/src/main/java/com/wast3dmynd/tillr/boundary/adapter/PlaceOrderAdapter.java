@@ -21,22 +21,22 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderViewHolder
     private LayoutInflater layoutInflater;
 
 
-    public PlaceOrderAdapter(Context context, ArrayList<Item> orderItems, PlaceOrderViewHolder.ItemMenuViewHolderListener itemMenuViewHolderListener) {
+    public PlaceOrderAdapter(Context context, ArrayList<Item> items, PlaceOrderViewHolder.ItemMenuViewHolderListener itemMenuViewHolderListener) {
         layoutInflater = LayoutInflater.from(context);
 
         //add Items
         this.orderItems = new ArrayList<>();
         this.searchOrderItemsPlaceholder = new ArrayList<>();
 
-        for (Item item : orderItems) {
-            //if item units that are remain are equal 0 don't show it.
+        for (Item item : items) {
+            //if item units remaining are equal 0 don't show them.
             if (item.getItemUnitRemaining() > 0) {
                 this.orderItems.add(item);
                 this.searchOrderItemsPlaceholder.add(item);
             }
         }
 
-        this.orderListener =  itemMenuViewHolderListener;
+        this.orderListener = itemMenuViewHolderListener;
     }
 
     @NonNull
@@ -72,7 +72,7 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderViewHolder
 
         int indexOfSearchOrderItem = searchOrderItemsPlaceholder.indexOf(orderItem);
         searchOrderItemsPlaceholder.remove(indexOfSearchOrderItem);
-        searchOrderItemsPlaceholder.add(indexOfSearchOrderItem,orderItem);
+        searchOrderItemsPlaceholder.add(indexOfSearchOrderItem, orderItem);
 
         notifyItemChanged(indexOfItem);
     }
@@ -86,4 +86,6 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderViewHolder
     public ArrayList<Item> getItems() {
         return orderItems;
     }
+
+
 }

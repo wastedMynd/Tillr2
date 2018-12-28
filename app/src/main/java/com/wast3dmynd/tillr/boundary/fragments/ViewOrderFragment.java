@@ -1,6 +1,7 @@
 package com.wast3dmynd.tillr.boundary.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,8 +15,10 @@ import android.widget.TextView;
 import com.wast3dmynd.tillr.R;
 import com.wast3dmynd.tillr.boundary.MainActivity;
 import com.wast3dmynd.tillr.boundary.adapter.ViewOrderAdapter;
+import com.wast3dmynd.tillr.boundary.views.ContentViewHolder;
 import com.wast3dmynd.tillr.entity.Item;
 import com.wast3dmynd.tillr.entity.Order;
+import com.wast3dmynd.tillr.utils.CrossFadeUtils;
 import com.wast3dmynd.tillr.utils.CurrencyUtility;
 import com.wast3dmynd.tillr.utils.DateFormats;
 
@@ -24,6 +27,9 @@ import java.util.ArrayList;
 public class ViewOrderFragment extends Fragment {
 
     private static final String ARG_VIEW_ORDER = "ARG_VIEW_ORDER";
+
+    private ContentViewHolder holder;
+    private CrossFadeUtils crossFadeUtils;
 
     public static Fragment newInstance(Order order) {
         Fragment fragment = new ViewOrderFragment();
@@ -37,7 +43,11 @@ public class ViewOrderFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_view_order,container,false);
+        View view = inflater.inflate(R.layout.fragment_view_order, container, false);
+        holder = new ContentViewHolder(view);
+        crossFadeUtils = new CrossFadeUtils(holder.contentRecycler, holder.contentLoader);
+        holder.contentLoaderInfo.setText(R.string.content_loader_processing);
+        return view;
     }
 
     @Override
@@ -87,6 +97,18 @@ public class ViewOrderFragment extends Fragment {
 
         ViewOrderAdapter adapter = new ViewOrderAdapter(getContext(), order);
         recyclerView.setAdapter(adapter);
+
+        if (adapter.getItemCount() == 0)
+            holder.contentLoaderInfo.setText(R.string.content_loader_empty);
+        else {
+            holder.contentLoaderInfo.setText(R.string.content_loader_done);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    crossFadeUtils.crossfade();
+                }
+            }, getContext().getResources().getInteger(R.integer.loading_duration));
+        }
     }
 
 }

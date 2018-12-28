@@ -1,11 +1,10 @@
 package com.wast3dmynd.tillr.boundary.views;
 
-import android.content.Context;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.annotation.AnimRes;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.wang.avi.AVLoadingIndicatorView;
@@ -41,6 +40,12 @@ public class ContentViewHolder {
     //region Start and Stop contentLoaderProgress
     public void startContentLoaderProgress() {
         contentLoaderProgress.smoothToShow();
+    }
+
+    public void overrideContentRecylerLayoutAnimation(@AnimRes int animLayoutAnimationRes) {
+        //override recyclerView animation
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(contentRecycler.getContext(), animLayoutAnimationRes);
+        ((RecyclerView) contentRecycler).setLayoutAnimation(animation);
     }
 
     public void stopContentLoaderProgress() {
